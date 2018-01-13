@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
-import axios from 'axios';
+import LandPrompt from '../sections/LandPrompt';
 import '../styles/css/Landing.css'
 
 let windowDimensions = {
-    height: window.innerHeight,
+    height: window.innerHeight - 32,
 };
 
 class Landing extends Component {
@@ -14,7 +14,9 @@ class Landing extends Component {
 
   render() {
     return (
-      <section style={windowDimensions} className='landing'></section>
+      <section style={windowDimensions} className='landing'>
+        <LandPrompt></LandPrompt>
+      </section>
     );
   }
 }
