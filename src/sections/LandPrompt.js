@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import '../styles/css/LandPrompt.css';
 import SearchBar from '../components/SearchBar';
+import SearchHere from '../components/SearchHere';
 
 class LandPrompt extends Component {
   constructor(props) {
@@ -16,6 +17,7 @@ class LandPrompt extends Component {
         <div className="seperator-container">
           <div className="orange-line-accent"></div><h5>OR</h5><div className="orange-line-accent"></div>
         </div>
+        <SearchHere btnText="Get Current Location"></SearchHere>
       </div>
     );
   }
