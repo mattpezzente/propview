@@ -10,7 +10,7 @@ class Footer extends Component {
   render() {
     return (
       <footer>
-        <h4>CopyRight 2018 © PropView</h4>
+        <h4>Copyright 2018 © PropView</h4>
       </footer>
     );
   }
