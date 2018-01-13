@@ -32,6 +32,7 @@ class App extends Component {
     })
     .then(data => {
       propData = data.data.property[0].address;
+      console.log(propData)
       loadFetchedData(propData);
 
     })
@@ -51,11 +52,9 @@ class App extends Component {
       return <li key={key}>{key}__{value}</li>
     }) 
 
-    console.log(keys)
-    console.log(values)
-
     return (
       <div>
+        <h1>Hello World</h1>
         <ul>
           {addressElements}
         </ul>
