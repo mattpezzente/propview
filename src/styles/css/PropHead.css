@@ -1,0 +1,43 @@
+.prophead-masthead {
+  position: relative;
+  background: linear-gradient(20deg, black 0%, transparent 25%), url("../../images/propview-property-1.png") no-repeat center/cover;
+  width: 100%;
+  height: 40rem;
+  padding: 1.5rem; }
+
+.prophead-logo {
+  max-width: 10rem; }
+
+.prophead-info-container {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  height: 7.5rem;
+  padding: 1.5rem; }
+  .prophead-info-container h3 {
+    color: #eee;
+    font-size: 1.75rem;
+    line-height: 1.25;
+    text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); }
+
+.prophead-info-details {
+  display: flex;
+  flex-direction: row;
+  flex-wrap: nowrap;
+  justify-content: space-between;
+  margin-top: 1rem; }
+  .prophead-info-details .prophead-info-dot-spacing {
+    font-size: 1rem;
+    color: #eee;
+    margin: 0 0.5rem; }
+  .prophead-info-details li {
+    display: flex;
+    flex-direction: row;
+    flex-wrap: nowrap;
+    justify-content: left;
+    align-items: center;
+    margin: 0 0.125rem; }
+    .prophead-info-details li p {
+      font-size: 1.125rem;
+      color: #eee;
+      margin: 0 0.5rem; }

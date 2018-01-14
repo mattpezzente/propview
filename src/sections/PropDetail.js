@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
-import '../styles/css/PropValue.css';
+import '../styles/css/PropDetail.css';
 
-class PropValue extends Component {
+class PropDetail extends Component {
   constructor(props) {
     super(props);
 
@@ -10,10 +10,10 @@ class PropValue extends Component {
   render() {
     return (
       <section>
-        <p>PropValue</p>
+        <p>PropDetail</p>
       </section>
     );
   }
 }
 
-export default PropValue;
+export default PropDetail;

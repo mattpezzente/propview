@@ -1,11 +1,11 @@
 import React, { Component } from 'react';
-import { BrowserRouter as Router, Route } from 'react-router-dom'
+import { Route, Switch } from 'react-router-dom'
 import axios from 'axios';  
 import './styles/css/reset.css';
 import './styles/css/App.css';
 
 import Landing from './pages/Landing';
-import Footer from './sections/Footer'
+import Property from './pages/Property'
 
 class App extends Component {
   constructor(props) {
@@ -67,8 +67,10 @@ class App extends Component {
     // );
     return (
       <div>
-        <Landing></Landing>
-        <Footer></Footer>
+        <Switch>            
+          <Route exact path='/' component={Landing}/>
+          <Route path='/property' component={Property}/>            
+        </Switch>
       </div>
     );
   }

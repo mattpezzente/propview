@@ -2,6 +2,8 @@ import React, { Component } from 'react';
 import LandPrompt from '../sections/LandPrompt';
 import '../styles/css/Landing.css'
 
+import Footer from '../sections/Footer'
+
 let windowDimensions = {
     height: window.innerHeight - 32,
 };
