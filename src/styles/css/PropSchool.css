@@ -1,0 +1,20 @@
+.propschool-school-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-between;
+  flex-wrap: wrap; }
+  .propschool-school-container li {
+    width: calc(100%/4 - 0.5rem); }
+  .propschool-school-container img {
+    max-width: 10rem; }
+  .propschool-school-container h3 {
+    margin-right: auto;
+    margin-left: auto;
+    margin-bottom: 0.5rem;
+    font-weight: bold;
+    max-width: 80%; }
+  .propschool-school-container p {
+    line-height: 1.5;
+    font-weight: bold; }
+    .propschool-school-container p span {
+      font-weight: normal; }

@@ -37,7 +37,7 @@ class PropValue extends Component {
 
   render() {
     console.log(testValues)
-    let saleRows = testValues.map((key, i) => {
+    let saleRowHTML = testValues.map((key, i) => {
       return (
         <tr key={i}> 
           <td>{key.amount.salerecdate}</td>
@@ -68,7 +68,7 @@ class PropValue extends Component {
             </tr>
            </thead>
            <tbody>
-            {saleRows}
+            {saleRowHTML}
            </tbody>
           </table>
         </section>
