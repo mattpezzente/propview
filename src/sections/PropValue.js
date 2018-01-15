@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import icoPropertyValue from '../images/propvalue/propview-value-icon.png';
 import '../styles/css/PropValue.css';
 
 class PropValue extends Component {
@@ -10,7 +11,7 @@ class PropValue extends Component {
   render() {
     return (
       <section>
-        <p>PropValue</p>
+        <h2>Property Value</h2>
       </section>
     );
   }
