@@ -1,8 +1,6 @@
 .search-user-location-button {
   display: flex;
   align-items: center;
-  margin-left: auto;
-  margin-right: auto;
   padding: 0.5rem 1rem;
   border-radius: 2px;
   background: #E86919;

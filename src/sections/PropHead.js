@@ -1,6 +1,8 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
 import '../styles/css/PropHead.css';
+import SearchBar from '../components/SearchBar';
+import SearchHere from '../components/SearchHere';
 
 class PropHead extends Component {
   constructor(props) {
@@ -13,7 +15,11 @@ class PropHead extends Component {
     return (
       <section className="prophead-masthead">
         <Link to="/"><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></Link>  
-        <div className="prophead-info-container">
+        <section className="prophead-search-container">
+          <SearchHere />
+          <SearchBar />
+        </section>
+        <section className="prophead-info-container">
           <h3>{this.props.propData.address.line1}</h3>
           <h3>{this.props.propData.address.line2}</h3>            
           <ul className="prophead-info-details">
@@ -36,7 +42,7 @@ class PropHead extends Component {
               <p>{this.props.propData.building.size.bldgsize} Squarefeet</p>
             </li>
           </ul>
-        </div>
+        </section>
       </section>
     );
   }

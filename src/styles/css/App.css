@@ -5,3 +5,23 @@ h1, h2, h3, h4, p, a, input, button {
 
 input, button {
   outline-width: 0; }
+
+h2 {
+  margin-left: 2rem;
+  margin-right: 2rem;
+  color: #333;
+  font-size: 3rem;
+  font-weight: bold;
+  text-shadow: 1px 1px 4px rgba(0, 0, 0, 0.8); }
+
+.seperator-container {
+  display: flex;
+  flex-direction: row;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: nowrap; }
+
+.orange-line-accent {
+  width: 25%;
+  height: 0.2rem;
+  background: #E86919; }

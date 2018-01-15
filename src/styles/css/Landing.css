@@ -4,3 +4,5 @@
   align-items: center;
   background: url("../../images/propview-landing-1.jpg") no-repeat center/cover;
   width: 100%; }
+  .landing .search-user-location-button {
+    margin: 0 auto; }
