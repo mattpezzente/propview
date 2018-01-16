@@ -7,7 +7,7 @@ import SearchHere from '../components/SearchHere';
 class PropHead extends Component {
   constructor(props) {
     super(props);
-    this.props = {
+    props = {
       address1: '',
       address2: '',
       beds: '',
@@ -25,6 +25,15 @@ class PropHead extends Component {
   }
 
   render() {
+    if (this.props.propData) {
+      this.props = {
+        address1: this.props.propData.address.line1,
+        address2: this.props.propData.address.line2,
+        beds: this.props.propData.building.rooms.beds,
+        baths: this.props.propData.building.rooms.bathstotal,
+        sqft: this.props.propData.building.size.bldgsize,
+      }
+    }
     return (
       <section className="prophead-masthead">
         <Link to="/"><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></Link>  

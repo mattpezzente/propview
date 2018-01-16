@@ -20,29 +20,21 @@ class Property extends Component {
     this.getData = this.getData.bind(this)
   }
 
-  componentWillMount() {
-    // let url = '../json/property.json'
-    // let loadFetchedData = (fetchedData) => {
-    //   this.setState({data: fetchedData})
-    //   console.log(fetchedData)
-    // }
-    // fetch(url)
-    // .then(data => {
-    //   loadFetchedData()
-    // })
-    // let data = require('../json/property.json')
-    // data = data['property'][0]
-    // this.setState({data: data})
-  }
-
   render() {
+    let propData = ''
+    if (this.props.propData) {
+      propData = this.props.propData
+    }
+    else {
+      propData = this.state.propData
+    }
     return (
       <section>
-        <PropHead propData={this.state.data} />
-        <PropOverview propData={this.state.data} />
-        <PropDetail propData={this.state.data} />
-        <PropValue propData={this.state.data} />
-        <PropSchool propData={this.state.data} />
+        <PropHead propData={propData} getData={this.getData} />
+        <PropOverview propData={propData} />
+        <PropDetail propData={propData} />
+        <PropValue propData={propData} />
+        <PropSchool propData={propData} />
         <Footer />
       </section>
     );
@@ -51,6 +43,7 @@ class Property extends Component {
   getData(data) {
     console.log('Property.js Data')
     console.log(data)
+    this.setState({data: data})
   }
 }
 

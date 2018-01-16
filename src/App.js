@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom'
 import './styles/css/reset.css';
 import './styles/css/App.css';
 
@@ -11,69 +11,44 @@ class App extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      propData: '',
+      data: '',
     }
-  }
-  
-  componentDidMount() {
-    // let url = 'https://search.onboard-apis.com/propertyapi/v1.0.0/property/detail'
-    // let apikey = '7bb280bbda2599b8a476c3ad8c884922'
-    // let accept = 'application/json'
-    // let propData
-    // let loadFetchedData = (propData) => {
-    //   this.setState({propData: propData})
-    // }
-    
-    // axios({
-    //   method: 'get',
-    //   url: url,
-    //   params: {
-    //     'id': 48633401025,
-    //   },
-    //   headers: {
-    //     'apikey': apikey,
-    //     'Accept': accept
-    //   }
-    // })
-    // .then(data => {
-    //   propData = data.data.property[0].address;
-    //   console.log(propData)
-    //   loadFetchedData(propData);
 
-    // })
+    this.getData = this.getData.bind(this)
   }
 
   render() {
-    // let keys = []
-    // let values = []
-    // let addressElements
-    // for(let addr in this.state.propData) {
-    //   keys.push(addr)
-    //   values.push(this.state.propData[addr])
-    // }
-
-    // addressElements = keys.map((key, i) => {
-    //   let value = values[i]
-    //   return <li key={key}>{key}__{value}</li>
-    // }) 
-
-    // return (
-    //   <div>
-    //     <h1>Hello World</h1>
-    //     <ul>
-    //       {addressElements}
-    //     </ul>
-    //   </div>
-    // );
+    // let landingComponent = () => {
+    //   return <Landing getData={this.getData} />
+    // } 
+    let propertyComponent = () => { 
+      return <Property />
+    }
+    if (this.state.data != '') {
+      propertyComponent = () => {
+        return <Property propData={this.state.data} />
+      }
+    }    
     return (
       <div>
         <Switch>            
-          <Route exact path='/' component={Landing}/>
-          <Route path='/property' component={Property}/>            
+          <Route exact path="/" render={() => {
+            if (this.state.data != '') {
+              return <Redirect to='/property'/>
+            }
+            else {
+              return <Landing getData={this.getData} />
+            }
+          }}/>
+          <Route path='/property' component={propertyComponent} />            
         </Switch>
           <Footer />
       </div>
     );
+  }
+
+  getData(data) {
+    this.setState({data: data})
   }
 }
 

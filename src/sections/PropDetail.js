@@ -13,7 +13,7 @@ class Propfeature extends Component {
   constructor(props) {
     super(props);
 
-    this.props = {
+    props = {
       yearBuilt: 0,
       pool: '',
       bldgType: '',
@@ -34,9 +34,7 @@ class Propfeature extends Component {
       subdName: '',
       taxCodeArea: 0
     }
-
-
-
+    
     // this.props.propData.building.summary.yearbuilteffective
     // this.props.propData.lot.poolind = "Y" ? 'Yes' : 'No'
     // this.toTitleCase(this.props.propData.building.summary.bldgType)
@@ -73,6 +71,29 @@ class Propfeature extends Component {
   }
 
   render() {
+    if (this.props.propData) {
+      this.props = {
+        yearBuilt: this.props.propData.building.summary.yearbuilteffective,
+        pool: this.props.propData.lot.poolind = "Y" ? 'Yes' : 'No',
+        bldgType: this.toTitleCase(this.props.propData.building.summary.bldgType),
+        lotSize: this.toCommaNumber(this.props.propData.lot.lotsize2),
+        cooling: this.toTitleCase(this.props.propData.utilities.coolingtype),
+        roof: this.toTitleCase(this.props.propData.building.construction.roofcover),
+        heating: this.toTitleCase(this.props.propData.utilities.heatingtype),
+        walls: this.toTitleCase(this.props.propData.building.construction.wallType),
+
+        bathsFull: this.props.propData.building.rooms.bathsfull,
+        bathsHalf: this.props.propData.building.rooms.bathshalf,
+        beds: this.props.propData.building.rooms.beds,
+        bldgSize: this.toCommaNumber(this.props.propData.building.size.bldgsize),
+        groundFloorSize: this.toCommaNumber(this.props.propData.building.size.groundfloorsize),
+        livingSize: this.toCommaNumber(this.props.propData.building.size.livingsize),
+        blockNum: this.props.propData.area.blockNum,
+        countrySecSubd: this.toTitleCase(this.props.propData.area.countrysecsubd),
+        subdName: this.toTitleCase(this.props.propData.area.subdname),
+        taxCodeArea: this.props.propData.area.taxcodearea,
+      }
+    }
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper">

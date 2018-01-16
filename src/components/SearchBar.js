@@ -23,7 +23,6 @@ class SearchBar extends Component {
     e.preventDefault()
     let address = this.formatAddress(document.querySelector('input[data-address]').value)
     let loadFetchedData = (propData) => {
-      console.log('SearchBar.js Data')
       this.props.getData(propData)      
     }
     let config = {
