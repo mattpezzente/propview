@@ -23,9 +23,29 @@ class SearchBar extends Component {
     e.preventDefault()
     let address = this.formatAddress(document.querySelector('input[data-address]').value)
     let loadFetchedData = (propData) => {
-      this.props.getData(propData)      
+      this.props.getData(propData)
     }
-    let config = {
+    let configSchools = {
+      method: 'get',
+      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
+      headers: {
+        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        Accept: 'application/json',
+      }
+    }
+    let configATM = {
+      method: 'get',
+      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/detail',
+      params: {
+        address1: address[0],
+        address2: address[1],
+      },
+      headers: {
+        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        Accept: 'application/json',
+      }
+    }
+    let configSaleHistory = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       params: {
@@ -38,9 +58,23 @@ class SearchBar extends Component {
       }
     }
     if (address) {      
-      axios(config)
-      .then(data => { 
-        loadFetchedData(data.data.property[0]);
+      axios(configSaleHistory)
+      .then(dataSale => { 
+        axios(configATM)
+        .then(dataATM => {           
+          let tempConfig = Object.assign(
+            configSchools, {
+              params: {
+                latitude: dataATM.data.property[0].location.latitude,
+                longitude: dataATM.data.property[0].location.longitude,
+                radius: 10
+              }
+            })
+          axios(tempConfig)
+          .then(dataSchool => {
+            loadFetchedData(Object.assign(dataSale.data.property[0], dataATM.data.property[0], dataSchool.data))
+          })
+        })
       })
     }
     else {

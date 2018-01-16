@@ -9,7 +9,7 @@ import icoRoof from '../images/icons/features/propview-roof-icon.png';
 import icoWall from '../images/icons/features/propview-walls-icon.png';
 import '../styles/css/PropDetail.css';
 
-class Propfeature extends Component {
+class PropDetail extends Component {
   constructor(props) {
     super(props);
 
@@ -190,4 +190,4 @@ class Propfeature extends Component {
   }
 }
 
-export default Propfeature;
+export default PropDetail;

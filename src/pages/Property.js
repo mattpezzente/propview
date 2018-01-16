@@ -14,7 +14,7 @@ class Property extends Component {
   constructor(props) {
     super(props);
     this.state = {
-      data: ''
+      propData: ''
     }
 
     this.getData = this.getData.bind(this)
@@ -23,9 +23,13 @@ class Property extends Component {
   render() {
     let propData = ''
     if (this.props.propData) {
-      propData = this.props.propData
+      console.log('prop')
+      console.log(this.props.propData)
+      propData = this.props.propData      
     }
     else {
+      console.log('state')
+      console.log(this.state.propData)
       propData = this.state.propData
     }
     return (
@@ -35,15 +39,13 @@ class Property extends Component {
         <PropDetail propData={propData} />
         <PropValue propData={propData} />
         <PropSchool propData={propData} />
-        <Footer />
       </section>
     );
   }
 
   getData(data) {
-    console.log('Property.js Data')
     console.log(data)
-    this.setState({data: data})
+    this.setState({propData: data})
   }
 }
 
