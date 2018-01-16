@@ -36,7 +36,6 @@ class PropValue extends Component {
   }
 
   render() {
-    console.log(testValues)
     let saleRowHTML = testValues.map((key, i) => {
       return (
         <tr key={i}> 

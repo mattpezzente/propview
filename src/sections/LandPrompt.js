@@ -4,11 +4,6 @@ import SearchBar from '../components/SearchBar';
 import SearchHere from '../components/SearchHere';
 
 class LandPrompt extends Component {
-  constructor(props) {
-    super(props);
-
-  }
-
   render() {
     return (
       <div className="land-prompt-container">

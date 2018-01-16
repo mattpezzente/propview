@@ -1,9 +1,9 @@
 import React, { Component } from 'react';
 import { Route, Switch } from 'react-router-dom'
-import axios from 'axios';  
 import './styles/css/reset.css';
 import './styles/css/App.css';
 
+import Footer from './sections/Footer';
 import Landing from './pages/Landing';
 import Property from './pages/Property'
 
@@ -71,6 +71,7 @@ class App extends Component {
           <Route exact path='/' component={Landing}/>
           <Route path='/property' component={Property}/>            
         </Switch>
+          <Footer />
       </div>
     );
   }

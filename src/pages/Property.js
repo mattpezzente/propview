@@ -16,6 +16,8 @@ class Property extends Component {
     this.state = {
       data: ''
     }
+
+    this.getData = this.getData.bind(this)
   }
 
   componentWillMount() {
@@ -28,9 +30,9 @@ class Property extends Component {
     // .then(data => {
     //   loadFetchedData()
     // })
-    let data = require('../json/property.json')
-    data = data['property'][0]
-    this.setState({data: data})
+    // let data = require('../json/property.json')
+    // data = data['property'][0]
+    // this.setState({data: data})
   }
 
   render() {
@@ -46,7 +48,10 @@ class Property extends Component {
     );
   }
 
-
+  getData(data) {
+    console.log('Property.js Data')
+    console.log(data)
+  }
 }
 
 export default Property;

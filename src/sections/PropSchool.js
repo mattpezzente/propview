@@ -254,7 +254,7 @@ class PropOverview extends Component {
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper center-content">
-          <h2 className="margin-bottom">Schools Nearby</h2>
+          <h2>Schools Nearby</h2>
           <ul className="propschool-school-container">
             {schoolHTML}
           </ul>
