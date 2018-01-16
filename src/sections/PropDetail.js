@@ -72,10 +72,25 @@ class PropDetail extends Component {
 
   render() {
     if (this.props.propData) {
+      let buildType
+      let subdName
+      if (this.props.propData.building.summary.bldgType) {
+        buildType = this.toTitleCase(this.props.propData.building.summary.bldgType)
+      }
+      else {
+        buildType = this.toTitleCase(this.props.propData.building.summary.archStyle)
+      }
+
+      if (this.props.propData.area.subdname) {
+        subdName = this.toTitleCase(this.props.propData.area.subdname)
+      }
+      else {
+        subdName = this.toTitleCase(this.props.propData.area.countrysecsubd)
+      }
       this.props = {
-        yearBuilt: this.props.propData.building.summary.yearbuilteffective,
+        yearBuilt: this.props.propData.summary.yearbuilt,
         pool: this.props.propData.lot.poolind = "Y" ? 'Yes' : 'No',
-        bldgType: this.toTitleCase(this.props.propData.building.summary.bldgType),
+        bldgType: buildType,
         lotSize: this.toCommaNumber(this.props.propData.lot.lotsize2),
         cooling: this.toTitleCase(this.props.propData.utilities.coolingtype),
         roof: this.toTitleCase(this.props.propData.building.construction.roofcover),
@@ -90,7 +105,7 @@ class PropDetail extends Component {
         livingSize: this.toCommaNumber(this.props.propData.building.size.livingsize),
         blockNum: this.props.propData.area.blockNum,
         countrySecSubd: this.toTitleCase(this.props.propData.area.countrysecsubd),
-        subdName: this.toTitleCase(this.props.propData.area.subdname),
+        subdName: subdName,
         taxCodeArea: this.props.propData.area.taxcodearea,
       }
     }

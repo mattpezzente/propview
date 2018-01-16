@@ -8,6 +8,7 @@
   .propschool-school-container img {
     max-width: 10rem; }
   .propschool-school-container h3 {
+    line-height: 1.5;
     margin-right: auto;
     margin-left: auto;
     margin-bottom: 0.5rem;

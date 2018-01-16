@@ -3,10 +3,6 @@ import imgSchoolPlaceholder from '../images/propview-school-placeholder.png';
 import '../styles/css/PropSchool.css';
 
 class PropOverview extends Component {
-  constructor(props) {
-    super(props);
-
-  }
 
   toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt) {
@@ -19,12 +15,12 @@ class PropOverview extends Component {
     if (this.props.propData) {
       schoolHTML = this.props.propData.school.map((key, i) => {
         if (i >= 4) {
-          return
+          return null
         }
         else {
           return ([
             <li key={i}>
-              <img src={imgSchoolPlaceholder} alt="school institution photo" />
+              <img src={imgSchoolPlaceholder} alt="school institution" />
               <h3>{this.toTitleCase(key.School.InstitutionName)}</h3>
               <p>Type: <span>{this.toTitleCase(key.School.Filetypetext)}</span></p>
               <p>Distance: <span>{key.School.distance}mi</span></p>

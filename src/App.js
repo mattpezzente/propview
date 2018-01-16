@@ -18,13 +18,10 @@ class App extends Component {
   }
 
   render() {
-    // let landingComponent = () => {
-    //   return <Landing getData={this.getData} />
-    // } 
     let propertyComponent = () => { 
       return <Property />
     }
-    if (this.state.data != '') {
+    if (this.state.data !== '') {
       propertyComponent = () => {
         return <Property propData={this.state.data} />
       }
@@ -33,7 +30,7 @@ class App extends Component {
       <div>
         <Switch>            
           <Route exact path="/" render={() => {
-            if (this.state.data != '') {
+            if (this.state.data !== '') {
               return <Redirect to='/property'/>
             }
             else {

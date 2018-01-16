@@ -31,15 +31,18 @@ class PropHead extends Component {
   render() {
     if (this.props.propData) {
       let baths
-      if (this.props.propData.building.rooms.bathshalf % 2 != 0) {
+      if (this.props.propData.building.rooms.bathshalf % 2 !== 0) {
         baths = this.props.propData.building.rooms.bathstotal - 0.5
       } 
+      else {
+        baths = this.props.propData.building.rooms.bathstotal
+      }
       this.props = {
         address1: this.props.propData.address.line1,
         address2: this.props.propData.address.line2,
         beds: this.props.propData.building.rooms.beds,
         baths: baths,
-        sqft: this.toCommaNumber(this.props.propData.building.size.bldgsize),
+        sqft: this.toCommaNumber(this.props.propData.building.size.livingsize),
       }
     }
     return (

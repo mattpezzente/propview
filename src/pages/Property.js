@@ -1,13 +1,10 @@
 import React, { Component } from 'react';
-import '../styles/css/Property.css';
-
-
 import PropHead from '../sections/PropHead';
 import PropOverview from '../sections/PropOverview';
 import PropDetail from '../sections/PropDetail';
 import PropValue from '../sections/PropValue';
 import PropSchool from '../sections/PropSchool';
-import Footer from '../sections/Footer';
+import '../styles/css/Property.css';
 
 
 class Property extends Component {
@@ -23,13 +20,9 @@ class Property extends Component {
   render() {
     let propData = ''
     if (this.props.propData) {
-      console.log('prop')
-      console.log(this.props.propData)
       propData = this.props.propData      
     }
     else {
-      console.log('state')
-      console.log(this.state.propData)
       propData = this.state.propData
     }
     return (
@@ -43,8 +36,8 @@ class Property extends Component {
     );
   }
 
-  getData(data) {
-    console.log(data)
+  getData(data) {   
+    console.log(data) 
     this.setState({propData: data})
   }
 }
