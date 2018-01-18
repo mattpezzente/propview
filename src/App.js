@@ -5,7 +5,7 @@ import './styles/css/App.css';
 
 import Footer from './sections/Footer';
 import Landing from './pages/Landing';
-import Property from './pages/Property'
+import Property from './pages/Property';
 
 class App extends Component {
   constructor(props) {
@@ -28,7 +28,7 @@ class App extends Component {
     }    
     return (
       <div>
-        <Switch>            
+        <Switch>
           <Route exact path="/" render={() => {
             if (this.state.data !== '') {
               return <Redirect to='/property'/>

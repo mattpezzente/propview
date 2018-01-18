@@ -46,7 +46,7 @@ class SearchHere extends Component {
       params: {
         latitude: latlong[0],
         longitude: latlong[1],
-        radius: 0.15,
+        radius: 0.25,
         orderby: 'distance',
       },
       headers: {
@@ -133,10 +133,10 @@ class SearchHere extends Component {
     if (str.split(',').length < 2) {
       return false
     }
-    else {
+    else {    
       let addressArray = [
-        str.split(',')[0],
-        str.substring(str.indexOf(',')),
+        str.substring(0, str.indexOf(',')),
+        str.slice(str.indexOf(',')+1).trim(),
       ]
       return addressArray
     }

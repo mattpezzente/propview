@@ -130,9 +130,10 @@ class SearchBar extends Component {
       return false
     }
     else {
+      
       let addressArray = [
-        str.split(',')[0],
-        str.substring(str.indexOf(',')),
+        str.substring(0, str.indexOf(',')),
+        str.slice(str.indexOf(',')+1).trim(),
       ]
       return addressArray
     }
