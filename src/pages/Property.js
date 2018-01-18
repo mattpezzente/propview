@@ -20,10 +20,12 @@ class Property extends Component {
   render() {
     let propData = ''
     if (this.props.propData) {
-      propData = this.props.propData      
+      propData = this.props.propData
+      console.log(propData)     
     }
     else {
       propData = this.state.propData
+      console.log(propData)
     }
     return (
       <section>
@@ -36,8 +38,7 @@ class Property extends Component {
     );
   }
 
-  getData(data) {   
-    console.log(data) 
+  getData(data) {
     this.setState({propData: data})
   }
 }

@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import LandPrompt from '../sections/LandPrompt';
 import '../styles/css/Landing.css';
+import axios from 'axios';
 
 let windowDimensions = {
     height: window.innerHeight - 32,

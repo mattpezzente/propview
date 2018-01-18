@@ -1,6 +1,7 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchBar.css'
+const convert = require('xml-js');
 
 class SearchBar extends Component {
   constructor(props) {
@@ -25,6 +26,9 @@ class SearchBar extends Component {
     let loadFetchedData = (propData) => {
       this.props.getData(propData)
     }
+    let zillowPropData
+    let zillowPropID
+
     let configSchools = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
@@ -56,6 +60,15 @@ class SearchBar extends Component {
         apikey: '7bb280bbda2599b8a476c3ad8c884922',
         Accept: 'application/json',
       }
+    }    
+    let confZillowGetID = {
+      method: 'get',
+      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetSearchResults.htm',
+      params: {
+        'zws-id': 'X1-ZWz18t8vbiroy3_3s95g',
+        address: '127 maple ave',
+        citystatezip: 'old saybrook ct',
+      }
     }
     if (address) {      
       axios(configSaleHistory)
@@ -71,8 +84,28 @@ class SearchBar extends Component {
               }
             })
           axios(tempConfig)
-          .then(dataSchool => {
-            loadFetchedData(Object.assign(dataSale.data.property[0], dataATM.data.property[0], dataSchool.data))
+          .then(dataSchool => {            
+            axios(confZillowGetID)
+            .then(dataZillowID => {
+              zillowPropID = convert.xml2js(dataZillowID.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result.zpid._text
+            })
+            .then(() => {
+              let confZillowDetails = {
+                method: 'get',
+                url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
+                params: {
+                  'zws-id': 'X1-ZWz18t8vbiroy3_3s95g',
+                  zpid: zillowPropID,
+                }
+              }
+              axios(confZillowDetails)
+              .then(dataZillowProp => {
+                zillowPropData = convert.xml2js(dataZillowProp.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response.homeDescription
+              })
+              .then(() => {
+                loadFetchedData(Object.assign(dataSale.data.property[0], dataATM.data.property[0], dataSchool.data, zillowPropData))
+              })
+            })
           })
         })
       })
