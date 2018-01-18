@@ -61,7 +61,7 @@ class PropDetail extends Component {
   }
 
   toTitleCase(str) {
-    if (str != undefined) {
+    if (str !== undefined) {
       return str.replace(/\w\S*/g, function(txt) {
         return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
       });
@@ -72,7 +72,7 @@ class PropDetail extends Component {
   }
 
   toCommaNumber(num) {
-    if (num != undefined) {
+    if (num !== undefined) {
       return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
     }
     else {
@@ -84,8 +84,7 @@ class PropDetail extends Component {
     if (this.props.propData) {
       let buildType
       let subdName
-      let beds
-      let baths
+      let beds      
 
       if (this.props.propData.building.summary.bldgType) {
         buildType = this.toTitleCase(this.props.propData.building.summary.bldgType)
@@ -103,8 +102,6 @@ class PropDetail extends Component {
       else {
         subdName = this.toTitleCase(this.props.propData.area.countrysecsubd)
       }
-
-      // if ('baths' in ) {}
 
       if ('beds' in this.props.propData.building.rooms) {
         beds = this.props.propData.building.rooms.beds
