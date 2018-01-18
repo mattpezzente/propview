@@ -24,7 +24,6 @@ class SearchBar extends Component {
     e.preventDefault()
     let address = this.formatAddress(document.querySelector('input[data-address]').value)
     let loadFetchedData = propData => {
-      console.log(propData)
       this.props.getData(propData)
     }
     let confProperty = {
@@ -101,22 +100,22 @@ class SearchBar extends Component {
                 else {
                   propZillowID = propZillowID["SearchResults:searchresults"].response.results.result.zpid._text
                 }
-                axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
+                axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: propZillowID}}))
                 .then(dataZillProperty => {
                   dataZillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response
                 
-                console.log('OnProperty')
-                console.log(dataOnProperty.data.property[0])
-                console.log('OnSalesHistory')
-                console.log(dataOnSalesHistory.data.property[0])
-                console.log('OnAVM')
-                console.log(dataOnAVM.data.property[0])
-                console.log('OnSchools')
-                console.log(dataOnSchools.data)
-                console.log('ZillowProperty')
-                console.log(dataZillProperty)
+                // console.log('OnProperty')
+                // console.log(dataOnProperty.data.property[0])
+                // console.log('OnSalesHistory')
+                // console.log(dataOnSalesHistory.data.property[0])
+                // console.log('OnAVM')
+                // console.log(dataOnAVM.data.property[0])
+                // console.log('OnSchools')
+                // console.log(dataOnSchools.data)
+                // console.log('ZillowProperty')
+                // console.log(dataZillProperty)
 
-                  //loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], dataZillProperty, dataOnSalesHistory.data.property[0]))
+                  loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], dataZillProperty, dataOnSalesHistory.data.property[0]))
               })              
             })
           })

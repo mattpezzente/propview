@@ -31,15 +31,13 @@ class SearchHere extends Component {
       }, err => {}, {enableHighAccuracy: true})
       return latlong
     } 
-    else {
-      console.log('fired3')
+    else {      
       return false
     }
   }
 
   fetchAPIData(latlong) {
     let loadFetchedData = propData => {
-      console.log(propData)
       this.props.getData(propData)
     }
     let confProperty = {
