@@ -19,6 +19,7 @@ The application itself, is a property viewing utility, that is designed to take 
 * axios (HTTP client for API calls)
 * currency-formatter 
 * xml-js (XML to JS Object converter)
+* gh-pages
 
 ## Installation
 

@@ -29,15 +29,15 @@ class App extends Component {
     return (
       <div>
         <Switch>
-          <Route exact path="/" render={() => {
+          <Route exact path={process.env.PUBLIC_URL+'/'} render={() => {
             if (this.state.data !== '') {
-              return <Redirect to='/property'/>
+              return <Redirect to={process.env.PUBLIC_URL+'/property'}/>
             }
             else {
               return <Landing getData={this.getData} />
             }
           }}/>
-          <Route path='/property' component={propertyComponent} />            
+          <Route path={process.env.PUBLIC_URL+'/property'} component={propertyComponent} />            
         </Switch>
           <Footer />
       </div>

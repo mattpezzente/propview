@@ -58,7 +58,7 @@ class PropHead extends Component {
     return (
       <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">
         <div className="prophead-masthead-wrapper">
-          <Link to="/"><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></Link>  
+          <Link to={process.env.PUBLIC_URL+'/'}><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></Link>  
           <section className="prophead-search-container">
             <SearchHere getData={this.getData} />
             <SearchBar getData={this.getData} />
