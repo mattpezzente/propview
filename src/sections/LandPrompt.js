@@ -18,7 +18,7 @@ class LandPrompt extends Component {
         <div className="seperator-container">
           <div className="orange-line-accent"></div><h5>OR</h5><div className="orange-line-accent"></div>
         </div>
-        <SearchHere btnText="Get Current Location"></SearchHere>
+        <SearchHere getData={this.getData} btnText="Get Current Location"></SearchHere>
       </div>
     );
   }

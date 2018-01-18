@@ -1,9 +1,14 @@
-.prophead-masthead {
+.prophead-masthead-container {
   position: relative;
-  background: linear-gradient(20deg, black 0%, transparent 25%), url("../../images/propview-property-1.png") no-repeat center/cover;
-  height: 40rem;
-  padding: 1.5rem;
-  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8); }
+  width: 100%;
+  box-shadow: 0 5px 10px rgba(0, 0, 0, 0.8);
+  background-position: center;
+  background-size: cover;
+  background-repeat: no-repeat; }
+  .prophead-masthead-container .prophead-masthead-wrapper {
+    background: linear-gradient(20deg, black 0%, transparent 25%), linear-gradient(160deg, black 0%, transparent 20%);
+    height: 40rem;
+    padding: 1.5rem; }
 
 .prophead-search-container {
   display: flex;

@@ -5,7 +5,7 @@ class PropOverview extends Component {
   render() {
     let homeDescription = ''
     if (this.props.propData) {
-      homeDescription = this.props.propData._text
+      homeDescription = this.props.propData.homeDescription._text
     }
     return (
       <section className="prop-container">
