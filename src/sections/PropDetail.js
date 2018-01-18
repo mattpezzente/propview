@@ -61,20 +61,32 @@ class PropDetail extends Component {
   }
 
   toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
+    if (str != undefined) {
+      return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+    }
+    else {
+      return 'Unavailable'
+    }
   }
 
   toCommaNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+    if (num != undefined) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+    else {
+      return 'Unavailable'
+    }
   }
 
   render() {
     if (this.props.propData) {
       let buildType
       let subdName
-      
+      let beds
+      let baths
+
       if (this.props.propData.building.summary.bldgType) {
         buildType = this.toTitleCase(this.props.propData.building.summary.bldgType)
       }
@@ -92,6 +104,18 @@ class PropDetail extends Component {
         subdName = this.toTitleCase(this.props.propData.area.countrysecsubd)
       }
 
+      // if ('baths' in ) {}
+
+      if ('beds' in this.props.propData.building.rooms) {
+        beds = this.props.propData.building.rooms.beds
+      }
+      else if('bedrooms' in this.props.propData.editFacts) {
+        beds = this.props.propData.editFacts.bedrooms._text
+      }
+      else {
+        beds = 0
+      }
+
       if (true) {}
       this.props = {
         yearBuilt: this.props.propData.summary.yearbuilt,
@@ -105,7 +129,7 @@ class PropDetail extends Component {
 
         bathsFull: this.props.propData.building.rooms.bathsfull,
         bathsHalf: this.props.propData.building.rooms.bathshalf,
-        beds: this.props.propData.building.rooms.beds,
+        beds: beds,
         bldgSize: this.toCommaNumber(this.props.propData.building.size.bldgsize),
         groundFloorSize: this.toCommaNumber(this.props.propData.building.size.groundfloorsize),
         livingSize: this.toCommaNumber(this.props.propData.building.size.livingsize),
