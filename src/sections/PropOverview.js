@@ -4,8 +4,11 @@ import '../styles/css/PropOverview.css';
 class PropOverview extends Component {
   render() {
     let homeDescription = ''
-    if (this.props.propData) {
+    if (this.props.propData && this.props.propData.homeDescription) {
       homeDescription = this.props.propData.homeDescription._text
+    }
+    else {
+      homeDescription = 'OVERVIEW UNAVAILABLE...'
     }
     return (
       <section className="prop-container">

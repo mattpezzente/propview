@@ -28,7 +28,7 @@ class SearchHere extends Component {
         latlong.push(position.coords.latitude)
         latlong.push(position.coords.longitude)
         this.fetchAPIData(latlong)    
-      })
+      }, err => {}, {enableHighAccuracy: true})
       return latlong
     } 
     else {

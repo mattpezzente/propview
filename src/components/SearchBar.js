@@ -23,23 +23,13 @@ class SearchBar extends Component {
   fetchGivenAddress(e) {
     e.preventDefault()
     let address = this.formatAddress(document.querySelector('input[data-address]').value)
-    let loadFetchedData = (propData) => {
+    let loadFetchedData = propData => {
+      console.log(propData)
       this.props.getData(propData)
     }
-    let zillowPropData
-    let zillowPropID
-
-    let configSchools = {
+    let confProperty = {
       method: 'get',
-      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
-      headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
-        Accept: 'application/json',
-      }
-    }
-    let configATM = {
-      method: 'get',
-      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/detail',
+      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/property/detail',
       params: {
         address1: address[0],
         address2: address[1],
@@ -49,7 +39,7 @@ class SearchBar extends Component {
         Accept: 'application/json',
       }
     }
-    let configSaleHistory = {
+    let confSaleHistory = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       params: {
@@ -60,59 +50,79 @@ class SearchBar extends Component {
         apikey: '7bb280bbda2599b8a476c3ad8c884922',
         Accept: 'application/json',
       }
-    }    
-    let confZillowGetID = {
+    }
+    let confAVM = {
       method: 'get',
-      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetSearchResults.htm',
+      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
       params: {
-        'zws-id': 'X1-ZWz18t8vbiroy3_3s95g',
-        address: '127 maple ave',
-        citystatezip: 'old saybrook ct',
+        address1: address[0],
+        address2: address[1],
+      },
+      headers: {
+        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        Accept: 'application/json',
       }
     }
-    if (address) {      
-      axios(configSaleHistory)
-      .then(dataSale => { 
-        axios(configATM)
-        .then(dataATM => {           
-          let tempConfig = Object.assign(
-            configSchools, {
-              params: {
-                latitude: dataATM.data.property[0].location.latitude,
-                longitude: dataATM.data.property[0].location.longitude,
-                radius: 10
-              }
-            })
-          axios(tempConfig)
-          .then(dataSchool => {            
-            axios(confZillowGetID)
-            .then(dataZillowID => {
-              zillowPropID = convert.xml2js(dataZillowID.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result.zpid._text
-            })
-            .then(() => {
-              let confZillowDetails = {
-                method: 'get',
-                url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
-                params: {
-                  'zws-id': 'X1-ZWz18t8vbiroy3_3s95g',
-                  zpid: zillowPropID,
+    let confSchool = {
+      method: 'get',
+      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
+      headers: {
+        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        Accept: 'application/json',
+      }
+    }
+    let confZillowSearch = {
+      method: 'get',
+      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetSearchResults.htm',
+    }
+    let confZillowProperty = {
+      method: 'get',
+      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
+    }
+
+    axios(confProperty)
+    .then(dataOnProperty => {      
+      let propLongLat = []
+      let propZillowID
+      propLongLat.push(dataOnProperty.data.property[0].location.latitude)
+      propLongLat.push(dataOnProperty.data.property[0].location.longitude)
+      axios(confSaleHistory)
+       .then(dataOnSalesHistory => {
+         axios(confAVM)
+         .then(dataOnAVM => {
+           axios(Object.assign(confSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
+           .then(dataOnSchools => {
+             axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: dataOnAVM.data.property[0].address.line1, citystatezip: dataOnAVM.data.property[0].address.line2}}))
+             .then(dataZillSearch => {               
+                propZillowID = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})
+                if (propZillowID["SearchResults:searchresults"].response.results.result[0]) {
+                  propZillowID = propZillowID["SearchResults:searchresults"].response.results.result[0].zpid._text
                 }
-              }
-              axios(confZillowDetails)
-              .then(dataZillowProp => {
-                zillowPropData = convert.xml2js(dataZillowProp.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response.homeDescription
-              })
-              .then(() => {
-                loadFetchedData(Object.assign(dataSale.data.property[0], dataATM.data.property[0], dataSchool.data, zillowPropData))
-              })
+                else {
+                  propZillowID = propZillowID["SearchResults:searchresults"].response.results.result.zpid._text
+                }
+                axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
+                .then(dataZillProperty => {
+                  dataZillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response
+                
+                console.log('OnProperty')
+                console.log(dataOnProperty.data.property[0])
+                console.log('OnSalesHistory')
+                console.log(dataOnSalesHistory.data.property[0])
+                console.log('OnAVM')
+                console.log(dataOnAVM.data.property[0])
+                console.log('OnSchools')
+                console.log(dataOnSchools.data)
+                console.log('ZillowProperty')
+                console.log(dataZillProperty)
+
+                  //loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], dataZillProperty, dataOnSalesHistory.data.property[0]))
+              })              
             })
           })
         })
-      })
-    }
-    else {
-      console.log('Error, invalid address')
-    }
+      })      
+    })
   }
 
   formatAddress(str) {

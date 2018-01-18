@@ -74,11 +74,15 @@ class PropDetail extends Component {
     if (this.props.propData) {
       let buildType
       let subdName
+      
       if (this.props.propData.building.summary.bldgType) {
         buildType = this.toTitleCase(this.props.propData.building.summary.bldgType)
       }
-      else {
+      else if (this.props.propData.building.summary.archStyle) {
         buildType = this.toTitleCase(this.props.propData.building.summary.archStyle)
+      }
+      else {
+        buildType = 'Unavailable'
       }
 
       if (this.props.propData.area.subdname) {
@@ -87,6 +91,8 @@ class PropDetail extends Component {
       else {
         subdName = this.toTitleCase(this.props.propData.area.countrysecsubd)
       }
+
+      if (true) {}
       this.props = {
         yearBuilt: this.props.propData.summary.yearbuilt,
         pool: this.props.propData.lot.poolind = "Y" ? 'Yes' : 'No',

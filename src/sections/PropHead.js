@@ -30,18 +30,24 @@ class PropHead extends Component {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 
-  render() {
-    console.log(this.localProps)  
+  render() {  
     if (this.props.propData) {      
       let baths
+      let backImg
       if (this.props.propData.building.rooms.bathshalf % 2 !== 0) {
         baths = this.props.propData.building.rooms.bathstotal - 0.5
       } 
       else {
         baths = this.props.propData.building.rooms.bathstotal
       }
+      if (this.props.propData.images) {
+        backImg = this.props.propData.images.image.url[0]._text
+      }
+      else {
+        backImg = imgBackground
+      }
       this.localProps = {
-        backImg: this.props.propData.images.image.url[0]._text,
+        backImg: backImg,
         address1: this.props.propData.address.line1,
         address2: this.props.propData.address.line2,
         beds: this.props.propData.building.rooms.beds,
