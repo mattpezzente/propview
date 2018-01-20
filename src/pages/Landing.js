@@ -11,6 +11,13 @@ class Landing extends Component {
   constructor(props) {
     super(props);
     document.title = 'PropView'
+    window.onresize = () => {
+      windowDimensions = {
+        height: window.innerHeight - 32,
+        minHeight: '400px',
+      };
+      this.setState({resize: true})
+    }
     this.getData = this.getData.bind(this)
   }
 
