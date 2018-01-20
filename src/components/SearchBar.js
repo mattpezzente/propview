@@ -31,6 +31,16 @@ class SearchBar extends Component {
     e.preventDefault()
     // Start the loading overlay
     this.setState({loading:true})
+    // Keep store which calls were successful
+    let finishedAPIs = {
+      onSale: false,
+      onSchools: false,
+      onAVM: false,
+      zillSearch: false,
+      zillProperty: false
+    }
+    // Hold on to the gathered OnBoard data
+    let fetchedData = {}
     // Get the formatted address from the input field
     let address = this.formatAddress(document.querySelector('input[data-address]').value)
     // Variable to store method for removing the overlay 
@@ -38,10 +48,17 @@ class SearchBar extends Component {
       this.setState({loading: false})
     }
     // Variable to store method for passing the gathered data
-    let loadFetchedData = propData => {      
+    let sendData = propData => {
+      for (let status in finishedAPIs) {
+        if (finishedAPIs[status] == false) {
+          return
+        }
+      }
       stopLoading()
+      console.log(propData)
       this.props.getData(propData)      
     }
+    
 
     // CONFIGURATIONS
     let confProperty = {
@@ -90,74 +107,89 @@ class SearchBar extends Component {
     }
     let confZillowSearch = {
       method: 'get',
+      params: {
+        'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', 
+        address: address[0], 
+        citystatezip: address[1],
+      },
       url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetSearchResults.htm',
     }
     let confZillowProperty = {
       method: 'get',
       url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
     }
-
-    // Begin chain of requests for API data
-    axios(confProperty)
-    .then(dataOnProperty => {   
-      let propLongLat = []
-      let propZillowID
-      let propZillowDetails
-      propLongLat.push(dataOnProperty.data.property[0].location.latitude)
-      propLongLat.push(dataOnProperty.data.property[0].location.longitude)
-      axios(confSaleHistory)
-       .then(dataOnSalesHistory => {
-         axios(confAVM)
-         .then(dataOnAVM => {
-           axios(Object.assign(confSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
-           .then(dataOnSchools => {
-             axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: dataOnAVM.data.property[0].address.line1, citystatezip: dataOnAVM.data.property[0].address.line2}}))
-             .then(dataZillSearch => {               
-                propZillowID = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})
-                if (propZillowID["SearchResults:searchresults"].response.results.result[0]) {
-                  propZillowID = propZillowID["SearchResults:searchresults"].response.results.result[0].zpid._text
-                }
-                else {
-                  propZillowID = propZillowID["SearchResults:searchresults"].response.results.result.zpid._text
-                }
-                axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: propZillowID}}))
-                .then(dataZillProperty => {
-                  propZillowDetails = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})
-                  propZillowDetails = propZillowDetails['UpdatedPropertyDetails:updatedPropertyDetails'].response
-                // console.log('OnProperty')
-                // console.log(dataOnProperty.data.property[0])
-                // console.log('OnSalesHistory')
-                // console.log(dataOnSalesHistory.data.property[0])
-                // console.log('OnAVM')
-                // console.log(dataOnAVM.data.property[0])
-                // console.log('OnSchools')
-                // console.log(dataOnSchools.data)
-                // console.log('ZillowProperty')
-                // console.log(dataZillProperty)
-                loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], propZillowDetails, dataOnSalesHistory.data.property[0]))                                
-              })
-              .catch(err => {
-                stopLoading()
-              })
-            })
-            .catch(err => {
-              stopLoading()
-            })
-          })
-          .catch(err => {
-            stopLoading()
-          })
-        })
-        .catch(err => {
-          stopLoading()
-        })
+    
+    // OnBoard Property Sales History & School Data
+    axios(confSaleHistory)
+    .then(dataOnSalesHistory => {
+      finishedAPIs.onSale = true
+      let propLongLat = []      
+      propLongLat.push(dataOnSalesHistory.data.property[0].location.latitude)
+      propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)      
+      axios(Object.assign(confSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
+      .then(dataOnSchools => {
+        finishedAPIs.onSchools = true
+        fetchedData = Object.assign(fetchedData, dataOnSchools.data, dataOnSalesHistory.data.property[0])
+        
+        console.log('On Schools')
+        sendData(fetchedData)
       })
       .catch(err => {
-        stopLoading()
-      }) 
+        finishedAPIs.onSchools = true
+        sendData(fetchedData)
+      })
     })
     .catch(err => {
-      stopLoading()
+      finishedAPIs.onSale = true
+      finishedAPIs.onSchools = true
+      sendData(fetchedData)
+    })
+
+    // OnBoard Property Value Call
+    axios(confAVM)
+    .then(dataOnAVM => {
+      finishedAPIs.onAVM = true
+      fetchedData = Object.assign(fetchedData, dataOnAVM.data.property[0])
+      
+      console.log('OnBoard AVM')
+      sendData(fetchedData)
+    })
+    .catch(err => {
+      finishedAPIs.push('onAVM')
+      sendData(fetchedData)
+    })
+
+    // Zillow Property Calls
+    axios(confZillowSearch)
+    .then(dataZillSearch => {
+      finishedAPIs.zillSearch = true
+      let propZillowDetails
+      let propZillowID = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})                       
+      if (propZillowID["SearchResults:searchresults"].response.results.result[0]) {
+        propZillowID = propZillowID["SearchResults:searchresults"].response.results.result[0].zpid._text
+      }
+      else {
+        propZillowID = propZillowID["SearchResults:searchresults"].response.results.result.zpid._text
+      }
+      axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: propZillowID}}))
+      .then(dataZillProperty => {
+        finishedAPIs.zillProperty = true
+        propZillowDetails = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})
+        propZillowDetails = propZillowDetails['UpdatedPropertyDetails:updatedPropertyDetails'].response
+        fetchedData = Object.assign(fetchedData, propZillowDetails)
+        
+        console.log('Zillow Property')
+        sendData(fetchedData)
+      })
+      .catch(err => {
+        finishedAPIs.zillProperty = true
+        sendData(fetchedData)
+      })
+    })
+    .catch(err => {
+      finishedAPIs.zillSearch = true
+      finishedAPIs.zillProperty = true
+      sendData(fetchedData)    
     })
   }
 
