@@ -38,9 +38,9 @@ class SearchBar extends Component {
       this.setState({loading: false})
     }
     // Variable to store method for passing the gathered data
-    let loadFetchedData = propData => {
+    let loadFetchedData = propData => {      
       stopLoading()
-      this.props.getData(propData)
+      this.props.getData(propData)      
     }
 
     // CONFIGURATIONS
@@ -136,10 +136,25 @@ class SearchBar extends Component {
                 // console.log(dataZillProperty)
                 loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], propZillowDetails, dataOnSalesHistory.data.property[0]))                                
               })
+              .catch(err => {
+                stopLoading()
+              })
+            })
+            .catch(err => {
+              stopLoading()
             })
           })
+          .catch(err => {
+            stopLoading()
+          })
+        })
+        .catch(err => {
+          stopLoading()
         })
       })
+      .catch(err => {
+        stopLoading()
+      }) 
     })
     .catch(err => {
       stopLoading()

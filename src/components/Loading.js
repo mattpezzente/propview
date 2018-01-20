@@ -4,10 +4,6 @@ import gifLoader from '../images/propview-loader.gif';
 import '../styles/css/Loading.css'
 
 class Loading extends Component {
-  constructor(props) {
-    super(props);
-
-  }
 
   render() {
     let loadClass

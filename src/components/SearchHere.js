@@ -49,9 +49,9 @@ class SearchHere extends Component {
     let stopLoading = () => {
       this.setState({loading: false})
     }
-    let loadFetchedData = propData => {      
+    let loadFetchedData = propData => {
       stopLoading()
-      this.props.getData(propData)      
+      this.props.getData(propData)
     }
     let confProperty = {
       method: 'get',
@@ -134,11 +134,26 @@ class SearchHere extends Component {
                 // console.log(dataZillProperty)
 
                 loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], dataZillProperty, dataOnSalesHistory.data.property[0]))
-              })              
+              })
+              .catch(err => {
+                stopLoading()
+              })
+            })
+            .catch(err => {
+              stopLoading()
             })
           })
+          .catch(err => {
+            stopLoading()
+          })
         })
-      })      
+        .catch(err => {
+          stopLoading()
+        })
+      })
+      .catch(err => {
+        stopLoading()
+      }) 
     })
     .catch(err => {
       stopLoading()

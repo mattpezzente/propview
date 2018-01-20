@@ -7,9 +7,8 @@ class Landing extends Component {
     super(props);
     document.title = 'PropView'
     this.windowDimensions = {
-        height: window.innerHeight,
-        minHeight: '400px',
-    };
+        height: window.innerHeight
+    }
     this.randImg = 'landing landing-' + Math.floor(Math.random() * 7 + 1)
     
     window.onresize = () => {
