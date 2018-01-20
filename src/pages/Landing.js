@@ -10,7 +10,7 @@ let windowDimensions = {
 class Landing extends Component {
   constructor(props) {
     super(props);
-
+    document.title = 'PropView'
     this.getData = this.getData.bind(this)
   }
 

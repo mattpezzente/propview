@@ -10,6 +10,7 @@ import '../styles/css/Property.css';
 class Property extends Component {
   constructor(props) {
     super(props);
+    document.title = 'PropView - Property'
     this.state = {
       propData: ''
     }
