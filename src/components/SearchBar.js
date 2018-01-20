@@ -1,6 +1,5 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import Loading from './Loading';
 import '../styles/css/SearchBar.css'
 const convert = require('xml-js');
 
@@ -17,8 +16,7 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <div>
-        <Loading loading={this.state.loading} />
+      <div>        
         <form action="#" method="">
           <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
           <button onClick={this.fetchGivenAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
@@ -30,8 +28,10 @@ class SearchBar extends Component {
   fetchGivenAddress(e) {
     e.preventDefault()
     // Start the loading overlay
-    this.setState({loading:true})
-    // Keep store which calls were successful
+    this.props.getData('START')
+    // Get formated input field value
+    let address = this.formatAddress(document.querySelector('.search-address').value)
+    // Keep track of which calls have finished
     let finishedAPIs = {
       onSale: false,
       onSchools: false,
@@ -39,40 +39,45 @@ class SearchBar extends Component {
       zillSearch: false,
       zillProperty: false
     }
-    // Hold on to the gathered OnBoard data
-    let fetchedData = {}
-    // Get the formatted address from the input field
-    let address = this.formatAddress(document.querySelector('input[data-address]').value)
-    // Variable to store method for removing the overlay 
-    let stopLoading = () => {
-      this.setState({loading: false})
+    // Object to hold objects for merging
+    let apiObjects = {
+      onSale: {},
+      onSchools: {},
+      onAVM: {},
+      zillSearch: {},
+      zillProperty: {}
     }
+
     // Variable to store method for passing the gathered data
-    let sendData = propData => {
+    let sendData = () => {
+      let propData
+      console.log(finishedAPIs)
       for (let status in finishedAPIs) {
-        if (finishedAPIs[status] == false) {
+        if (finishedAPIs[status] === false) {
           return
         }
       }
-      stopLoading()
-      console.log(propData)
-      this.props.getData(propData)      
-    }
-    
+      for (let objects in apiObjects) {
+        console.log(apiObjects[objects])
+      }
 
-    // CONFIGURATIONS
-    let confProperty = {
-      method: 'get',
-      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/property/detail',
-      params: {
-        address1: address[0],
-        address2: address[1],
-      },
-      headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
-        Accept: 'application/json',
+      // Merge API data in order
+      propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
+
+      //Check if anything was returned
+      if (Object.keys(propData).length !== 0) {        
+        console.log('sending Data')
+        console.log(propData)
+        this.props.getData(propData)
+      }
+      else {
+        console.log('sending STOP')
+        console.log(propData)
+        this.props.getData('STOP')
       }
     }
+
+    // CONFIGURATIONS
     let confSaleHistory = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
@@ -81,7 +86,7 @@ class SearchBar extends Component {
         address2: address[1],
       },
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -93,7 +98,7 @@ class SearchBar extends Component {
         address2: address[1],
       },
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -101,7 +106,7 @@ class SearchBar extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -122,74 +127,73 @@ class SearchBar extends Component {
     // OnBoard Property Sales History & School Data
     axios(confSaleHistory)
     .then(dataOnSalesHistory => {
-      finishedAPIs.onSale = true
-      let propLongLat = []      
+      let propLongLat = []
+      finishedAPIs.onSale = true         
       propLongLat.push(dataOnSalesHistory.data.property[0].location.latitude)
-      propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)      
+      propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)
+      apiObjects.onSale =  dataOnSalesHistory.data.property[0]
+
       axios(Object.assign(confSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
       .then(dataOnSchools => {
         finishedAPIs.onSchools = true
-        fetchedData = Object.assign(fetchedData, dataOnSchools.data, dataOnSalesHistory.data.property[0])
+        apiObjects.onSchools = dataOnSchools.data
         
-        console.log('On Schools')
-        sendData(fetchedData)
+        sendData()
       })
       .catch(err => {
         finishedAPIs.onSchools = true
-        sendData(fetchedData)
+        sendData()
       })
     })
     .catch(err => {
       finishedAPIs.onSale = true
       finishedAPIs.onSchools = true
-      sendData(fetchedData)
+      sendData()
     })
 
     // OnBoard Property Value Call
     axios(confAVM)
     .then(dataOnAVM => {
       finishedAPIs.onAVM = true
-      fetchedData = Object.assign(fetchedData, dataOnAVM.data.property[0])
+      apiObjects.onAVM = dataOnAVM.data.property[0]
       
-      console.log('OnBoard AVM')
-      sendData(fetchedData)
+      sendData()
     })
     .catch(err => {
-      finishedAPIs.push('onAVM')
-      sendData(fetchedData)
+      finishedAPIs.onAVM = true
+      sendData()
     })
 
     // Zillow Property Calls
     axios(confZillowSearch)
     .then(dataZillSearch => {
       finishedAPIs.zillSearch = true
-      let propZillowDetails
-      let propZillowID = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})                       
+      let propZillowDetails      
+      let propZillowID = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})
       if (propZillowID["SearchResults:searchresults"].response.results.result[0]) {
-        propZillowID = propZillowID["SearchResults:searchresults"].response.results.result[0].zpid._text
+        apiObjects.zillSearch = propZillowID["SearchResults:searchresults"].response.results.result[0]
+        propZillowID = propZillowID.zpid._text
       }
       else {
-        propZillowID = propZillowID["SearchResults:searchresults"].response.results.result.zpid._text
+        apiObjects.zillSearch = propZillowID["SearchResults:searchresults"].response.results.result
+        propZillowID = propZillowID.zpid._text
       }
       axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: propZillowID}}))
       .then(dataZillProperty => {
         finishedAPIs.zillProperty = true
-        propZillowDetails = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})
-        propZillowDetails = propZillowDetails['UpdatedPropertyDetails:updatedPropertyDetails'].response
-        fetchedData = Object.assign(fetchedData, propZillowDetails)
+        apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response        
         
-        console.log('Zillow Property')
-        sendData(fetchedData)
+        sendData()
       })
       .catch(err => {
         finishedAPIs.zillProperty = true
-        sendData(fetchedData)
+        sendData()
       })
     })
     .catch(err => {
       finishedAPIs.zillSearch = true
       finishedAPIs.zillProperty = true
-      sendData(fetchedData)    
+      sendData()    
     })
   }
 

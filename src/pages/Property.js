@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Loading from '../components/Loading';
 import PropHead from '../sections/PropHead';
 import PropOverview from '../sections/PropOverview';
 import PropDetail from '../sections/PropDetail';
@@ -12,7 +13,8 @@ class Property extends Component {
     super(props);
     document.title = 'PropView - Property'
     this.state = {
-      propData: ''
+      propData: '',
+      loading: false,
     }
 
     this.getData = this.getData.bind(this)
@@ -33,12 +35,22 @@ class Property extends Component {
         <PropDetail propData={propData} />
         <PropValue propData={propData} />
         <PropSchool propData={propData} />
+        <Loading loading={this.state.loading} />
       </section>
     );
   }
 
   getData(data) {
-    this.setState({propData: data})
+    if (data === 'START') {
+      this.setState({loading: true})
+    }
+    else if (data === 'STOP') {
+      this.setState({loading: false})
+    }
+    else {
+      this.redirect = true
+      this.setState({propData: data, loading: false})
+    }
   }
 }
 

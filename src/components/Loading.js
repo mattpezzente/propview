@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import imgLogo from '../images/propview-logo.png';
 import gifLoader from '../images/propview-loader.gif';
-import '../styles/css/Loading.css'
+import '../styles/css/Loading.css';
 
 class Loading extends Component {
 

@@ -1,5 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
+import Loading from './components/Loading';
 import './styles/css/reset.css';
 import './styles/css/App.css';
 
@@ -12,7 +13,8 @@ class App extends Component {
     super(props);
     this.redirect = false
     this.state = {
-      propData: ''
+      propData: '',
+      loading: false,
     }
     
     this.getData = this.getData.bind(this)
@@ -22,7 +24,7 @@ class App extends Component {
   render() {
     return (
       <div>
-        <Switch>
+        <Switch>          
           <Route exact path={process.env.PUBLIC_URL+'/'} render={() => {
             if (this.redirect) {
               this.clearRedirect()
@@ -36,14 +38,23 @@ class App extends Component {
             return <Property propData={this.state.propData} />
           }}/>
         </Switch>
+        <Loading loading={this.state.loading} />
         <Footer />
       </div>
     );
   }
 
   getData(data) {
-    this.redirect = true
-    this.setState({propData: data})
+    if (data === 'START') {
+      this.setState({loading: true})
+    }
+    else if (data === 'STOP') {
+      this.setState({loading: false})
+    }
+    else {
+      this.redirect = true
+      this.setState({propData: data, loading: false})
+    }
   }
 
   clearRedirect() {

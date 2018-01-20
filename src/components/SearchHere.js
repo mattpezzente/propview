@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import Loading from './Loading';
 import axios from 'axios';
 import '../styles/css/SearchHere.css'
 const convert = require('xml-js');
@@ -18,7 +17,6 @@ class SearchHere extends Component {
   render() {
     return (
       <div>
-        <Loading loading={this.state.loading} />
         <button className="search-user-location-button" onClick={this.getLocationData}>{this.props.btnName}
           <span>{this.props.btnText}</span>
           <img alt="" src={require('../images/propview-location-icon.png')}/>
@@ -29,7 +27,7 @@ class SearchHere extends Component {
 
   getLocationData(e) {
     e.preventDefault()
-    this.setState({loading: true})
+    this.props.getData('START')
     if (navigator.geolocation) {
       let latlong = []    
       navigator.geolocation.getCurrentPosition(position => {
@@ -40,19 +38,60 @@ class SearchHere extends Component {
       return latlong
     } 
     else {
-      this.setState({loading: false})
+      this.props.getData('STOP')
       return false
     }
   }
 
   fetchAPIData(latlong) {
-    let stopLoading = () => {
-      this.setState({loading: false})
+    // Keep track of which calls have finished
+    let finishedAPIs = {
+      onProperty: false,
+      onSale: false,
+      onSchools: false,
+      onAVM: false,
+      zillSearch: false,
+      zillProperty: false
     }
-    let loadFetchedData = propData => {
-      stopLoading()
-      this.props.getData(propData)
+    // Object to hold objects for merging
+    let apiObjects = {
+      onProperty: {},
+      onSale: {},
+      onSchools: {},
+      onAVM: {},
+      zillSearch: {},
+      zillProperty: {}
     }
+
+    // Variable to store method for passing the gathered data
+    let sendData = () => {
+      let propData
+      for (let status in finishedAPIs) {
+        if (finishedAPIs[status] === false) {
+          return
+        }
+      }
+      for (let objects in apiObjects) {
+        console.log(apiObjects[objects])
+      }
+
+      // Merge API data in order
+      propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
+
+      //Check if anything was returned
+      if (Object.keys(propData).length !== 0) {        
+        console.log('sending Data')
+        console.log(propData)
+        this.props.getData(propData)
+      }
+      else {
+        console.log('sending STOP')
+        console.log(propData)
+        this.props.getData('STOP')
+      }
+    }
+
+    // CONFIGURATIONS
     let confProperty = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/property/snapshot',
@@ -63,7 +102,7 @@ class SearchHere extends Component {
         orderby: 'distance',
       },
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -71,7 +110,7 @@ class SearchHere extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -79,7 +118,7 @@ class SearchHere extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -91,7 +130,7 @@ class SearchHere extends Component {
         longitude: latlong[1],
       },
       headers: {
-        apikey: '7bb280bbda2599b8a476c3ad8c884922',
+        apikey: 'db01c855c976f897bbcb620bcd47cae7',
         Accept: 'application/json',
       }
     }
@@ -104,60 +143,103 @@ class SearchHere extends Component {
       url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
     }
 
+    // OnBoard Property & School Data
     axios(confProperty)
     .then(dataOnProperty => {
       let propAddress = []
+      finishedAPIs.onProperty = true
+      apiObjects.onProperty = dataOnProperty.data.property[0]
+      
       propAddress.push(dataOnProperty.data.property[0].address.line1)
       propAddress.push(dataOnProperty.data.property[0].address.line2)
-      axios(Object.assign(confSaleHistory, {params: {address1: propAddress[0], address2: propAddress[1]}}))
-      .then(dataOnSalesHistory => {
-        axios(Object.assign(confAVM, {params: {address1: propAddress[0], address2: propAddress[1]}}))
-        .then(dataOnAVM => {
-          axios(confSchool)
-          .then(dataOnSchools => {
-            axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: propAddress[0], citystatezip: propAddress[1]}}))
-            .then(dataZillSearch => {
-              dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result.zpid._text
-              axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
-              .then(dataZillProperty => {
-                dataZillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response
-                
-                // console.log('OnProperty')
-                // console.log(dataOnProperty.data.property[0])
-                // console.log('OnSalesHistory')
-                // console.log(dataOnSalesHistory.data.property[0])
-                // console.log('OnAVM')
-                // console.log(dataOnAVM.data.property[0])
-                // console.log('OnSchools')
-                // console.log(dataOnSchools.data)
-                // console.log('ZillowProperty')
-                // console.log(dataZillProperty)
+      
+      console.log('OnBoard Property')
+      
+      axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: propAddress[0], citystatezip: propAddress[1]}}))
+      .then(dataZillSearch => {
+        finishedAPIs.zillSearch = true
+        dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
+        apiObjects.zillSearch = dataZillSearch
+        dataZillSearch = dataZillSearch.zpid._text
+        
+        console.log('Zillow Search')
+        
+        axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
+        .then(dataZillProperty => {
+          finishedAPIs.zillProperty = true
+          dataZillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response
+          apiObjects.zillProperty = dataZillProperty
 
-                loadFetchedData(Object.assign(dataOnSchools.data, dataOnAVM.data.property[0], dataOnProperty.data.property[0], dataZillProperty, dataOnSalesHistory.data.property[0]))
-              })
-              .catch(err => {
-                stopLoading()
-              })
-            })
-            .catch(err => {
-              stopLoading()
-            })
-          })
-          .catch(err => {
-            stopLoading()
-          })
+          console.log('Zillow Property')
+          sendData()          
         })
         .catch(err => {
-          stopLoading()
+          finishedAPIs.zillProperty = true
+
+          sendData()
         })
       })
       .catch(err => {
-        stopLoading()
-      }) 
+        finishedAPIs.zillSearch = true
+        finishedAPIs.zillProperty = true
+
+        sendData()      
+      })
+
+      axios(confSchool)
+      .then(dataOnSchools => {
+        finishedAPIs.onSchools = true
+        apiObjects.onSchools = dataOnSchools.data
+
+        console.log('OnBoard Schools')
+        sendData()        
+      })            
+      .catch(err => {
+        finishedAPIs.onSchools = true
+
+        sendData()
+      })
+
+      axios(Object.assign(confSaleHistory, {params: {address1: propAddress[0], address2: propAddress[1]}}))
+      .then(dataOnSalesHistory => {
+        finishedAPIs.onSale = true
+        apiObjects.onSale = dataOnSalesHistory.data.property[0]
+        
+        console.log('OnBoard Sales')
+        sendData()        
+      })
+      .catch(err => {
+        finishedAPIs.onSale = true
+
+        sendData()
+      })
+
+      axios(Object.assign(confAVM, {params: {address1: propAddress[0], address2: propAddress[1]}}))
+      .then(dataOnAVM => {
+        finishedAPIs.onAVM = true
+        apiObjects.onAVM = dataOnAVM.data.property[0]
+
+        console.log('OnBoard AVM')
+        sendData()
+      })
+      .catch(err => {
+        finishedAPIs.onAVM = true
+
+        sendData()
+      })      
     })
     .catch(err => {
-      stopLoading()
-    })
+      finishedAPIs = {
+        onProperty: true,
+        onSale: true,
+        onSchools: true,
+        onAVM: true,
+        zillSearch: true,
+        zillProperty: true
+      }
+
+      sendData()
+    })    
   }
 
   formatAddress(str) {

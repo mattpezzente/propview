@@ -20,39 +20,79 @@ class PropHead extends Component {
     this.getData = this.getData.bind(this)
   }
 
-  toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  }
-
-  toCommaNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
-  }
-
   render() {  
-    if (this.props.propData) {      
-      let baths
-      let backImg
-      if (this.props.propData.building.rooms.bathshalf % 2 !== 0) {
-        baths = this.props.propData.building.rooms.bathstotal - 0.5
-      } 
-      else {
-        baths = this.props.propData.building.rooms.bathstotal
-      }
-      if (this.props.propData.images) {
-        backImg = this.props.propData.images.image.url[0]._text
-      }
-      else {
-        backImg = imgBackground
-      }
+    if (this.props.propData) { 
+      let p = this.props.propData 
+      let backImg = ''
+      let address1 = ''
+      let address2 = ''
+      let beds = 0
+      let baths = 0   
+      let sqft = 0
+
+      // // Image Validation
+      // if (p.images) {
+      //   backImg = p.images.image.url[0]['_text']
+      // }
+      // else {
+      //   backImg = imgBackground
+      // }
+
+      // //Address - Line1 - Validation
+      // if (p.address.line1) {
+      //   address1 = p.address.line1
+      // }
+      // else if (p.address.street['_text']) {
+      //   address1 = p.address.street['_text']
+      // }
+      // else {
+      //   address1 = 'UNKNOWN'
+      // }
+
+      // //Address - Line2 - Validation
+      // if (p.address.line2) {
+      //   address2 = p.address.line2
+      // }
+      // else if (p.address.street) {
+      //   address2 = p.address.street
+      // }
+      // else {
+      //   address2 = 'UNKNOWN'
+      // }
+      // // Beds Validation
+      // if (p.building.rooms.beds) {
+      //   beds = p.building.rooms.beds
+      // }
+      // else {
+      //   beds = 0
+      // }
+
+      // // Baths Validation
+      // if (p.building.rooms.bathshalf % 2 !== 0) {
+      //   baths = p.building.rooms.bathstotal - 0.5
+      // } 
+      // else {
+      //   baths = p.building.rooms.bathstotal
+      // }
+
+      // // Squarefeet Validation
+      // if (p.building.size.livingsize) {
+      //   sqft = p.building.size.livingsize
+      // }
+      // else if (p.building.size.universalsize) {
+      //   sqft = p.building.size.universalsize
+      // }
+      // else {
+      //   sqft = 0
+      // }
+
       this.localProps = {
+        address1: address1,
+        address2: address2,
         backImg: backImg,
-        address1: this.props.propData.address.line1,
-        address2: this.props.propData.address.line2,
-        beds: this.props.propData.building.rooms.beds,
+        beds: beds,
         baths: baths,
-        sqft: this.toCommaNumber(this.props.propData.building.size.livingsize),
+        sqft: this.toCommaNumber(sqft),
       }
     }
     return (
@@ -94,6 +134,17 @@ class PropHead extends Component {
 
   getData(data) {
     this.props.getData(data)
+  }
+
+
+  toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+  toCommaNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }
 

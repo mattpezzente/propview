@@ -13,7 +13,7 @@ class PropDetail extends Component {
   constructor(props) {
     super(props);
 
-    props = {
+    this.localProps = {
       yearBuilt: 0,
       pool: '',
       bldgType: '',
