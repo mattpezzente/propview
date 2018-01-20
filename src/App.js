@@ -10,42 +10,44 @@ import Property from './pages/Property';
 class App extends Component {
   constructor(props) {
     super(props);
+    this.redirect = false
     this.state = {
-      data: '',
+      propData: ''
     }
-
+    
     this.getData = this.getData.bind(this)
+    this.clearRedirect = this.clearRedirect.bind(this)
   }
 
   render() {
-    let propertyComponent = () => { 
-      return <Property />
-    }
-    if (this.state.data !== '') {
-      propertyComponent = () => {
-        return <Property propData={this.state.data} />
-      }
-    }    
     return (
-      <div> 
+      <div>
         <Switch>
           <Route exact path={process.env.PUBLIC_URL+'/'} render={() => {
-            if (this.state.data !== '') {
-              return <Redirect to={process.env.PUBLIC_URL+'/property'}/>
+            if (this.redirect) {
+              this.clearRedirect()
+              return <Redirect to={process.env.PUBLIC_URL+'/property'} />            
             }
             else {
               return <Landing getData={this.getData} />
             }
           }}/>
-          <Route path={process.env.PUBLIC_URL+'/property'} component={propertyComponent} />            
+          <Route path={process.env.PUBLIC_URL+'/property'} render={() => {
+            return <Property propData={this.state.propData} />
+          }}/>
         </Switch>
-          <Footer />
+        <Footer />
       </div>
     );
   }
 
   getData(data) {
-    this.setState({data: data})
+    this.redirect = true
+    this.setState({propData: data})
+  }
+
+  clearRedirect() {
+    this.redirect = false
   }
 }
 

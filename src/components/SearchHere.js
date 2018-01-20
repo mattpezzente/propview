@@ -50,8 +50,8 @@ class SearchHere extends Component {
       this.setState({loading: false})
     }
     let loadFetchedData = propData => {      
-      this.props.getData(propData)
       stopLoading()
+      this.props.getData(propData)      
     }
     let confProperty = {
       method: 'get',
