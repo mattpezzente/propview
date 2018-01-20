@@ -2,19 +2,19 @@ import React, { Component } from 'react';
 import LandPrompt from '../sections/LandPrompt';
 import '../styles/css/Landing.css';
 
-let windowDimensions = {
-    height: window.innerHeight - 32,
-    minHeight: '400px',
-};
-
 class Landing extends Component {
   constructor(props) {
     super(props);
     document.title = 'PropView'
-    window.onresize = () => {
-      windowDimensions = {
-        height: window.innerHeight - 32,
+    this.windowDimensions = {
+        height: window.innerHeight,
         minHeight: '400px',
+    };
+    this.randImg = 'landing landing-' + Math.floor(Math.random() * 7 + 1)
+    
+    window.onresize = () => {
+      this.windowDimensions = {
+        height: window.innerHeight,
       };
       this.setState({resize: true})
     }
@@ -23,7 +23,7 @@ class Landing extends Component {
 
   render() {
     return (      
-      <section style={windowDimensions} className='landing'>
+      <section style={this.windowDimensions} className={this.randImg}>
         <LandPrompt getData={this.getData}/>
       </section>
     );
