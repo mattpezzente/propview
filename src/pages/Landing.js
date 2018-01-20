@@ -4,6 +4,7 @@ import '../styles/css/Landing.css';
 
 let windowDimensions = {
     height: window.innerHeight - 32,
+    minHeight: '400px',
 };
 
 class Landing extends Component {
@@ -14,7 +15,7 @@ class Landing extends Component {
   }
 
   render() {
-    return (
+    return (      
       <section style={windowDimensions} className='landing'>
         <LandPrompt getData={this.getData}/>
       </section>

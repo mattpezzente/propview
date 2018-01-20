@@ -1,11 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
+import Loading from './Loading';
 import '../styles/css/SearchBar.css'
 const convert = require('xml-js');
 
 class SearchBar extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: false,
+    }
 
     this.fetchGivenAddress = this.fetchGivenAddress.bind(this)
     this.formatAddress = this.formatAddress.bind(this)
@@ -13,20 +17,33 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <form action="#" method="">
-        <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
-        <button onClick={this.fetchGivenAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
-      </form>
+      <div>
+        <Loading loading={this.state.loading} />
+        <form action="#" method="">
+          <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
+          <button onClick={this.fetchGivenAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
+        </form>
+      </div>
     );
   }
 
   fetchGivenAddress(e) {
     e.preventDefault()
+    // Start the loading overlay
+    this.setState({loading:true})
+    // Get the formatted address from the input field
     let address = this.formatAddress(document.querySelector('input[data-address]').value)
+    // Variable to store method for removing the overlay 
+    let stopLoading = () => {
+      this.setState({loading: false})
+    }
+    // Variable to store method for passing the gathered data
     let loadFetchedData = propData => {
-      console.log(propData)
+      stopLoading()
       this.props.getData(propData)
     }
+
+    // CONFIGURATIONS
     let confProperty = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/property/detail',
@@ -80,8 +97,9 @@ class SearchBar extends Component {
       url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
     }
 
+    // Begin chain of requests for API data
     axios(confProperty)
-    .then(dataOnProperty => {      
+    .then(dataOnProperty => {   
       let propLongLat = []
       let propZillowID
       let propZillowDetails
@@ -121,7 +139,10 @@ class SearchBar extends Component {
             })
           })
         })
-      })      
+      })
+    })
+    .catch(err => {
+      stopLoading()
     })
   }
 

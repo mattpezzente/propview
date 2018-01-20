@@ -1,5 +1,5 @@
 import React, { Component } from 'react';
-import { Route, Switch, Redirect } from 'react-router-dom'
+import { Route, Switch, Redirect } from 'react-router-dom';
 import './styles/css/reset.css';
 import './styles/css/App.css';
 
@@ -27,7 +27,7 @@ class App extends Component {
       }
     }    
     return (
-      <div>
+      <div> 
         <Switch>
           <Route exact path={process.env.PUBLIC_URL+'/'} render={() => {
             if (this.state.data !== '') {

@@ -1,0 +1,22 @@
+.overlay-hidden {
+  display: none; }
+
+.overlay {
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  z-index: 1;
+  position: fixed;
+  top: 0;
+  left: 0;
+  height: 100%;
+  width: 100%;
+  background: rgba(40, 40, 40, 0.9);
+  transition: 0.2s; }
+  .overlay .overlay-logo {
+    max-width: 30rem; }
+  .overlay .overlay-loader {
+    max-width: 10rem; }
+  .overlay img {
+    width: 50%; }

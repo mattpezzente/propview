@@ -1,4 +1,5 @@
 import React, { Component } from 'react';
+import Loading from './Loading';
 import axios from 'axios';
 import '../styles/css/SearchHere.css'
 const convert = require('xml-js');
@@ -6,6 +7,9 @@ const convert = require('xml-js');
 class SearchHere extends Component {
   constructor(props) {
     super(props);
+    this.state = {
+      loading: false,
+    }
 
     this.getLocationData = this.getLocationData.bind(this)    
     this.fetchAPIData = this.fetchAPIData.bind(this)
@@ -13,15 +17,19 @@ class SearchHere extends Component {
 
   render() {
     return (
-      <button className="search-user-location-button" onClick={this.getLocationData}>{this.props.btnName}
-        <span>{this.props.btnText}</span>
-        <img alt="" src={require('../images/propview-location-icon.png')}/>
-      </button>
+      <div>
+        <Loading loading={this.state.loading} />
+        <button className="search-user-location-button" onClick={this.getLocationData}>{this.props.btnName}
+          <span>{this.props.btnText}</span>
+          <img alt="" src={require('../images/propview-location-icon.png')}/>
+        </button>
+      </div>
     );
   }
 
   getLocationData(e) {
-    e.preventDefault()    
+    e.preventDefault()
+    this.setState({loading: true})
     if (navigator.geolocation) {
       let latlong = []    
       navigator.geolocation.getCurrentPosition(position => {
@@ -31,14 +39,19 @@ class SearchHere extends Component {
       }, err => {}, {enableHighAccuracy: true})
       return latlong
     } 
-    else {      
+    else {
+      this.setState({loading: false})
       return false
     }
   }
 
   fetchAPIData(latlong) {
-    let loadFetchedData = propData => {
+    let stopLoading = () => {
+      this.setState({loading: false})
+    }
+    let loadFetchedData = propData => {      
       this.props.getData(propData)
+      stopLoading()
     }
     let confProperty = {
       method: 'get',
@@ -126,6 +139,9 @@ class SearchHere extends Component {
           })
         })
       })      
+    })
+    .catch(err => {
+      stopLoading()
     })
   }
 
