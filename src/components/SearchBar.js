@@ -63,12 +63,13 @@ class SearchBar extends Component {
 
       //Check if anything was returned
       if (Object.keys(propData).length !== 0) {
+        console.log(propData)
         this.props.getData(propData)
       }
     }
 
     // CONFIGURATIONS
-    let confSaleHistory = {
+    let confOnSale = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       params: {
@@ -80,7 +81,7 @@ class SearchBar extends Component {
         Accept: 'application/json',
       }
     }
-    let confAVM = {
+    let confOnAVM = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
       params: {
@@ -92,7 +93,7 @@ class SearchBar extends Component {
         Accept: 'application/json',
       }
     }
-    let confSchool = {
+    let confOnSchool = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
       headers: {
@@ -115,7 +116,7 @@ class SearchBar extends Component {
     }
     
     // OnBoard Property Sales History & School Data
-    axios(confSaleHistory)
+    axios(confOnSale)
     .then(dataOnSalesHistory => {
       let propLongLat = []
       finishedAPIs.onSale = true         
@@ -123,7 +124,7 @@ class SearchBar extends Component {
       propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)
       apiObjects.onSale =  dataOnSalesHistory.data.property[0]
 
-      axios(Object.assign(confSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
+      axios(Object.assign(confOnSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
       .then(dataOnSchools => {
         finishedAPIs.onSchools = true
         apiObjects.onSchools = dataOnSchools.data
@@ -142,7 +143,7 @@ class SearchBar extends Component {
     })
 
     // OnBoard Property Value Call
-    axios(confAVM)
+    axios(confOnAVM)
     .then(dataOnAVM => {
       finishedAPIs.onAVM = true
       apiObjects.onAVM = dataOnAVM.data.property[0]

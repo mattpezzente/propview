@@ -31,7 +31,7 @@ class PropValue extends Component {
         
         // AVM Date
         if (p.avm.eventDate) {
-          avmDate = p.avm.amount.value
+          avmDate = p.avm.eventDate
         }
         else {
           avmDate = 'N/A'
@@ -50,7 +50,7 @@ class PropValue extends Component {
           })
         }
       } catch(err) {
-        
+        console.log(err)
       }
 
 

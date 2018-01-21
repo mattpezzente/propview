@@ -96,16 +96,22 @@ class PropDetail extends Component {
         }
 
         // Pool
-        if (true) {
+        if (p.lot.poolind && p.lot.poolind === 'Y') {
           pool = 'Yes'
         }
-        else {
+        else if (p.lot.poolind && p.lot.poolind === 'N') {
           pool = 'No'
+        }
+        else {
+          pool = 'N/A'
         }
 
         // Building Type
         if (p.building.summary.bldgType) {
           bldgType = p.building.summary.bldgType
+        }
+        else if (p.building.summary.imprType) {
+          bldgType = p.building.summary.imprType
         }
         else {
           bldgType = 'N/A'
@@ -113,10 +119,10 @@ class PropDetail extends Component {
 
         // Lot Size
         if (p.lot.lotsize1) {
-          lotSize = p.lot.lotsize1 + 'sqft'
+          lotSize = this.toCommaNumber(Math.floor(p.lot.lotsize1 * 43560)) + ' sqft'
         }
         else if (p.lot.lotsize2) {
-          lotSize = p.lot.lotsize2 + 'sqft'
+          lotSize = p.lot.lotsize2 + ' sqft'
         }
         else {
           lotSize = 'N/A'
@@ -166,7 +172,7 @@ class PropDetail extends Component {
         }
 
         // Half Baths
-        if (p.building.rooms.bathshalf > 0) {
+        if (p.building.rooms.bathshalf) {
           bathsHalf = p.building.rooms.bathshalf
         }
         else {
@@ -182,8 +188,8 @@ class PropDetail extends Component {
         }
 
         // Building Size
-        if (p.building.size.bldgSize) {
-          bldgSize = p.building.size.bldgSize + 'sqft'
+        if (p.building.size.bldgsize) {
+          bldgSize = this.toCommaNumber(p.building.size.bldgsize) + ' sqft'
         }
         else {
           bldgSize = 'N/A'
@@ -191,7 +197,7 @@ class PropDetail extends Component {
 
         // Ground Floor Size
         if (p.building.size.groundfloorsize) {
-          groundFloorSize = p.building.size.groundfloorsize + 'sqft'
+          groundFloorSize = this.toCommaNumber(p.building.size.groundfloorsize) + ' sqft'
         }
         else {
           groundFloorSize = 'N/A'
@@ -199,7 +205,7 @@ class PropDetail extends Component {
 
         // Living Floor Size
         if (p.building.size.livingsize) {
-          livingSize = p.building.size.livingsize + 'sqft'
+          livingSize = this.toCommaNumber(p.building.size.livingsize) + ' sqft'
         }
         else {
           livingSize = 'N/A'
@@ -223,10 +229,10 @@ class PropDetail extends Component {
 
         // Subdivision Section
         if (p.area.subdname) {
-          countrySecSubd = p.area.subdname
+          subdName = p.area.subdname
         }
         else {
-          countrySecSubd = 'N/A'
+          subdName = 'N/A'
         }
 
         // Tax Code Area
@@ -237,7 +243,7 @@ class PropDetail extends Component {
           taxCodeArea = 'N/A'
         }
       } catch(err) {
-
+        console.log(err)
       }
             
       this.localProps = {
@@ -255,6 +261,7 @@ class PropDetail extends Component {
         beds: beds,
         bldgSize: bldgSize,
         groundFloorSize: groundFloorSize,
+        livingSize: livingSize,
         blockNum: blockNum,
         countrySecSubd: countrySecSubd,
         subdName: subdName,

@@ -80,12 +80,13 @@ class SearchHere extends Component {
 
       //Check if anything was returned
       if (Object.keys(propData).length !== 0) {
+        console.log(propData)
         this.props.getData(propData)
       }
     }
 
     // CONFIGURATIONS
-    let confProperty = {
+    let confOnProperty = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/property/snapshot',
       params: {
@@ -99,7 +100,7 @@ class SearchHere extends Component {
         Accept: 'application/json',
       }
     }
-    let confSaleHistory = {
+    let confOnSale = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       headers: {
@@ -107,7 +108,7 @@ class SearchHere extends Component {
         Accept: 'application/json',
       }
     }
-    let confAVM = {
+    let confOnAVM = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
       headers: {
@@ -115,7 +116,7 @@ class SearchHere extends Component {
         Accept: 'application/json',
       }
     }
-    let confSchool = {
+    let confOnSchool = {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
       params: {
@@ -137,7 +138,7 @@ class SearchHere extends Component {
     }
 
     // OnBoard Property & School Data
-    axios(confProperty)
+    axios(confOnProperty)
     .then(dataOnProperty => {
       let propAddress = []
       finishedAPIs.onProperty = true
@@ -174,7 +175,7 @@ class SearchHere extends Component {
         sendData()      
       })
 
-      axios(confSchool)
+      axios(confOnSchool)
       .then(dataOnSchools => {
         finishedAPIs.onSchools = true
         apiObjects.onSchools = dataOnSchools.data
@@ -187,7 +188,7 @@ class SearchHere extends Component {
         sendData()
       })
 
-      axios(Object.assign(confSaleHistory, {params: {address1: propAddress[0], address2: propAddress[1]}}))
+      axios(Object.assign(confOnSale, {params: {address1: propAddress[0], address2: propAddress[1]}}))
       .then(dataOnSalesHistory => {
         finishedAPIs.onSale = true
         apiObjects.onSale = dataOnSalesHistory.data.property[0]
@@ -200,7 +201,7 @@ class SearchHere extends Component {
         sendData()
       })
 
-      axios(Object.assign(confAVM, {params: {address1: propAddress[0], address2: propAddress[1]}}))
+      axios(Object.assign(confOnAVM, {params: {address1: propAddress[0], address2: propAddress[1]}}))
       .then(dataOnAVM => {
         finishedAPIs.onAVM = true
         apiObjects.onAVM = dataOnAVM.data.property[0]

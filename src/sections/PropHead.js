@@ -26,9 +26,9 @@ class PropHead extends Component {
       let address1 = ''
       let address2 = ''
       let backImg = ''
-      let beds = 0
-      let baths = 0   
-      let sqft = 0
+      let beds = ''
+      let baths = ''   
+      let sqft = ''
 
       try {
         //Address - Line1 - Validation
@@ -66,15 +66,18 @@ class PropHead extends Component {
           beds = p.building.rooms.beds
         }
         else {
-          beds = 0
+          beds = 'N/A'
         }
 
         // Baths Validation
         if (p.building.rooms.bathshalf % 2 !== 0) {
           baths = p.building.rooms.bathstotal - 0.5
         } 
-        else {
+        else if (p.building.rooms.bathshalf % 2 === 0) {
           baths = p.building.rooms.bathstotal
+        }
+        else {
+          baths = 'N/A'
         }
 
         // Squarefeet Validation
@@ -85,12 +88,11 @@ class PropHead extends Component {
           sqft = p.building.size.universalsize
         }
         else {
-          sqft = 0
+          sqft = 'N/A'
         }
       } catch(err) {
-
+        console.log(err)
       }
-
 
       this.localProps = {
         address1: address1,

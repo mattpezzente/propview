@@ -19,21 +19,26 @@ class PropOverview extends Component {
   render() {
     if (Object.keys(this.props.propData).length !== 0) {
       let p = this.props.propData
-      this.localProps.schoolHTML = p.school.map((key, i) => {
-        if (i >= 4) {
-          return null
-        }
-        else {
-          return ([
-            <li key={i}>
-              <img src={imgSchoolPlaceholder} alt="school institution" />
-              <h3>{this.toTitleCase(key.School.InstitutionName)}</h3>
-              <p>Type: <span>{this.toTitleCase(key.School.Filetypetext)}</span></p>
-              <p>Distance: <span>{key.School.distance}mi</span></p>
-            </li>
-          ])
-        }
-      })
+
+      try {
+        this.localProps.schoolHTML = p.school.map((key, i) => {
+          if (i >= 4) {
+            return null
+          }
+          else {
+            return ([
+              <li key={i}>
+                <img src={imgSchoolPlaceholder} alt="school institution" />
+                <h3>{this.toTitleCase(key.School.InstitutionName)}</h3>
+                <p>Type: <span>{this.toTitleCase(key.School.Filetypetext)}</span></p>
+                <p>Distance: <span>{key.School.distance}mi</span></p>
+              </li>
+            ])
+          }
+        })
+      } catch(err) {
+        console.log(err)
+      }
     }    
     return (
       <section className="prop-container off-white">
