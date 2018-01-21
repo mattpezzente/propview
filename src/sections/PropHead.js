@@ -9,82 +9,88 @@ class PropHead extends Component {
   constructor(props) {
     super(props);
     this.localProps = {
-      address1: '',
-      address2: '',
+      address1: 'UNKNOWN',
+      address2: 'UNKNOWN',
       backImg: imgBackground,
-      beds: 0,
-      baths: 0,
-      sqft: 0,
+      beds: 'N/A',
+      baths: 'N/A',
+      sqft: 'N/A',
     }
 
     this.getData = this.getData.bind(this)
   }
 
-  render() {  
-    if (this.props.propData) { 
-      let p = this.props.propData 
-      let backImg = ''
+  render() {
+    if (Object.keys(this.props.propData).length !== 0) { 
+      let p = this.props.propData       
       let address1 = ''
       let address2 = ''
+      let backImg = ''
       let beds = 0
       let baths = 0   
       let sqft = 0
 
-      // // Image Validation
-      // if (p.images) {
-      //   backImg = p.images.image.url[0]['_text']
-      // }
-      // else {
-      //   backImg = imgBackground
-      // }
+      try {
+        //Address - Line1 - Validation
+        if (p.address.line1) {
+          address1 = p.address.line1
+        }
+        else if (p.address.street._text) {
+          address1 = p.address.street._text
+        }
+        else {
+          address1 = 'UNKNOWN'
+        }
 
-      // //Address - Line1 - Validation
-      // if (p.address.line1) {
-      //   address1 = p.address.line1
-      // }
-      // else if (p.address.street['_text']) {
-      //   address1 = p.address.street['_text']
-      // }
-      // else {
-      //   address1 = 'UNKNOWN'
-      // }
+        //Address - Line2 - Validation
+        if (p.address.line2) {
+          address2 = p.address.line2
+        }
+        else if (p.address.state._text && p.address.city._text && p.address.zipcode._text) {
+          address2 = p.address.city._text + ' ' + p.address.state._text + ', ' + p.address.zipcode._text
+        }
+        else {
+          address2 = 'UNKNOWN'
+        }
 
-      // //Address - Line2 - Validation
-      // if (p.address.line2) {
-      //   address2 = p.address.line2
-      // }
-      // else if (p.address.street) {
-      //   address2 = p.address.street
-      // }
-      // else {
-      //   address2 = 'UNKNOWN'
-      // }
-      // // Beds Validation
-      // if (p.building.rooms.beds) {
-      //   beds = p.building.rooms.beds
-      // }
-      // else {
-      //   beds = 0
-      // }
+        // Image Validation
+        if (p.images) {
+          backImg = p.images.image.url[0]._text
+        }
+        else {
+          backImg = imgBackground
+        }
 
-      // // Baths Validation
-      // if (p.building.rooms.bathshalf % 2 !== 0) {
-      //   baths = p.building.rooms.bathstotal - 0.5
-      // } 
-      // else {
-      //   baths = p.building.rooms.bathstotal
-      // }
+        // Beds Validation
+        if (p.building.rooms.beds) {
+          beds = p.building.rooms.beds
+        }
+        else {
+          beds = 0
+        }
 
-      // // Squarefeet Validation
-      // if (p.building.size.livingsize) {
-      //   sqft = p.building.size.livingsize
-      // }
-      // else if (p.building.size.universalsize) {
-      //   sqft = p.building.size.universalsize
-      // }
-      // else {
-      //   sqft = 0
-      // }
+        // Baths Validation
+        if (p.building.rooms.bathshalf % 2 !== 0) {
+          baths = p.building.rooms.bathstotal - 0.5
+        } 
+        else {
+          baths = p.building.rooms.bathstotal
+        }
+
+        // Squarefeet Validation
+        if (p.building.size.livingsize) {
+          sqft = p.building.size.livingsize
+        }
+        else if (p.building.size.universalsize) {
+          sqft = p.building.size.universalsize
+        }
+        else {
+          sqft = 0
+        }
+      } catch(err) {
+
+      }
+
 
       this.localProps = {
         address1: address1,

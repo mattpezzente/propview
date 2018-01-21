@@ -14,25 +14,25 @@ class PropDetail extends Component {
     super(props);
 
     this.localProps = {
-      yearBuilt: 0,
-      pool: '',
-      bldgType: '',
-      lotSize: 0,
-      cooling: '',
-      roof: '',
-      heating: '',
-      walls: '',
+      yearBuilt: 'N/A',
+      pool: 'N/A',
+      bldgType: 'N/A',
+      lotSize: 'N/A',
+      cooling: 'N/A',
+      roof: 'N/A',
+      heating: 'N/A',
+      walls: 'N/A',
 
-      bathsFull: 0,
-      bathsHalf: 0,
-      beds: 0,
-      bldgSize: 0,
-      groundFloorSize: 0,
-      livingSize: 0,
-      blockNum: 0,
-      countrySecSubd: '',
-      subdName: '',
-      taxCodeArea: 0
+      bathsFull: 'N/A',
+      bathsHalf: 'N/A',
+      beds: 'N/A',
+      bldgSize: 'N/A',
+      groundFloorSize: 'N/A',
+      livingSize: 'N/A',
+      blockNum: 'N/A',
+      countrySecSubd: 'N/A',
+      subdName: 'N/A',
+      taxCodeArea: 'N/A',
     }
     
     // this.props.propData.building.summary.yearbuilteffective
@@ -59,81 +59,206 @@ class PropDetail extends Component {
     this.toTitleCase = this.toTitleCase.bind(this)
     this.toCommaNumber = this.toCommaNumber.bind(this) 
   }
-
-  toTitleCase(str) {
-    if (str !== undefined) {
-      return str.replace(/\w\S*/g, function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      });
-    }
-    else {
-      return 'Unavailable'
-    }
-  }
-
-  toCommaNumber(num) {
-    if (num !== undefined) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    }
-    else {
-      return 'Unavailable'
-    }
-  }
-
+  
   render() {
-    if (this.props.propData) {
-      let buildType
-      let subdName
-      let beds      
+    if (Object.keys(this.props.propData).length !== 0) {
+      let p = this.props.propData
+      let yearBuilt = ''
+      let pool = ''
+      let bldgType = ''
+      let lotSize = ''
+      let cooling = ''
+      let roof = ''
+      let heating = ''
+      let walls = ''
 
-      if (this.props.propData.building.summary.bldgType) {
-        buildType = this.toTitleCase(this.props.propData.building.summary.bldgType)
-      }
-      else if (this.props.propData.building.summary.archStyle) {
-        buildType = this.toTitleCase(this.props.propData.building.summary.archStyle)
-      }
-      else {
-        buildType = 'Unavailable'
-      }
+      let bathsFull = ''
+      let bathsHalf = ''
+      let beds = ''
+      let bldgSize = ''
+      let groundFloorSize = ''
+      let livingSize = ''
+      let blockNum = ''
+      let countrySecSubd = ''
+      let subdName = ''
+      let taxCodeArea = ''
 
-      if (this.props.propData.area.subdname) {
-        subdName = this.toTitleCase(this.props.propData.area.subdname)
-      }
-      else {
-        subdName = this.toTitleCase(this.props.propData.area.countrysecsubd)
-      }
+      try {
+        // Year Built
+        if (p.building.summary.yearbuilteffective) {
+          yearBuilt = p.building.summary.yearbuilteffective
+        }
+        else if (p.summary.yearbuilteffective) {
+          yearBuilt = p.summary.yearbuilteffective
+        }
+        else {
+          yearBuilt = 'N/A'
+        }
 
-      if ('beds' in this.props.propData.building.rooms) {
-        beds = this.props.propData.building.rooms.beds
-      }
-      else if('bedrooms' in this.props.propData.editFacts) {
-        beds = this.props.propData.editFacts.bedrooms._text
-      }
-      else {
-        beds = 0
-      }
+        // Pool
+        if (true) {
+          pool = 'Yes'
+        }
+        else {
+          pool = 'No'
+        }
 
-      if (true) {}
-      this.props = {
-        yearBuilt: this.props.propData.summary.yearbuilt,
-        pool: this.props.propData.lot.poolind = "Y" ? 'Yes' : 'No',
-        bldgType: buildType,
-        lotSize: this.toCommaNumber(this.props.propData.lot.lotsize2),
-        cooling: this.toTitleCase(this.props.propData.utilities.coolingtype),
-        roof: this.toTitleCase(this.props.propData.building.construction.roofcover),
-        heating: this.toTitleCase(this.props.propData.utilities.heatingtype),
-        walls: this.toTitleCase(this.props.propData.building.construction.wallType),
+        // Building Type
+        if (p.building.summary.bldgType) {
+          bldgType = p.building.summary.bldgType
+        }
+        else {
+          bldgType = 'N/A'
+        }
 
-        bathsFull: this.props.propData.building.rooms.bathsfull,
-        bathsHalf: this.props.propData.building.rooms.bathshalf,
+        // Lot Size
+        if (p.lot.lotsize1) {
+          lotSize = p.lot.lotsize1 + 'sqft'
+        }
+        else if (p.lot.lotsize2) {
+          lotSize = p.lot.lotsize2 + 'sqft'
+        }
+        else {
+          lotSize = 'N/A'
+        }
+
+        // Cooling Type
+        if (p.utilities.coolingtype) {
+          cooling = p.utilities.coolingtype
+        }
+        else {
+          cooling = 'N/A'
+        }
+
+        // Roofing
+        if (p.building.construction.roofcover) {
+          roof = p.building.construction.roofcover
+        }
+        else {
+          roof = 'N/A'
+        }
+
+        // Heating Type
+        if (p.utilities.heatingtype) {
+          heating = p.utilities.heatingtype
+        }
+        else {
+          heating = 'N/A'
+        }
+
+        // Wall Type
+        if (p.utilities.wallType) {
+          walls = p.utilities.wallType
+        }
+        else {
+          walls = 'N/A'
+        }
+
+        // Full Baths
+        if (p.building.rooms.bathsfull > 0) {
+          bathsFull = p.building.rooms.bathsfull
+        }
+        else if (p.building.rooms.bathscalc) {
+          bathsFull = p.building.rooms.bathscalc
+        }
+        else {
+          bathsFull = 'N/A'
+        }
+
+        // Half Baths
+        if (p.building.rooms.bathshalf > 0) {
+          bathsHalf = p.building.rooms.bathshalf
+        }
+        else {
+          bathsHalf = 'N/A'
+        }
+
+        // Beds
+        if (p.building.rooms.beds > 0) {
+          beds = p.building.rooms.beds
+        }
+        else {
+          beds = 'N/A'
+        }
+
+        // Building Size
+        if (p.building.size.bldgSize) {
+          bldgSize = p.building.size.bldgSize + 'sqft'
+        }
+        else {
+          bldgSize = 'N/A'
+        }
+
+        // Ground Floor Size
+        if (p.building.size.groundfloorsize) {
+          groundFloorSize = p.building.size.groundfloorsize + 'sqft'
+        }
+        else {
+          groundFloorSize = 'N/A'
+        }
+
+        // Living Floor Size
+        if (p.building.size.livingsize) {
+          livingSize = p.building.size.livingsize + 'sqft'
+        }
+        else {
+          livingSize = 'N/A'
+        }
+
+        // Block Number
+        if (p.area.blockNum) {
+          blockNum = p.area.blockNum
+        }
+        else {
+          blockNum = 'N/A'
+        }
+
+        // County Name
+        if (p.area.countrysecsubd) {
+          countrySecSubd = p.area.countrysecsubd
+        }
+        else {
+          countrySecSubd = 'N/A'
+        }
+
+        // Subdivision Section
+        if (p.area.subdname) {
+          countrySecSubd = p.area.subdname
+        }
+        else {
+          countrySecSubd = 'N/A'
+        }
+
+        // Tax Code Area
+        if (p.area.taxcodearea) {
+          taxCodeArea = p.area.taxcodearea
+        }
+        else {
+          taxCodeArea = 'N/A'
+        }
+      } catch(err) {
+
+      }
+            
+      this.localProps = {
+        yearBuilt: yearBuilt,
+        pool: pool,
+        bldgType: bldgType,
+        lotSize: lotSize,
+        cooling: cooling,
+        roof: roof,
+        heating: heating,
+        walls: walls,
+
+        bathsFull: bathsFull,
+        bathsHalf: bathsHalf,
         beds: beds,
-        bldgSize: this.toCommaNumber(this.props.propData.building.size.bldgsize),
-        groundFloorSize: this.toCommaNumber(this.props.propData.building.size.groundfloorsize),
-        livingSize: this.toCommaNumber(this.props.propData.building.size.livingsize),
-        blockNum: this.props.propData.area.blockNum,
-        countrySecSubd: this.toTitleCase(this.props.propData.area.countrysecsubd),
+        bldgSize: bldgSize,
+        groundFloorSize: groundFloorSize,
+        blockNum: blockNum,
+        countrySecSubd: countrySecSubd,
         subdName: subdName,
-        taxCodeArea: this.props.propData.area.taxcodearea,
+        taxCodeArea: taxCodeArea,
       }
     }
     return (
@@ -148,56 +273,56 @@ class PropDetail extends Component {
                     <img className="feature-img" src={icoYearBuilt} alt="year built icon"/>
                   </div>
                   <h3>Year Built</h3>
-                  <p>{this.props.yearBuilt}</p>
+                  <p>{this.localProps.yearBuilt}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoPool} alt="year built icon"/>
                   </div>
                   <h3>Pool</h3>
-                  <p>{this.props.pool}</p>
+                  <p>{this.localProps.pool}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoType} alt="year built icon"/>
                   </div>
                   <h3>Building Type</h3>
-                  <p>{this.props.bldgType}</p>
+                  <p>{this.localProps.bldgType}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoLot} alt="year built icon"/>
                   </div>
                   <h3>Lot</h3>
-                  <p>{this.props.lotSize} sqft</p>
+                  <p>{this.localProps.lotSize}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoCooling} alt="year built icon" />
                   </div>
                   <h3>Cooling</h3>
-                  <p>{this.props.cooling}</p>
+                  <p>{this.localProps.cooling}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoRoof} alt="year built icon"/>
                   </div>
                   <h3>Roof</h3>
-                  <p>{this.props.roof}</p>
+                  <p>{this.localProps.roof}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoHeating} alt="year built icon" />
                   </div>
                   <h3>Heating</h3>
-                  <p>{this.props.heating}</p>
+                  <p>{this.localProps.heating}</p>
                 </li>
                 <li className="two-col">
                   <div className="feature-img-container">
                     <img className="feature-img" src={icoWall} alt="year built icon"/>
                   </div>
                   <h3>Walls</h3>
-                  <p>{this.props.walls}</p>
+                  <p>{this.localProps.walls}</p>
                 </li>
               </ul>
             </section>
@@ -206,22 +331,22 @@ class PropDetail extends Component {
               <ul className="detail-col-container">
                 <li>
                   <h3>Rooms</h3>
-                  <p>Full Baths: <span>{this.props.bathsFull}</span></p>
-                  <p>Half Baths: <span>{this.props.bathsHalf}</span></p>
-                  <p>Bedrooms: <span>{this.props.beds}</span></p>
+                  <p>Full Baths: <span>{this.localProps.bathsFull}</span></p>
+                  <p>Half Baths: <span>{this.localProps.bathsHalf}</span></p>
+                  <p>Bedrooms: <span>{this.localProps.beds}</span></p>
                 </li>
                 <li>
                   <h3>Building Sizes</h3>
-                  <p>Building: <span>{this.props.bldgSize} sqft</span></p>
-                  <p>Ground Floor: <span>{this.props.groundFloorSize} sqft</span></p>
-                  <p>Living Size: <span>{this.props.livingSize} sqft</span></p>
+                  <p>Building: <span>{this.localProps.bldgSize}</span></p>
+                  <p>Ground Floor: <span>{this.localProps.groundFloorSize}</span></p>
+                  <p>Living Size: <span>{this.localProps.livingSize}</span></p>
                 </li>
                 <li>
                   <h3>Area</h3>
-                  <p>Block Number: <span>{this.props.blockNum}</span></p>
-                  <p>County: <span>{this.props.countrySecSubd}</span></p>
-                  <p>Sub Division: <span>{this.props.subdName}</span></p>
-                  <p>Tax Code Area: <span>{this.props.taxCodeArea}</span></p>
+                  <p>Block Number: <span>{this.localProps.blockNum}</span></p>
+                  <p>County: <span>{this.localProps.countrySecSubd}</span></p>
+                  <p>Sub Division: <span>{this.localProps.subdName}</span></p>
+                  <p>Tax Code Area: <span>{this.localProps.taxCodeArea}</span></p>
                 </li>              
               </ul>
             </section>
@@ -229,6 +354,26 @@ class PropDetail extends Component {
         </div>
       </section>
     );
+  }
+
+  toTitleCase(str) {
+    if (str !== undefined) {
+      return str.replace(/\w\S*/g, function(txt) {
+        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+      });
+    }
+    else {
+      return 'N/A'
+    }
+  }
+
+  toCommaNumber(num) {
+    if (num !== undefined) {
+      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
+    }
+    else {
+      return 'N/A'
+    }
   }
 }
 

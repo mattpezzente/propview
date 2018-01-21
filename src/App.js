@@ -13,7 +13,7 @@ class App extends Component {
     super(props);
     this.redirect = false
     this.state = {
-      propData: '',
+      propData: {},
       loading: false,
     }
     
@@ -21,7 +21,7 @@ class App extends Component {
     this.clearRedirect = this.clearRedirect.bind(this)
   }
 
-  render() {
+  render() {    
     return (
       <div>
         <Switch>          
@@ -45,14 +45,14 @@ class App extends Component {
   }
 
   getData(data) {
-    if (data === 'START') {
+    if (data.loading === 'START') {
       this.setState({loading: true})
     }
-    else if (data === 'STOP') {
+    else if (data.loading === 'STOP') {
       this.setState({loading: false})
     }
     else {
-      this.redirect = true
+      this.redirect = true      
       this.setState({propData: data, loading: false})
     }
   }

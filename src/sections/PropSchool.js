@@ -3,6 +3,12 @@ import imgSchoolPlaceholder from '../images/propview-school-placeholder.png';
 import '../styles/css/PropSchool.css';
 
 class PropOverview extends Component {
+  constructor(props) {
+    super(props)
+    this.localProps = {
+      schoolHTML: '',
+    }
+  }
 
   toTitleCase(str) {
     return str.replace(/\w\S*/g, function(txt) {
@@ -11,9 +17,9 @@ class PropOverview extends Component {
   }
 
   render() {
-    let schoolHTML
-    if (this.props.propData) {
-      schoolHTML = this.props.propData.school.map((key, i) => {
+    if (Object.keys(this.props.propData).length !== 0) {
+      let p = this.props.propData
+      this.localProps.schoolHTML = p.school.map((key, i) => {
         if (i >= 4) {
           return null
         }
@@ -34,7 +40,7 @@ class PropOverview extends Component {
         <div className="prop-wrapper center-content">
           <h2>Schools Nearby</h2>
           <ul className="propschool-school-container">
-            {schoolHTML}
+            {this.localProps.schoolHTML}
           </ul>
         </div>
       </section>

@@ -28,7 +28,7 @@ class SearchBar extends Component {
   fetchGivenAddress(e) {
     e.preventDefault()
     // Start the loading overlay
-    this.props.getData('START')
+    this.props.getData({loading: 'START'})
     // Get formated input field value
     let address = this.formatAddress(document.querySelector('.search-address').value)
     // Keep track of which calls have finished
@@ -51,29 +51,19 @@ class SearchBar extends Component {
     // Variable to store method for passing the gathered data
     let sendData = () => {
       let propData
-      console.log(finishedAPIs)
       for (let status in finishedAPIs) {
         if (finishedAPIs[status] === false) {
           return
         }
       }
-      for (let objects in apiObjects) {
-        console.log(apiObjects[objects])
-      }
 
-      // Merge API data in order
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
 
+      this.props.getData({loading: 'STOP'})
+
       //Check if anything was returned
-      if (Object.keys(propData).length !== 0) {        
-        console.log('sending Data')
-        console.log(propData)
+      if (Object.keys(propData).length !== 0) {
         this.props.getData(propData)
-      }
-      else {
-        console.log('sending STOP')
-        console.log(propData)
-        this.props.getData('STOP')
       }
     }
 
@@ -86,7 +76,7 @@ class SearchBar extends Component {
         address2: address[1],
       },
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -98,7 +88,7 @@ class SearchBar extends Component {
         address2: address[1],
       },
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -106,7 +96,7 @@ class SearchBar extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -168,21 +158,15 @@ class SearchBar extends Component {
     axios(confZillowSearch)
     .then(dataZillSearch => {
       finishedAPIs.zillSearch = true
-      let propZillowDetails      
-      let propZillowID = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})
-      if (propZillowID["SearchResults:searchresults"].response.results.result[0]) {
-        apiObjects.zillSearch = propZillowID["SearchResults:searchresults"].response.results.result[0]
-        propZillowID = propZillowID.zpid._text
-      }
-      else {
-        apiObjects.zillSearch = propZillowID["SearchResults:searchresults"].response.results.result
-        propZillowID = propZillowID.zpid._text
-      }
-      axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: propZillowID}}))
+      dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
+      apiObjects.zillSearch = dataZillSearch
+      dataZillSearch = dataZillSearch.zpid._text
+                  
+      axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
       .then(dataZillProperty => {
         finishedAPIs.zillProperty = true
-        apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response        
-        
+        apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response    
+
         sendData()
       })
       .catch(err => {

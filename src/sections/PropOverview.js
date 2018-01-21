@@ -2,13 +2,33 @@ import React, { Component } from 'react';
 import '../styles/css/PropOverview.css';
 
 class PropOverview extends Component {
-  render() {
-    let homeDescription = ''
-    if (this.props.propData && this.props.propData.homeDescription) {
-      homeDescription = this.props.propData.homeDescription._text
+  constructor(props) {
+    super(props)
+    this.localProps = {
+      homeDesc: 'OVERVIEW UNAVAILABLE...',
     }
-    else {
-      homeDescription = 'OVERVIEW UNAVAILABLE...'
+  }
+
+  render() {
+    if (Object.keys(this.props.propData).length !== 0) {
+      let p = this.props.propData
+      let homeDesc = 'OVERVIEW UNAVAILABLE...'
+
+      try {
+        // Home Description
+        if (this.props.propData.homeDescription._text) {
+          homeDesc = p.homeDescription._text
+        }
+        else {
+          homeDesc = 'OVERVIEW UNAVAILABLE...'
+        }
+      } catch(err) {
+        
+      }
+
+      this.localProps = {
+        homeDesc: homeDesc,
+      }
     }
     return (
       <section className="prop-container">
@@ -17,7 +37,7 @@ class PropOverview extends Component {
             <div className="orange-line-accent"></div><h2>Overview</h2><div className="orange-line-accent"></div>
           </div>
           <span className="propover-map"></span>
-          <p>{homeDescription}</p>        
+          <p>{this.localProps.homeDesc}</p>        
         </div>
       </section>
     );

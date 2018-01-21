@@ -13,38 +13,30 @@ class Property extends Component {
     super(props);
     document.title = 'PropView - Property'
     this.state = {
-      propData: '',
-      loading: false,
+      propData: {}
     }
 
     this.getData = this.getData.bind(this)
   }
 
   render() {
-    let propData = ''
-    if (this.props.propData) {
-      propData = this.props.propData      
-    }
-    else {
-      propData = this.state.propData
-    }
     return (
       <section>
-        <PropHead propData={propData} getData={this.getData} />
-        <PropOverview propData={propData} />
-        <PropDetail propData={propData} />
-        <PropValue propData={propData} />
-        <PropSchool propData={propData} />
+        <PropHead propData={this.state.propData} getData={this.getData} />
+        <PropOverview propData={this.state.propData} />
+        <PropDetail propData={this.state.propData} />
+        <PropValue propData={this.state.propData} />
+        <PropSchool propData={this.state.propData} />
         <Loading loading={this.state.loading} />
       </section>
     );
   }
 
   getData(data) {
-    if (data === 'START') {
+    if (data.loading === 'START') {
       this.setState({loading: true})
     }
-    else if (data === 'STOP') {
+    else if (data.loading === 'STOP') {
       this.setState({loading: false})
     }
     else {

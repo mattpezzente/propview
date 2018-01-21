@@ -5,7 +5,7 @@ const convert = require('xml-js');
 
 class SearchHere extends Component {
   constructor(props) {
-    super(props);
+    super(props)
     this.state = {
       loading: false,
     }
@@ -27,7 +27,7 @@ class SearchHere extends Component {
 
   getLocationData(e) {
     e.preventDefault()
-    this.props.getData('START')
+    this.props.getData({loading: 'START'})
     if (navigator.geolocation) {
       let latlong = []    
       navigator.geolocation.getCurrentPosition(position => {
@@ -38,7 +38,7 @@ class SearchHere extends Component {
       return latlong
     } 
     else {
-      this.props.getData('STOP')
+      this.props.getData({loading: 'STOP'})
       return false
     }
   }
@@ -71,23 +71,16 @@ class SearchHere extends Component {
           return
         }
       }
-      for (let objects in apiObjects) {
-        console.log(apiObjects[objects])
-      }
 
       // Merge API data in order
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
 
+      // End Loading indicator
+      this.props.getData({loading: 'STOP'})
+
       //Check if anything was returned
-      if (Object.keys(propData).length !== 0) {        
-        console.log('sending Data')
-        console.log(propData)
+      if (Object.keys(propData).length !== 0) {
         this.props.getData(propData)
-      }
-      else {
-        console.log('sending STOP')
-        console.log(propData)
-        this.props.getData('STOP')
       }
     }
 
@@ -102,7 +95,7 @@ class SearchHere extends Component {
         orderby: 'distance',
       },
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -110,7 +103,7 @@ class SearchHere extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -118,7 +111,7 @@ class SearchHere extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -130,7 +123,7 @@ class SearchHere extends Component {
         longitude: latlong[1],
       },
       headers: {
-        apikey: 'db01c855c976f897bbcb620bcd47cae7',
+        apikey: '6c16690ff86029f66c75e65d0dbe363f',
         Accept: 'application/json',
       }
     }
@@ -151,18 +144,14 @@ class SearchHere extends Component {
       apiObjects.onProperty = dataOnProperty.data.property[0]
       
       propAddress.push(dataOnProperty.data.property[0].address.line1)
-      propAddress.push(dataOnProperty.data.property[0].address.line2)
-      
-      console.log('OnBoard Property')
+      propAddress.push(dataOnProperty.data.property[0].address.line2)      
       
       axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: propAddress[0], citystatezip: propAddress[1]}}))
       .then(dataZillSearch => {
         finishedAPIs.zillSearch = true
         dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
         apiObjects.zillSearch = dataZillSearch
-        dataZillSearch = dataZillSearch.zpid._text
-        
-        console.log('Zillow Search')
+        dataZillSearch = dataZillSearch.zpid._text        
         
         axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
         .then(dataZillProperty => {
@@ -170,7 +159,6 @@ class SearchHere extends Component {
           dataZillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response
           apiObjects.zillProperty = dataZillProperty
 
-          console.log('Zillow Property')
           sendData()          
         })
         .catch(err => {
@@ -191,7 +179,6 @@ class SearchHere extends Component {
         finishedAPIs.onSchools = true
         apiObjects.onSchools = dataOnSchools.data
 
-        console.log('OnBoard Schools')
         sendData()        
       })            
       .catch(err => {
@@ -205,7 +192,6 @@ class SearchHere extends Component {
         finishedAPIs.onSale = true
         apiObjects.onSale = dataOnSalesHistory.data.property[0]
         
-        console.log('OnBoard Sales')
         sendData()        
       })
       .catch(err => {
@@ -219,7 +205,6 @@ class SearchHere extends Component {
         finishedAPIs.onAVM = true
         apiObjects.onAVM = dataOnAVM.data.property[0]
 
-        console.log('OnBoard AVM')
         sendData()
       })
       .catch(err => {
