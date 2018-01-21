@@ -12,21 +12,33 @@ class Property extends Component {
   constructor(props) {
     super(props);
     document.title = 'PropView - Property'
+    this.localProps = {
+      propData: {},
+    }
+    props = {
+      propData: {},
+    }
     this.state = {
-      propData: {}
+      propData: {},
     }
 
     this.getData = this.getData.bind(this)
   }
 
   render() {
+    if (Object.keys(this.props.propData).length !== 0) {
+      this.localProps.propData = this.props.propData
+    }
+    else if (Object.keys(this.state.propData).length !== 0) {
+      this.localProps.propData = this.state.propData
+    }
     return (
       <section>
-        <PropHead propData={this.state.propData} getData={this.getData} />
-        <PropOverview propData={this.state.propData} />
-        <PropDetail propData={this.state.propData} />
-        <PropValue propData={this.state.propData} />
-        <PropSchool propData={this.state.propData} />
+        <PropHead propData={this.localProps.propData} getData={this.getData} />
+        <PropOverview propData={this.localProps.propData} />
+        <PropDetail propData={this.localProps.propData} />
+        <PropValue propData={this.localProps.propData} />
+        <PropSchool propData={this.localProps.propData} />
         <Loading loading={this.state.loading} />
       </section>
     );
@@ -40,7 +52,6 @@ class Property extends Component {
       this.setState({loading: false})
     }
     else {
-      this.redirect = true
       this.setState({propData: data, loading: false})
     }
   }

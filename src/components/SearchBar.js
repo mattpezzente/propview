@@ -62,8 +62,7 @@ class SearchBar extends Component {
       this.props.getData({loading: 'STOP'})
 
       //Check if anything was returned
-      if (Object.keys(propData).length !== 0) {
-        console.log(propData)
+      if (Object.keys(propData).length !== 0) {        
         this.props.getData(propData)
       }
     }

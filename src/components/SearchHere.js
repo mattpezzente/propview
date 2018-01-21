@@ -80,7 +80,6 @@ class SearchHere extends Component {
 
       //Check if anything was returned
       if (Object.keys(propData).length !== 0) {
-        console.log(propData)
         this.props.getData(propData)
       }
     }

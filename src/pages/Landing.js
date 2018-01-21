@@ -6,18 +6,20 @@ class Landing extends Component {
   constructor(props) {
     super(props);
     document.title = 'PropView'
-    this.windowDimensions = {
-        height: window.innerHeight
-    }
     this.randImg = 'landing landing-' + Math.floor(Math.random() * 7 + 1)
     
-    window.onresize = () => {
-      this.windowDimensions = {
-        height: window.innerHeight,
-      };
-      this.setState({resize: true})
-    }
     this.getData = this.getData.bind(this)
+  }
+
+  componentDidMount() {
+    document.querySelector('.landing').style.height = window.innerHeight.toString() + "px"
+    window.onresize = () => {      
+      document.querySelector('.landing').style.height = window.innerHeight.toString() + "px"
+    }
+  }
+
+  componentWillUnmount() {
+    window.onresize = null
   }
 
   render() {
