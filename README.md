@@ -5,6 +5,10 @@ Property Viewer is an application that runs completely on the client-side, being
 
 The application itself, is a property viewing utility, that is designed to take in a property address, and return results and listing information based on the address given. It also implements a GPS feature, that gets the user's current location, and displays information of the address he/she is currently at.
 
+## Demo
+
+[PropView Demo](https://salogost.github.io/propview/ "PropView Demo")
+
 ## Technology
 
 #### Languages
