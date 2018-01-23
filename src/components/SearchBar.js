@@ -100,14 +100,14 @@ class SearchBar extends Component {
         Accept: 'application/json',
       }
     }
-    let confZillowSearch = {
+    let confZillowDeepSearch = {
       method: 'get',
       params: {
         'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', 
         address: address[0], 
         citystatezip: address[1],
       },
-      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetSearchResults.htm',
+      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetDeepSearchResults.htm',
     }
     let confZillowProperty = {
       method: 'get',
@@ -155,18 +155,20 @@ class SearchBar extends Component {
     })
 
     // Zillow Property Calls
-    axios(confZillowSearch)
+    axios(confZillowDeepSearch)
     .then(dataZillSearch => {
       finishedAPIs.zillSearch = true
       dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
       apiObjects.zillSearch = dataZillSearch
       dataZillSearch = dataZillSearch.zpid._text
-                  
+      console.log('Zillow Search')
+      console.log(dataZillSearch)
       axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
       .then(dataZillProperty => {
         finishedAPIs.zillProperty = true
         apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response    
 
+        console.log(apiObjects.zillProperty)
         sendData()
       })
       .catch(err => {

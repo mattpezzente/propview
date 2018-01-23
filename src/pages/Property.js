@@ -25,7 +25,7 @@ class Property extends Component {
     this.getData = this.getData.bind(this)
   }
 
-  render() {
+  render() {    
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps.propData = this.props.propData
     }

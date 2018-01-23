@@ -91,7 +91,7 @@ class SearchHere extends Component {
       params: {
         latitude: latlong[0],
         longitude: latlong[1],
-        radius: 0.25,
+        radius: 1,
         orderby: 'distance',
       },
       headers: {
