@@ -1,11 +1,14 @@
 class PropertyDO {
   constructor() {    
     // Poperty Head Section Data
+    this.address1 = ''
+    this.address2 = ''
+    this.sqft = 0
 
     // Poperty Overview Section Data
+    this.overview = ''    
 
     // Property Features Section Data
-    this.p = propData
     this.yearBuilt = ''
     this.pool = ''
     this.bldgType = ''
@@ -28,12 +31,15 @@ class PropertyDO {
     this.taxCodeArea = ''
 
     // Property Value Section Data
-
-
+    this.avm = 0
+    this.avmDate = ''    
     // Property Sales History Section Data
-
+    this.saleHistory = []
 
     // Property Schools Section Data
+    this.schools = []
 
   }
 }
+
+export default PropertyDO;

@@ -20,14 +20,15 @@ class PropHead extends Component {
     this.getData = this.getData.bind(this)
   }
 
-  render() {    
+  render() {
+    if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
-        address1: address1,
-        address2: address2,
-        backImg: backImg,
-        beds: beds,
-        baths: baths,
-        sqft: this.toCommaNumber(sqft),
+        address1: this.props.propData.address1,
+        address2: this.props.propData.address2,
+        backImg: this.props.propData.backImg,
+        beds: this.props.propData.beds,
+        baths: this.props.propData.baths,
+        sqft: this.props.propData.sqft      
       }
     }
     return (
@@ -69,17 +70,6 @@ class PropHead extends Component {
 
   getData(data) {
     this.props.getData(data)
-  }
-
-
-  toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  }
-
-  toCommaNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }
 

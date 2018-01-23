@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import icoPropertyValue from '../images/propvalue/propview-value-icon.png';
 import '../styles/css/PropValue.css';
-let currencyFormatter = require('currency-formatter');
+const currencyFormatter = require('currency-formatter');
 
 class PropValue extends Component {
   constructor(props) {
@@ -11,53 +11,34 @@ class PropValue extends Component {
       avmDate: 'N/A',
       saleHistory: [],
     }
+    this.historyHTML = (
+      <tr>
+        <td></td>
+        <td></td>
+        <td></td>
+      </tr>
+    )
   }
 
   render() {      
-    if (Object.keys(this.props.propData).length !== 0) {
-      let p = this.props.propData
-      let avm
-      let avmDate
-      let saleHistory
-      
-      try {
-        // AVM Value
-        if (p.avm.amount.value) {
-          avm = p.avm.amount.value
-        }
-        else {
-          avm = '$0.00'
-        }
-        
-        // AVM Date
-        if (p.avm.eventDate) {
-          avmDate = p.avm.eventDate
-        }
-        else {
-          avmDate = 'N/A'
-        }
-        
-        // Sales History
-        if (p.salehistory) {        
-          saleHistory = p.salehistory.map((key, i) => {
-            return (
-              <tr key={i}> 
-                <td>{key.amount.salerecdate}</td>
-                <td>{currencyFormatter.format(key.amount.saleamt, {code: 'USD'})}</td>
-                <td>{key.amount.saletranstype}</td>
-              </tr>
-            )
-          })
-        }
-      } catch(err) {
-        console.log(err)
+    if (Object.keys(this.props.propData).length !== 0) { 
+      this.localProps = {
+        avm: this.props.propData.avm,
+        avmDate: this.props.propData.avmDate,
+        saleHistory: this.props.propData.saleHistory,
       }
 
-
-      this.localProps = {
-        avm: currencyFormatter.format(avm, {code: 'USD'}),
-        avmDate: avmDate,
-        saleHistory: saleHistory,
+      // Sales History HTML Components
+      if (this.localProps.saleHistory) {        
+        this.historyHTML = this.localProps.saleHistory.map((key, i) => {
+          return (
+            <tr key={i}> 
+              <td>{key.amount.salerecdate}</td>
+              <td>{currencyFormatter.format(key.amount.saleamt, {code: 'USD'})}</td>
+              <td>{key.amount.saletranstype}</td>
+            </tr>
+          )
+        })
       }
     }
     return (
@@ -81,22 +62,12 @@ class PropValue extends Component {
             </tr>
            </thead>
            <tbody>
-            {this.localProps.saleHistory}
+            {this.historyHTML}
            </tbody>
           </table>
         </section>
       </section>
     );
-  }
-
-  toTitleCase(str) {
-    return str.replace(/\w\S*/g, function(txt) {
-      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-    });
-  }
-
-  toCommaNumber(num) {
-    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }
 

@@ -1,7 +1,9 @@
 import React, { Component } from 'react';
 import axios from 'axios';
-import '../styles/css/SearchHere.css'
+import '../styles/css/SearchHere.css';
+import PropertyDO from '../PropertyDO';
 const convert = require('xml-js');
+const currencyFormatter = require('currency-formatter');
 
 class SearchHere extends Component {
   constructor(props) {
@@ -77,6 +79,9 @@ class SearchHere extends Component {
 
       // End Loading indicator
       this.props.getData({loading: 'STOP'})
+
+      // Return the data with the PropertyDO format
+      propData = this.formatDO(propData)
 
       //Check if anything was returned
       if (Object.keys(propData).length !== 0) {
@@ -227,6 +232,299 @@ class SearchHere extends Component {
     })    
   }
 
+  formatDO(propData) {
+    let propDO = new PropertyDO()
+    let p = propData
+
+    /*
+    ** Head Section Data
+    */
+    
+    //Address - Line1 - Validation
+    if (p.address) {
+      if (p.address.line1) {
+        propDO.address1 = p.address.line1
+      }
+      else if (p.address.street && p.address.street._text) {
+        propDO.address1 = p.address.street._text
+      }      
+    }
+    else {
+      propDO.address1 = 'UNKNOWN'
+    }
+
+    //Address - Line2 - Validation
+    if (p.address) {
+      if (p.address.line2) {
+        propDO.address2 = p.address.line2
+      }
+      else if (p.address.state && p.address.state._text && p.address.city && p.address.city._text && p.address.zipcode && p.address.zipcode._text) {
+        propDO.address2 = p.address.city._text + ' ' + p.address.state._text + ', ' + p.address.zipcode._text
+      }
+    }
+    else {
+      propDO.address2 = 'UNKNOWN'
+    }
+
+    // Image Validation
+    if (p.images && p.images.image && p.images.image.url[0] && p.images.image.url[0]._text) {
+      propDO.backImg = p.images.image.url[0]._text
+    }
+    else {
+      propDO.backImg = ''
+    }
+
+    // // Baths Validation
+    // if (p.building.rooms.bathshalf % 2 !== 0) {
+    //   baths = p.building.rooms.bathstotal - 0.5
+    // } 
+    // else if (p.building.rooms.bathshalf % 2 === 0) {
+    //   baths = p.building.rooms.bathstotal
+    // }
+    // else {
+    //   baths = 'N/A'
+    // }
+
+    // Squarefeet Validation
+    if (p.building && p.building.size) {
+      if (p.building.size.livingsize) {
+        propDO.sqft = p.building.size.livingsize
+      }
+      else if (p.building.size.universalsize) {
+        propDO.sqft = p.building.size.universalsize
+      }
+    }
+    else {
+      propDO.sqft = 'N/A'
+    }
+
+    /*
+    ** Overview Section Data
+    */    
+    
+    // Home Description
+    if (p.homeDescription && p.homeDescription._text) {
+      propDO.overview = p.homeDescription._text
+    }
+    else {
+      propDO.overview = 'OVERVIEW UNAVAILABLE...'
+    }
+
+    /*
+    ** Features Section Data
+    */
+
+    // Year Built
+    if (p.summary) {
+      if (p.summary.yearbuilteffective) {      
+        propDO.yearBuilt = p.summary.yearbuilteffective 
+      }
+      else if (p.summary.yearbuilt) {
+          propDO.yearBuilt = p.summary.yearbuilt
+      }
+    }
+    else {
+      propDO.yearBuilt = 'N/A'
+    }
+
+    // Pool
+    if (p.lot && p.lot.poolind) {
+      if (p.lot.poolind === 'Y') {            
+        propDO.pool = 'Yes'
+      }
+      else if (p.lot.poolind === 'N') {
+        propDO.pool = 'No'
+      }
+    }
+    else {
+      propDO.pool = 'N/A'
+    }
+
+    // Building Type
+    if (p.building && p.building.summary) {
+      if (p.building.summary.bldgType) {
+        propDO.bldgType = p.building.summary.bldgType
+      }
+      else if (p.building.summary.imprType) {
+        propDO.bldgType = p.building.summary.imprType
+      }
+    }
+    else {
+      propDO.bldgType = 'N/A'
+    }
+
+    // Lot Size
+    if (p.lot) {
+      if (p.lot.lotsize1) {
+        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotsize1 * 43560)) + ' sqft'
+      }
+      else if (p.lot.lotsize2) {
+        propDO.lotSize = p.lot.lotsize2 + ' sqft'
+      }
+    }
+    else {
+      propDO.lotSize = 'N/A'
+    }
+
+    // Cooling Type
+    if (p.utilities && p.utilities.coolingtype) {
+      propDO.cooling = p.utilities.coolingtype
+    }
+    else {
+      propDO.cooling = 'N/A'
+    }
+
+    // Roofing
+    if (p.building && p.building.construction && p.building.construction.roofcover) {
+      propDO.roof = p.building.construction.roofcover
+    }
+    else {
+      propDO.roof = 'N/A'
+    }
+
+    // Heating Type
+    if (p.utilities && p.utilities.heatingtype) {
+      propDO.heating = p.utilities.heatingtype
+    }
+    else {
+      propDO.heating = 'N/A'
+    }
+
+    // Wall Type
+    if (p.utilities && p.utilities.wallType) {
+      propDO.walls = p.utilities.wallType
+    }
+    else {
+      propDO.walls = 'N/A'
+    }
+
+    // Full Baths
+    if (p.building && p.building.rooms) {
+      if (p.building.rooms.bathsfull) {
+        propDO.bathsFull = p.building.rooms.bathsfull
+      }
+      else if (p.building.rooms.bathscalc) {
+        propDO.bathsFull = p.building.rooms.bathscalc
+      }
+    }
+    else {
+      propDO.bathsFull = 'N/A'
+    }
+
+    // Half Baths
+    if (p.building && p.building.rooms && p.building.rooms.bathshalf) {
+      propDO.bathsHalf = p.building.rooms.bathshalf
+    }
+    else {
+      propDO.bathsHalf = 'N/A'
+    }
+
+    // Beds
+    if (p.building && p.building.rooms && p.building.rooms.beds) {
+      propDO.beds = p.building.rooms.beds
+    }
+    else {
+      propDO.beds = 'N/A'
+    }
+
+    // Building Size
+    if (p.building && p.building.size && p.building.size.bldgsize) {
+      propDO.bldgSize = this.toCommaNumber(p.building.size.bldgsize) + ' sqft'
+    }
+    else {
+      propDO.bldgSize = 'N/A'
+    }
+
+    // Ground Floor Size
+    if (p.building && p.building.size && p.building.size.groundfloorsize) {
+      propDO.groundFloorSize = this.toCommaNumber(p.building.size.groundfloorsize) + ' sqft'
+    }
+    else {
+      propDO.groundFloorSize = 'N/A'
+    }
+
+    // Living Floor Size
+    if (p.building && p.building.size && p.building.size.livingsize) {
+      propDO.livingSize = this.toCommaNumber(p.building.size.livingsize) + ' sqft'
+    }
+    else {
+      propDO.livingSize = 'N/A'
+    }
+
+    // Block Number
+    if (p.area && p.area.blockNum) {
+      propDO.blockNum = p.area.blockNum
+    }
+    else {
+      propDO.blockNum = 'N/A'
+    }
+
+    // County Name
+    if (p.area && p.area.countrysecsubd) {
+      propDO.countrySecSubd = p.area.countrysecsubd
+    }
+    else {
+      propDO.countrySecSubd = 'N/A'
+    }
+
+    // Subdivision Section
+    if (p.area && p.area.subdname) {
+      propDO.subdName = p.area.subdname
+    }
+    else {
+      propDO.subdName = 'N/A'
+    }
+
+    // Tax Code Area
+    if (p.area && p.area.taxcodearea) {
+      propDO.taxCodeArea = p.area.taxcodearea
+    }
+    else {
+      propDO.taxCodeArea = 'N/A'
+    }
+
+    /*
+    ** Property Value Section Data
+    */
+
+    // AVM Value
+    if (p.avm && p.avm.amount && p.avm.amount.value) {
+      propDO.avm = currencyFormatter.format(p.avm.amount.value, {code: 'USD'})
+    }
+    else {
+      propDO.avm = '$0.00'
+    }
+    
+    // AVM Date
+    if (p.avm && p.avm.eventDate) {
+      propDO.avmDate = p.avm.eventDate
+    }
+    else {
+      propDO.avmDate = 'N/A'
+    }
+
+    // Sales History
+    if (p.salehistory) {        
+      propDO.saleHistory = p.salehistory
+    }
+    else {
+      propDO.saleHistory = []
+    }
+
+    /*
+    ** School Section Data
+    */
+
+    if (p.school) {
+      propDO.schools = p.school
+    }
+    else {
+      propDO.schools = []
+    }
+
+    return propDO
+  }
+
   formatAddress(str) {
     if (str.split(',').length < 2) {
       return false
@@ -238,6 +536,16 @@ class SearchHere extends Component {
       ]
       return addressArray
     }
+  }
+
+  toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+  toCommaNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }
 

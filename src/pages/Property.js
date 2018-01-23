@@ -29,7 +29,7 @@ class Property extends Component {
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps.propData = this.props.propData
     }
-    else if (Object.keys(this.state.propData).length !== 0) {
+    if (Object.keys(this.state.propData).length !== 0) {
       this.localProps.propData = this.state.propData
     }
     return (

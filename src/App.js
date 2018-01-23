@@ -1,7 +1,6 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Loading from './components/Loading';
-import PropertyDO from './PropertyDO';
 import './styles/css/reset.css';
 import './styles/css/App.css';
 

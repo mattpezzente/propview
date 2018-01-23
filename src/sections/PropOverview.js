@@ -11,24 +11,9 @@ class PropOverview extends Component {
 
   render() {
     if (Object.keys(this.props.propData).length !== 0) {
-      let p = this.props.propData
-      let homeDesc = 'OVERVIEW UNAVAILABLE...'
-
-      try {
-        // Home Description
-        if (this.props.propData.homeDescription._text) {
-          homeDesc = p.homeDescription._text
-        }
-        else {
-          homeDesc = 'OVERVIEW UNAVAILABLE...'
-        }
-      } catch(err) {
-        
-      }
-
       this.localProps = {
-        homeDesc: homeDesc,
-      }
+        homeDesc: this.props.propData.overview,
+      }   
     }
     return (
       <section className="prop-container">

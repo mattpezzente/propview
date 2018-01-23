@@ -34,55 +34,34 @@ class PropDetail extends Component {
       subdName: 'N/A',
       taxCodeArea: 'N/A',
     }
-    
-    // this.props.propData.building.summary.yearbuilteffective
-    // this.props.propData.lot.poolind = "Y" ? 'Yes' : 'No'
-    // this.toTitleCase(this.props.propData.building.summary.bldgType)
-    // this.toCommaNumber(this.props.propData.lot.lotsize2)
-    // this.toTitleCase(this.props.propData.utilities.coolingtype)
-    // this.toTitleCase(this.props.propData.building.construction.roofcover)
-    // this.toTitleCase(this.props.propData.utilities.heatingtype)
-    // this.toTitleCase(this.props.propData.building.construction.wallType)
-
-    // this.props.propData.building.rooms.bathsfull
-    // this.props.propData.building.rooms.bathshalf
-    // this.props.propData.building.rooms.beds
-    // this.toCommaNumber(this.props.propData.building.size.bldgsize)
-    // this.toCommaNumber(this.props.propData.building.size.groundfloorsize)
-    // this.toCommaNumber(this.props.propData.building.size.livingsize)
-    // this.props.propData.area.blockNum
-    // this.toTitleCase(this.props.propData.area.countrysecsubd)
-    // this.toTitleCase(this.props.propData.area.subdname)
-    // this.props.propData.area.taxcodearea
-
 
     this.toTitleCase = this.toTitleCase.bind(this)
     this.toCommaNumber = this.toCommaNumber.bind(this) 
   }
   
-  render() {    
+  render() {
+    if (Object.keys(this.props.propData).length !== 0) {  
       this.localProps = {
-        yearBuilt: yearBuilt,
-        pool: pool,
-        bldgType: bldgType,
-        lotSize: lotSize,
-        cooling: cooling,
-        roof: roof,
-        heating: heating,
-        walls: walls,
-
-        bathsFull: bathsFull,
-        bathsHalf: bathsHalf,
-        beds: beds,
-        bldgSize: bldgSize,
-        groundFloorSize: groundFloorSize,
-        livingSize: livingSize,
-        blockNum: blockNum,
-        countrySecSubd: countrySecSubd,
-        subdName: subdName,
-        taxCodeArea: taxCodeArea,
+        yearBuilt: this.props.propData.yearBuilt,
+        pool: this.props.propData.pool,
+        bldgType: this.props.propData.bldgType,
+        lotSize: this.props.propData.lotSize,
+        cooling: this.props.propData.cooling,
+        roof: this.props.propData.roof,
+        heating: this.props.propData.heating,
+        walls: this.props.propData.walls,
+        bathsFull: this.props.propData.bathsFull,
+        bathsHalf: this.props.propData.bathsHalf,
+        beds: this.props.propData.beds,
+        bldgSize: this.props.propData.bldgSize,
+        groundFloorSize: this.props.propData.groundFloorSize,
+        livingSize: this.props.propData.livingSize,
+        blockNum: this.props.propData.blockNum,
+        countrySecSubd: this.props.propData.countrySecSubd,
+        subdName: this.props.propData.subdName,
+        taxCodeArea: this.props.propData.taxCodeArea,
       }
-    }
+    }   
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper">

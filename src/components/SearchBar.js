@@ -1,7 +1,10 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchBar.css'
+import PropertyDO from '../PropertyDO';
 const convert = require('xml-js');
+const currencyFormatter = require('currency-formatter');
+
 
 class SearchBar extends Component {
   constructor(props) {
@@ -9,7 +12,6 @@ class SearchBar extends Component {
     this.state = {
       loading: false,
     }
-
     this.fetchGivenAddress = this.fetchGivenAddress.bind(this)
     this.formatAddress = this.formatAddress.bind(this)
   }
@@ -56,12 +58,11 @@ class SearchBar extends Component {
           return
         }
       }
-
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
-
       this.props.getData({loading: 'STOP'})
-
-      //Check if anything was returned
+      propData = this.formatDO(propData)
+      
+      // Check if anything was returned
       if (Object.keys(propData).length !== 0) {        
         this.props.getData(propData)
       }
@@ -161,14 +162,11 @@ class SearchBar extends Component {
       dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
       apiObjects.zillSearch = dataZillSearch
       dataZillSearch = dataZillSearch.zpid._text
-      console.log('Zillow Search')
-      console.log(dataZillSearch)
       axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
       .then(dataZillProperty => {
         finishedAPIs.zillProperty = true
         apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response    
 
-        console.log(apiObjects.zillProperty)
         sendData()
       })
       .catch(err => {
@@ -183,15 +181,9 @@ class SearchBar extends Component {
     })
   }
 
-  formatDO() {
-    let propDO = new PropetyDO()
-    // Poperty Head Section Data
-    // Poperty Overview Section Data
-    // Property Features Section Data
-    // Property Details Section Data
-    // Property Value Section Data
-    // Property Sales History Section Data
-    // Property Schools Section Data
+  formatDO(propData) {
+    let propDO = new PropertyDO()
+    let p = propData
 
     /*
     ** Head Section Data
@@ -259,9 +251,18 @@ class SearchBar extends Component {
     ** Overview Section Data
     */    
     
+    // Home Description
+    if (p.homeDescription && p.homeDescription._text) {
+      propDO.overview = p.homeDescription._text
+    }
+    else {
+      propDO.overview = 'OVERVIEW UNAVAILABLE...'
+    }
+
     /*
     ** Features Section Data
     */
+
     // Year Built
     if (p.summary) {
       if (p.summary.yearbuilteffective) {      
@@ -430,6 +431,47 @@ class SearchBar extends Component {
     else {
       propDO.taxCodeArea = 'N/A'
     }
+
+    /*
+    ** Property Value Section Data
+    */
+
+    // AVM Value
+    if (p.avm && p.avm.amount && p.avm.amount.value) {
+      propDO.avm = currencyFormatter.format(p.avm.amount.value, {code: 'USD'})
+    }
+    else {
+      propDO.avm = '$0.00'
+    }
+    
+    // AVM Date
+    if (p.avm && p.avm.eventDate) {
+      propDO.avmDate = p.avm.eventDate
+    }
+    else {
+      propDO.avmDate = 'N/A'
+    }
+
+    // Sales History
+    if (p.salehistory) {        
+      propDO.saleHistory = p.salehistory
+    }
+    else {
+      propDO.saleHistory = []
+    }
+
+    /*
+    ** School Section Data
+    */
+
+    if (p.school) {
+      propDO.schools = p.school
+    }
+    else {
+      propDO.schools = []
+    }
+
+    return propDO
   }
 
   formatAddress(str) {
@@ -443,6 +485,16 @@ class SearchBar extends Component {
       ]
       return addressArray
     }
+  }
+
+  toTitleCase(str) {
+    return str.replace(/\w\S*/g, function(txt) {
+      return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
+    });
+  }
+
+  toCommaNumber(num) {
+    return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
   }
 }
 
