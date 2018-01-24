@@ -18,7 +18,7 @@ class PropOverview extends Component {
     return (
       <section className="prop-container">
         <div className="prop-wrapper">
-          <div className="seperator-container">
+          <div className="seperator-container" style={{marginBottom: '2rem'}}>
             <div className="orange-line-accent"></div><h2>Overview</h2><div className="orange-line-accent"></div>
           </div>
           <span className="propover-map"></span>

@@ -23,7 +23,7 @@ class PropHead extends Component {
   }
 
   render() {
-    if (Object.keys(this.props.propData).length !== 0) {
+    if (Object.keys(this.props.propData).length !== 0) {      
       this.localProps = {
         address1: this.props.propData.address1,
         address2: this.props.propData.address2,
@@ -31,7 +31,7 @@ class PropHead extends Component {
         beds: this.props.propData.beds,
         baths: this.props.propData.bathsTotal,
         sqft: this.props.propData.sqft      
-      }              
+      }     
     }
     return (
       <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">

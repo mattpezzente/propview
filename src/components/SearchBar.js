@@ -13,6 +13,8 @@ class SearchBar extends Component {
     this.state = {
       loading: false,
     }
+
+    this.sendDO = this.sendDO.bind(this)
     this.fetchGivenAddress = this.fetchGivenAddress.bind(this)
     this.formatAddress = this.formatAddress.bind(this)
   }
@@ -50,10 +52,9 @@ class SearchBar extends Component {
       zillSearch: {},
       zillProperty: {}
     }
-
+    let propData = {}
     // Variable to store method for passing the gathered data
     let sendData = () => {
-      let propData
       for (let status in finishedAPIs) {
         if (finishedAPIs[status] === false) {
           return
@@ -63,23 +64,27 @@ class SearchBar extends Component {
       // Merge API data in order
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
       
-      // End Loading indicator
-      this.props.getData({loading: 'STOP'})
-      
-      console.log('Pre-DO')
-      console.log(propData)
-
       // Return the data with the PropertyDO format
-      propData = this.formatDO(propData)      
-      
-      
-      console.log('After-DO')
-      console.log(propData)
+      this.sendDO(propData)
 
-      // Check if anything was returned
-      if (Object.keys(propData).length !== 0) {        
-        this.props.getData(propData)
-      }
+      // Stop the loading overlay
+      
+      // let dataCheck = setTimeout(() => {
+      //   console.log(propData.backImg)
+      //   if (Object.keys(propData).length !== 0 && propData.backImg.length > 0) {
+      //     this.props.getData({loading: 'STOP'})
+      //     this.props.getData(propData)
+      //     clearInterval(dataCheck)
+      //     console.log('done')
+      //   }
+      // }, 1000)
+      // setTimeout(() => {
+      //   this.props.getData({loading: 'STOP'})
+      //   // Check if anything was returned 
+      //   if (Object.keys(propData).length !== 0) {
+      //     this.props.getData(propData)
+      //   }  
+      // }, 200)   
     }
 
     // CONFIGURATIONS
@@ -195,9 +200,14 @@ class SearchBar extends Component {
     })
   }
 
-  formatDO(propData) {
+  sendDO(propData) {
     let propDO = new PropertyDO()
     let p = propData
+    let sent = false
+    let sendData = propertyDO => {
+      this.props.getData({loading: 'STOP'})
+      this.props.getData(propertyDO)      
+    }
 
     /*
     ** Head Section Data
@@ -266,21 +276,63 @@ class SearchBar extends Component {
 
     // Image Validation
     if (propDO.address1.length > 0 && propDO.address2.length > 0) {
-      propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=2556x1440&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-')}&pitch=10&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
-    }     
-    else if (propDO.lat.length > 0 && propDO.long.length > 0) {
-      propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=2556x1440&location=${propDO.lat},${propDO.long}&pitch=10&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
-    }
-    else if (p.images && p.images.image) {
-      if (p.images.image.url[0] && p.images.image.url[0]._text) {
-        propDO.backImg = p.images.image.url[0]._text
+      let confGoogleAddress = {
+        method: 'get',
+        url: 'https://maps.googleapis.com/maps/api/streetview/metadata',
+        params: {
+          size: '1920x1080',
+          location: (propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-'),
+          pitch: 5,
+          key: 'AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I',
+        }
       }
-      else if (p.images.image.url && p.images.image.url._text) {
-        propDO.backImg = p.images.image.url._text
-      }
+      axios(confGoogleAddress)
+      .then(data => {
+        if (data.data.status === 'OK') {
+          propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
+          sendData(propDO)
+        }
+        else {                    
+          if (p.images && p.images.image) {
+            if (p.images.image.url[0] && p.images.image.url[0]._text) {
+              propDO.backImg = p.images.image.url[0]._text
+              sendData(propDO)
+            }
+            else if (p.images.image.url && p.images.image.url._text) {
+              propDO.backImg = p.images.image.url._text
+              sendData(propDO)
+            }
+          }          
+        }      
+      })
+      .catch(err => {
+        if (p.images && p.images.image) {
+          if (p.images.image.url[0] && p.images.image.url[0]._text) {
+            propDO.backImg = p.images.image.url[0]._text
+            sendData(propDO)
+          }
+          else if (p.images.image.url && p.images.image.url._text) {
+            propDO.backImg = p.images.image.url._text
+            sendData(propDO)
+          }          
+        }        
+      })
     }
     else {
-      propDO.backImg = defaultImg
+      if (p.images && p.images.image) {
+        if (p.images.image.url[0] && p.images.image.url[0]._text) {
+          propDO.backImg = p.images.image.url[0]._text
+          sendData(propDO)
+        }
+        else if (p.images.image.url && p.images.image.url._text) {
+          propDO.backImg = p.images.image.url._text
+          sendData(propDO)
+        }
+      }      
+      else {        
+        propDO.backImg = defaultImg
+        sendData(propDO)
+      }      
     }
 
     /*
@@ -532,7 +584,7 @@ class SearchBar extends Component {
       propDO.schools = []
     }
 
-    return propDO
+    sendData(propDO)
   }
 
   formatAddress(str) {
