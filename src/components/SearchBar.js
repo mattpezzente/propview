@@ -57,10 +57,10 @@ class SearchBar extends Component {
     if (this.localProps.loading) {
       // DISABLE INPUT
     }
-    else {      
+    else {
       // Start the loading overlay
       this.localProps.loading = true
-      this.props.getData({loading: 'START'})      
+      this.props.getData({loading: 'START'})
 
       // Keep track of which calls have finished
       let finishedAPIs = {
@@ -103,7 +103,7 @@ class SearchBar extends Component {
           address2: address[1],
         },
         headers: {
-          apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
+          apikey: this.getAPIKey(),
           Accept: 'application/json',
         }
       }
@@ -115,7 +115,7 @@ class SearchBar extends Component {
           address2: address[1],
         },
         headers: {
-          apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
+          apikey: this.getAPIKey(),
           Accept: 'application/json',
         }
       }
@@ -123,7 +123,7 @@ class SearchBar extends Component {
         method: 'get',
         url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
         headers: {
-          apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
+          apikey: this.getAPIKey(),
           Accept: 'application/json',
         }
       }
@@ -597,7 +597,6 @@ class SearchBar extends Component {
 
     address = parser.parseLocation(address)
     
-    console.log(address)
     if (address.number && address.street && address.type && address.city && address.state) {      
       line1 += address.number + ' '
       if (address.prefix) {
@@ -620,6 +619,16 @@ class SearchBar extends Component {
     else {
       return false
     }
+  }
+
+  getAPIKey() {
+    let apiKeys = [
+      '62268cadaa62a2d8f23e5a4b77cf95ac',
+      'db01c855c976f897bbcb620bcd47cae7',
+      '6c16690ff86029f66c75e65d0dbe363f',
+      'f09e60a344e1f8c2d61d31b33ac5ec7a',
+    ]
+    return apiKeys[Math.floor(Math.random() * 4)]
   }
 
   toTitleCase(str) {
