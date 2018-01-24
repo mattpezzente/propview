@@ -243,7 +243,12 @@ class SearchBar extends Component {
     }
     else {
       propDO.address2 = 'UNKNOWN'
-    }    
+    }
+
+    // Plus Seperated Address
+    if (propDO.address1 && propDO.address2) {
+      propDO.addressPlus = (propDO.address1 + ' ' + propDO.address2).trim()
+    }
 
     // Squarefeet Validation
     if (p.building && p.building.size) {
@@ -594,9 +599,7 @@ class SearchBar extends Component {
     let line1 = ''
     let line2 = ''
 
-    address = parser.parseLocation(address)
-    
-    console.log(address)
+    address = parser.parseLocation(address)    
 
     if (address.number && address.street && address.type && address.city && address.state) {      
       line1 += address.number + ' '

@@ -29,7 +29,10 @@ class PropHead extends Component {
         beds: this.props.propData.beds,
         baths: this.props.propData.bathsTotal,
         sqft: this.props.propData.sqft      
-      }     
+      }
+      if (this.localProps.backImg.length < 3) {
+        this.localProps.backImg = imgBackground
+      }
     }
     return (
       <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">
