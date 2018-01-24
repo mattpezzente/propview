@@ -3,7 +3,11 @@ class PropertyDO {
     // Poperty Head Section Data
     this.address1 = ''
     this.address2 = ''
+    this.bathsTotal = 0
     this.sqft = 0
+    this.lat = ''
+    this.long = ''
+    this.backImg = ''
 
     // Poperty Overview Section Data
     this.overview = ''    

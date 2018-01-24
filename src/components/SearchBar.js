@@ -2,6 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchBar.css'
 import PropertyDO from '../PropertyDO';
+import defaultImg from '../images/propview-property-1.png';
 const convert = require('xml-js');
 const currencyFormatter = require('currency-formatter');
 
@@ -58,10 +59,23 @@ class SearchBar extends Component {
           return
         }
       }
+
+      // Merge API data in order
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
-      this.props.getData({loading: 'STOP'})
-      propData = this.formatDO(propData)
       
+      // End Loading indicator
+      this.props.getData({loading: 'STOP'})
+      
+      console.log('Pre-DO')
+      console.log(propData)
+
+      // Return the data with the PropertyDO format
+      propData = this.formatDO(propData)      
+      
+      
+      console.log('After-DO')
+      console.log(propData)
+
       // Check if anything was returned
       if (Object.keys(propData).length !== 0) {        
         this.props.getData(propData)
@@ -213,26 +227,7 @@ class SearchBar extends Component {
     }
     else {
       propDO.address2 = 'UNKNOWN'
-    }
-
-    // Image Validation
-    if (p.images && p.images.image && p.images.image.url[0] && p.images.image.url[0]._text) {
-      propDO.backImg = p.images.image.url[0]._text
-    }
-    else {
-      propDO.backImg = ''
-    }
-
-    // // Baths Validation
-    // if (p.building.rooms.bathshalf % 2 !== 0) {
-    //   baths = p.building.rooms.bathstotal - 0.5
-    // } 
-    // else if (p.building.rooms.bathshalf % 2 === 0) {
-    //   baths = p.building.rooms.bathstotal
-    // }
-    // else {
-    //   baths = 'N/A'
-    // }
+    }    
 
     // Squarefeet Validation
     if (p.building && p.building.size) {
@@ -245,6 +240,47 @@ class SearchBar extends Component {
     }
     else {
       propDO.sqft = 'N/A'
+    }
+
+    // Latitude
+    if (p.location && p.location.latitude) {
+      propDO.lat = p.location.latitude
+    }
+    else if (p.address && p.address.latitude && p.address.latitude._text) {
+      propDO.lat = p.address.latitude._text
+    }
+    else {
+      propDO.lat = 0
+    }
+
+    // Longitude
+    if (p.location && p.location.longitude) {
+      propDO.long = p.location.longitude
+    }
+    else if (p.address && p.address.longitude && p.address.longitude._text) {
+      propDO.long = p.address.longitude._text
+    }
+    else {
+      propDO.long = 0
+    }
+
+    // Image Validation
+    if (propDO.address1.length > 0 && propDO.address2.length > 0) {
+      propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=2556x1440&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-')}&pitch=10&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
+    }     
+    else if (propDO.lat.length > 0 && propDO.long.length > 0) {
+      propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=2556x1440&location=${propDO.lat},${propDO.long}&pitch=10&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
+    }
+    else if (p.images && p.images.image) {
+      if (p.images.image.url[0] && p.images.image.url[0]._text) {
+        propDO.backImg = p.images.image.url[0]._text
+      }
+      else if (p.images.image.url && p.images.image.url._text) {
+        propDO.backImg = p.images.image.url._text
+      }
+    }
+    else {
+      propDO.backImg = defaultImg
     }
 
     /*
@@ -297,6 +333,9 @@ class SearchBar extends Component {
       else if (p.building.summary.imprType) {
         propDO.bldgType = p.building.summary.imprType
       }
+    }
+    else if (p.useCode && p.useCode._text) {
+      propDO.bldgType = p.useCode._text
     }
     else {
       propDO.bldgType = 'N/A'
@@ -368,9 +407,31 @@ class SearchBar extends Component {
       propDO.bathsHalf = 'N/A'
     }
 
+    // Baths Total
+    if (p.building && p.building.rooms) {
+      if (p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
+        propDO.bathsTotal = p.building.rooms.bathsfull + 0.5 * p.building.rooms.bathshalf
+      }
+      else if (p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
+        propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
+      }
+    }
+    else if (p.bathrooms && p.bathrooms._text) {
+      propDO.bathsTotal = p.bathrooms._text
+    }
+    else if (p.building && p.building.rooms && p.building.rooms.bathstotal) {
+      propDO.bathsTotal = p.building.rooms.bathstotal
+    }
+    else {
+      propDO.bathsFull = 'N/A'
+    }
+
     // Beds
     if (p.building && p.building.rooms && p.building.rooms.beds) {
       propDO.beds = p.building.rooms.beds
+    }
+    else if (p.bedrooms && p.bedrooms._text) {
+      propDO.beds = p.bedrooms._text
     }
     else {
       propDO.beds = 'N/A'

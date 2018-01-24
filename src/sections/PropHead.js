@@ -17,6 +17,8 @@ class PropHead extends Component {
       sqft: 'N/A',
     }
 
+    // Street View Key AIzaSyCBnOw96lLft1rXTeL_4i2hciyUTCX_8yg
+
     this.getData = this.getData.bind(this)
   }
 
@@ -27,9 +29,9 @@ class PropHead extends Component {
         address2: this.props.propData.address2,
         backImg: this.props.propData.backImg,
         beds: this.props.propData.beds,
-        baths: this.props.propData.baths,
+        baths: this.props.propData.bathsTotal,
         sqft: this.props.propData.sqft      
-      }
+      }              
     }
     return (
       <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">
