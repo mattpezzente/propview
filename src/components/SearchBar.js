@@ -10,8 +10,8 @@ const currencyFormatter = require('currency-formatter');
 class SearchBar extends Component {
   constructor(props) {
     super(props);
-    this.state = {
-      loading: false,
+    this.localProps = {
+      loading: false
     }
 
     this.sendDO = this.sendDO.bind(this)
@@ -31,182 +31,170 @@ class SearchBar extends Component {
   }
 
   fetchGivenAddress(e) {
-    e.preventDefault()
-    // Start the loading overlay
-    this.props.getData({loading: 'START'})
-    // Get formated input field value
-    let address = this.formatAddress(document.querySelector('.search-address').value)
-    // Keep track of which calls have finished
-    let finishedAPIs = {
-      onSale: false,
-      onSchools: false,
-      onAVM: false,
-      zillSearch: false,
-      zillProperty: false
+    if (this.localProps.loading) {
+      // DISABLE INPUT
     }
-    // Object to hold objects for merging
-    let apiObjects = {
-      onSale: {},
-      onSchools: {},
-      onAVM: {},
-      zillSearch: {},
-      zillProperty: {}
-    }
-    let propData = {}
-    // Variable to store method for passing the gathered data
-    let sendData = () => {
-      for (let status in finishedAPIs) {
-        if (finishedAPIs[status] === false) {
-          return
+    else {
+      // Start the loading overlay
+      this.localProps.loading = true
+      this.props.getData({loading: 'START'})      
+      
+      // Get formated input field value
+      let address = this.formatAddress(document.querySelector('.search-address').value)
+      
+      // Keep track of which calls have finished
+      let finishedAPIs = {
+        onSale: false,
+        onSchools: false,
+        onAVM: false,
+        zillSearch: false,
+        zillProperty: false
+      }
+      // Object to hold objects for merging
+      let apiObjects = {
+        onSale: {},
+        onSchools: {},
+        onAVM: {},
+        zillSearch: {},
+        zillProperty: {}
+      }
+      let propData = {}
+      // Variable to store method for passing the gathered data
+      let sendData = () => {
+        for (let status in finishedAPIs) {
+          if (finishedAPIs[status] === false) {
+            return
+          }
+        }
+
+        // Merge API data in order
+        propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)          
+
+        // Return the data with the PropertyDO format
+        this.sendDO(propData)  
+      }
+
+      // CONFIGURATIONS
+      let confOnSale = {
+        method: 'get',
+        url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
+        params: {
+          address1: address[0],
+          address2: address[1],
+        },
+        headers: {
+          apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
+          Accept: 'application/json',
         }
       }
-
-      // Merge API data in order
-      propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
+      let confOnAVM = {
+        method: 'get',
+        url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
+        params: {
+          address1: address[0],
+          address2: address[1],
+        },
+        headers: {
+          apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
+          Accept: 'application/json',
+        }
+      }
+      let confOnSchool = {
+        method: 'get',
+        url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
+        headers: {
+          apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
+          Accept: 'application/json',
+        }
+      }
+      let confZillowDeepSearch = {
+        method: 'get',
+        params: {
+          'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', 
+          address: address[0], 
+          citystatezip: address[1],
+        },
+        url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetDeepSearchResults.htm',
+      }
+      let confZillowProperty = {
+        method: 'get',
+        url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
+      }
       
-      // Return the data with the PropertyDO format
-      this.sendDO(propData)
+      // OnBoard Property Sales History & School Data
+      axios(confOnSale)
+      .then(dataOnSalesHistory => {
+        let propLongLat = []
+        finishedAPIs.onSale = true         
+        propLongLat.push(dataOnSalesHistory.data.property[0].location.latitude)
+        propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)
+        apiObjects.onSale =  dataOnSalesHistory.data.property[0]
 
-      // Stop the loading overlay
-      
-      // let dataCheck = setTimeout(() => {
-      //   console.log(propData.backImg)
-      //   if (Object.keys(propData).length !== 0 && propData.backImg.length > 0) {
-      //     this.props.getData({loading: 'STOP'})
-      //     this.props.getData(propData)
-      //     clearInterval(dataCheck)
-      //     console.log('done')
-      //   }
-      // }, 1000)
-      // setTimeout(() => {
-      //   this.props.getData({loading: 'STOP'})
-      //   // Check if anything was returned 
-      //   if (Object.keys(propData).length !== 0) {
-      //     this.props.getData(propData)
-      //   }  
-      // }, 200)   
-    }
-
-    // CONFIGURATIONS
-    let confOnSale = {
-      method: 'get',
-      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
-      params: {
-        address1: address[0],
-        address2: address[1],
-      },
-      headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
-        Accept: 'application/json',
-      }
-    }
-    let confOnAVM = {
-      method: 'get',
-      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
-      params: {
-        address1: address[0],
-        address2: address[1],
-      },
-      headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
-        Accept: 'application/json',
-      }
-    }
-    let confOnSchool = {
-      method: 'get',
-      url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/school/snapshot',
-      headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
-        Accept: 'application/json',
-      }
-    }
-    let confZillowDeepSearch = {
-      method: 'get',
-      params: {
-        'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', 
-        address: address[0], 
-        citystatezip: address[1],
-      },
-      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetDeepSearchResults.htm',
-    }
-    let confZillowProperty = {
-      method: 'get',
-      url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
-    }
-    
-    // OnBoard Property Sales History & School Data
-    axios(confOnSale)
-    .then(dataOnSalesHistory => {
-      let propLongLat = []
-      finishedAPIs.onSale = true         
-      propLongLat.push(dataOnSalesHistory.data.property[0].location.latitude)
-      propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)
-      apiObjects.onSale =  dataOnSalesHistory.data.property[0]
-
-      axios(Object.assign(confOnSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
-      .then(dataOnSchools => {
+        axios(Object.assign(confOnSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
+        .then(dataOnSchools => {
+          finishedAPIs.onSchools = true
+          apiObjects.onSchools = dataOnSchools.data
+          
+          sendData()
+        })
+        .catch(err => {
+          finishedAPIs.onSchools = true
+          sendData()
+        })
+      })
+      .catch(err => {
+        finishedAPIs.onSale = true
         finishedAPIs.onSchools = true
-        apiObjects.onSchools = dataOnSchools.data
+        sendData()
+      })
+
+      // OnBoard Property Value Call
+      axios(confOnAVM)
+      .then(dataOnAVM => {
+        finishedAPIs.onAVM = true
+        apiObjects.onAVM = dataOnAVM.data.property[0]
         
         sendData()
       })
       .catch(err => {
-        finishedAPIs.onSchools = true
+        finishedAPIs.onAVM = true
         sendData()
       })
-    })
-    .catch(err => {
-      finishedAPIs.onSale = true
-      finishedAPIs.onSchools = true
-      sendData()
-    })
 
-    // OnBoard Property Value Call
-    axios(confOnAVM)
-    .then(dataOnAVM => {
-      finishedAPIs.onAVM = true
-      apiObjects.onAVM = dataOnAVM.data.property[0]
-      
-      sendData()
-    })
-    .catch(err => {
-      finishedAPIs.onAVM = true
-      sendData()
-    })
+      // Zillow Property Calls
+      axios(confZillowDeepSearch)
+      .then(dataZillSearch => {
+        finishedAPIs.zillSearch = true
+        dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
+        apiObjects.zillSearch = dataZillSearch
+        dataZillSearch = dataZillSearch.zpid._text
+        axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
+        .then(dataZillProperty => {
+          finishedAPIs.zillProperty = true
+          apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response    
 
-    // Zillow Property Calls
-    axios(confZillowDeepSearch)
-    .then(dataZillSearch => {
-      finishedAPIs.zillSearch = true
-      dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
-      apiObjects.zillSearch = dataZillSearch
-      dataZillSearch = dataZillSearch.zpid._text
-      axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
-      .then(dataZillProperty => {
-        finishedAPIs.zillProperty = true
-        apiObjects.zillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response    
-
-        sendData()
+          sendData()
+        })
+        .catch(err => {
+          finishedAPIs.zillProperty = true
+          sendData()
+        })
       })
       .catch(err => {
+        finishedAPIs.zillSearch = true
         finishedAPIs.zillProperty = true
-        sendData()
+        sendData()    
       })
-    })
-    .catch(err => {
-      finishedAPIs.zillSearch = true
-      finishedAPIs.zillProperty = true
-      sendData()    
-    })
+    }
   }
 
   sendDO(propData) {
     let propDO = new PropertyDO()
     let p = propData
-    let sent = false
     let sendData = propertyDO => {
+      this.localProps.loading = false
       this.props.getData({loading: 'STOP'})
-      this.props.getData(propertyDO)      
+      this.props.getData(propertyDO)
     }
 
     /*
@@ -242,10 +230,10 @@ class SearchBar extends Component {
     // Squarefeet Validation
     if (p.building && p.building.size) {
       if (p.building.size.livingsize) {
-        propDO.sqft = p.building.size.livingsize
+        propDO.sqft = this.toCommaNumber(p.building.size.livingsize)
       }
       else if (p.building.size.universalsize) {
-        propDO.sqft = p.building.size.universalsize
+        propDO.sqft = this.toCommaNumber(p.building.size.universalsize)
       }
     }
     else {
@@ -281,7 +269,7 @@ class SearchBar extends Component {
         url: 'https://maps.googleapis.com/maps/api/streetview/metadata',
         params: {
           size: '1920x1080',
-          location: (propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-'),
+          location: (propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-').replace(' ', '-'),
           pitch: 5,
           key: 'AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I',
         }
@@ -289,7 +277,7 @@ class SearchBar extends Component {
       axios(confGoogleAddress)
       .then(data => {
         if (data.data.status === 'OK') {
-          propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
+          propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
           sendData(propDO)
         }
         else {                    
@@ -389,17 +377,20 @@ class SearchBar extends Component {
     else if (p.useCode && p.useCode._text) {
       propDO.bldgType = p.useCode._text
     }
+    else if (p.summary && p.summary.proptype) {
+      propDO.bldgType = p.summary.proptype
+    }
     else {
       propDO.bldgType = 'N/A'
     }
 
     // Lot Size
     if (p.lot) {
-      if (p.lot.lotsize1) {
-        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotsize1 * 43560)) + ' sqft'
+      if (p.lot.lotSize1) {
+        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotSize1 * 43560)) + ' sqft'
       }
-      else if (p.lot.lotsize2) {
-        propDO.lotSize = p.lot.lotsize2 + ' sqft'
+      else if (p.lot.lotSize2) {
+        propDO.lotSize = this.toCommaNumber(p.lot.lotSize2) + ' sqft'
       }
     }
     else {
@@ -460,14 +451,12 @@ class SearchBar extends Component {
     }
 
     // Baths Total
-    if (p.building && p.building.rooms) {
-      if (p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
+    if (p.building && p.building.rooms && p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
         propDO.bathsTotal = p.building.rooms.bathsfull + 0.5 * p.building.rooms.bathshalf
-      }
-      else if (p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
-        propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
-      }
     }
+    else if (p.building && p.building.rooms && p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
+      propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
+    }    
     else if (p.bathrooms && p.bathrooms._text) {
       propDO.bathsTotal = p.bathrooms._text
     }

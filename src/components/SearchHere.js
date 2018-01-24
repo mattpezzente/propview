@@ -9,8 +9,8 @@ const currencyFormatter = require('currency-formatter');
 class SearchHere extends Component {
   constructor(props) {
     super(props)
-    this.state = {
-      loading: false,
+    this.localProps = {
+      loading: false
     }
 
     this.getLocationData = this.getLocationData.bind(this)    
@@ -30,19 +30,30 @@ class SearchHere extends Component {
 
   getLocationData(e) {
     e.preventDefault()
-    this.props.getData({loading: 'START'})
-    if (navigator.geolocation) {
-      let latlong = []    
-      navigator.geolocation.getCurrentPosition(position => {
-        latlong.push(position.coords.latitude)
-        latlong.push(position.coords.longitude)
-        this.fetchAPIData(latlong)    
-      }, err => {}, {enableHighAccuracy: true})
-      return latlong
-    } 
+
+    if (this.localProps.loading) {
+      // DISABLE INPUT
+    }
     else {
-      this.props.getData({loading: 'STOP'})
-      return false
+      // Disable User Input
+      this.localProps.loading = true
+      // Start the loading overlay
+      this.props.getData({loading: 'START'})    
+
+      // Get the user's GPS Coordinates
+      if (navigator.geolocation) {
+        let latlong = []    
+        navigator.geolocation.getCurrentPosition(position => {
+          latlong.push(position.coords.latitude)
+          latlong.push(position.coords.longitude)
+          this.fetchAPIData(latlong)    
+        }, err => {}, {enableHighAccuracy: true})
+        return latlong
+      } 
+      else {
+        this.props.getData({loading: 'STOP'})
+        return false
+      }
     }
   }
 
@@ -91,7 +102,7 @@ class SearchHere extends Component {
         orderby: 'distance',
       },
       headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
+        apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
         Accept: 'application/json',
       }
     }
@@ -99,7 +110,7 @@ class SearchHere extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/saleshistory/detail',
       headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
+        apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
         Accept: 'application/json',
       }
     }
@@ -107,7 +118,7 @@ class SearchHere extends Component {
       method: 'get',
       url: 'https://search.onboard-apis.com/propertyapi/v1.0.0/avm/snapshot',
       headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
+        apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
         Accept: 'application/json',
       }
     }
@@ -119,7 +130,7 @@ class SearchHere extends Component {
         longitude: latlong[1],
       },
       headers: {
-        apikey: '6c16690ff86029f66c75e65d0dbe363f',
+        apikey: '62268cadaa62a2d8f23e5a4b77cf95ac',
         Accept: 'application/json',
       }
     }
@@ -226,8 +237,8 @@ class SearchHere extends Component {
   sendDO(propData) {
     let propDO = new PropertyDO()
     let p = propData
-    let sent = false
     let sendData = propertyDO => {
+      this.localProps.loading = false
       this.props.getData({loading: 'STOP'})
       this.props.getData(propertyDO)      
     }
@@ -265,10 +276,10 @@ class SearchHere extends Component {
     // Squarefeet Validation
     if (p.building && p.building.size) {
       if (p.building.size.livingsize) {
-        propDO.sqft = p.building.size.livingsize
+        propDO.sqft = this.toCommaNumber(p.building.size.livingsize)
       }
       else if (p.building.size.universalsize) {
-        propDO.sqft = p.building.size.universalsize
+        propDO.sqft = this.toCommaNumber(p.building.size.universalsize)
       }
     }
     else {
@@ -304,7 +315,7 @@ class SearchHere extends Component {
         url: 'https://maps.googleapis.com/maps/api/streetview/metadata',
         params: {
           size: '1920x1080',
-          location: (propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-'),
+          location: (propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-').replace(' ', '-'),
           pitch: 5,
           key: 'AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I',
         }
@@ -312,7 +323,7 @@ class SearchHere extends Component {
       axios(confGoogleAddress)
       .then(data => {
         if (data.data.status === 'OK') {
-          propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
+          propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
           sendData(propDO)
         }
         else {                    
@@ -412,17 +423,20 @@ class SearchHere extends Component {
     else if (p.useCode && p.useCode._text) {
       propDO.bldgType = p.useCode._text
     }
+    else if (p.summary && p.summary.proptype) {
+      propDO.bldgType = p.summary.proptype
+    }
     else {
       propDO.bldgType = 'N/A'
     }
 
     // Lot Size
     if (p.lot) {
-      if (p.lot.lotsize1) {
-        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotsize1 * 43560)) + ' sqft'
+      if (p.lot.lotSize1) {
+        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotSize1 * 43560)) + ' sqft'
       }
-      else if (p.lot.lotsize2) {
-        propDO.lotSize = p.lot.lotsize2 + ' sqft'
+      else if (p.lot.lotSize2) {
+        propDO.lotSize = this.toCommaNumber(p.lot.lotSize2) + ' sqft'
       }
     }
     else {
@@ -483,14 +497,12 @@ class SearchHere extends Component {
     }
 
     // Baths Total
-    if (p.building && p.building.rooms) {
-      if (p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
+    if (p.building && p.building.rooms && p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
         propDO.bathsTotal = p.building.rooms.bathsfull + 0.5 * p.building.rooms.bathshalf
-      }
-      else if (p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
-        propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
-      }
     }
+    else if (p.building && p.building.rooms && p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
+      propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
+    }    
     else if (p.bathrooms && p.bathrooms._text) {
       propDO.bathsTotal = p.bathrooms._text
     }

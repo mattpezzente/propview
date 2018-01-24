@@ -32,7 +32,6 @@ class Property extends Component {
     if (Object.keys(this.state.propData).length !== 0) {
       this.localProps.propData = this.state.propData
     }
-    console.log(this.localProps.propData)
     return (
       <section>
         <PropHead propData={this.localProps.propData} getData={this.getData} />

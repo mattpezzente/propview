@@ -17,8 +17,6 @@ class PropHead extends Component {
       sqft: 'N/A',
     }
 
-    // Street View Key AIzaSyCBnOw96lLft1rXTeL_4i2hciyUTCX_8yg
-
     this.getData = this.getData.bind(this)
   }
 
