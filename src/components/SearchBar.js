@@ -19,13 +19,23 @@ class SearchBar extends Component {
     this.formatAddress = this.formatAddress.bind(this)
   }
 
+  componentDidMount() {
+    document.querySelector('.search-address').addEventListener('keypress', e => {
+      if (e.key === "Enter") {
+        this.fetchGivenAddress()
+      }
+    })
+  }
+
+  componentWillUnmount() {
+    window.keypress = null
+  }
+
   render() {
     return (
       <div>        
-        <form action="#" method="">
-          <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
-          <button onClick={this.fetchGivenAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
-        </form>
+        <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
+        <button onClick={this.fetchGivenAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
       </div>
     );
   }
@@ -34,7 +44,7 @@ class SearchBar extends Component {
     if (this.localProps.loading) {
       // DISABLE INPUT
     }
-    else {
+    else {      
       // Start the loading overlay
       this.localProps.loading = true
       this.props.getData({loading: 'START'})      
@@ -192,8 +202,7 @@ class SearchBar extends Component {
     let propDO = new PropertyDO()
     let p = propData
     let sendData = propertyDO => {
-      this.localProps.loading = false
-      this.props.getData({loading: 'STOP'})
+      this.localProps.loading = false      
       this.props.getData(propertyDO)
     }
 
@@ -263,7 +272,17 @@ class SearchBar extends Component {
     }
 
     // Image Validation
-    if (propDO.address1.length > 0 && propDO.address2.length > 0) {
+    if (p.images && p.images.image) {
+      if (p.images.image.url[0] && p.images.image.url[0]._text) {
+        propDO.backImg = p.images.image.url[0]._text
+        sendData(propDO)
+      }
+      else if (p.images.image.url && p.images.image.url._text) {
+        propDO.backImg = p.images.image.url._text
+        sendData(propDO)
+      }
+    }
+    else if (propDO.address1.length > 0 && propDO.address2.length > 0) {
       let confGoogleAddress = {
         method: 'get',
         url: 'https://maps.googleapis.com/maps/api/streetview/metadata',
@@ -280,47 +299,19 @@ class SearchBar extends Component {
           propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
           sendData(propDO)
         }
-        else {                    
-          if (p.images && p.images.image) {
-            if (p.images.image.url[0] && p.images.image.url[0]._text) {
-              propDO.backImg = p.images.image.url[0]._text
-              sendData(propDO)
-            }
-            else if (p.images.image.url && p.images.image.url._text) {
-              propDO.backImg = p.images.image.url._text
-              sendData(propDO)
-            }
-          }          
+        else {
+          propDO.backImg = defaultImg
+          sendData(propDO)
         }      
       })
       .catch(err => {
-        if (p.images && p.images.image) {
-          if (p.images.image.url[0] && p.images.image.url[0]._text) {
-            propDO.backImg = p.images.image.url[0]._text
-            sendData(propDO)
-          }
-          else if (p.images.image.url && p.images.image.url._text) {
-            propDO.backImg = p.images.image.url._text
-            sendData(propDO)
-          }          
-        }        
+        propDO.backImg = defaultImg
+        sendData(propDO) 
       })
     }
     else {
-      if (p.images && p.images.image) {
-        if (p.images.image.url[0] && p.images.image.url[0]._text) {
-          propDO.backImg = p.images.image.url[0]._text
-          sendData(propDO)
-        }
-        else if (p.images.image.url && p.images.image.url._text) {
-          propDO.backImg = p.images.image.url._text
-          sendData(propDO)
-        }
-      }      
-      else {        
-        propDO.backImg = defaultImg
-        sendData(propDO)
-      }      
+      propDO.backImg = defaultImg
+      sendData(propDO)
     }
 
     /*

@@ -25,7 +25,7 @@ class App extends Component {
     return (
       <div>
         <Switch>          
-          <Route exact path={process.env.PUBLIC_URL+'/'} render={() => {
+          <Route exact path={process.env.PUBLIC_URL+'/home'} render={() => {
             if (this.redirect) {
               this.clearRedirect()
               return <Redirect to={process.env.PUBLIC_URL+'/property'} />            
@@ -34,7 +34,7 @@ class App extends Component {
               return <Landing getData={this.getData} />
             }
           }}/>
-          <Route path={process.env.PUBLIC_URL+'/property'} render={() => {
+          <Route exact path={process.env.PUBLIC_URL+'/property'} render={() => {
             return <Property propData={this.state.propData} />
           }}/>
         </Switch>

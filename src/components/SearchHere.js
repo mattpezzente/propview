@@ -239,7 +239,6 @@ class SearchHere extends Component {
     let p = propData
     let sendData = propertyDO => {
       this.localProps.loading = false
-      this.props.getData({loading: 'STOP'})
       this.props.getData(propertyDO)      
     }
 
