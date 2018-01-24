@@ -3,6 +3,7 @@ import axios from 'axios';
 import '../styles/css/SearchBar.css'
 import PropertyDO from '../PropertyDO';
 import defaultImg from '../images/propview-property-1.png';
+const parser = require('parse-address');
 const convert = require('xml-js');
 const currencyFormatter = require('currency-formatter');
 
@@ -14,6 +15,7 @@ class SearchBar extends Component {
       loading: false
     }
 
+    this.checkAddress = this.checkAddress.bind(this)
     this.sendDO = this.sendDO.bind(this)
     this.fetchGivenAddress = this.fetchGivenAddress.bind(this)
     this.formatAddress = this.formatAddress.bind(this)
@@ -22,7 +24,7 @@ class SearchBar extends Component {
   componentDidMount() {
     document.querySelector('.search-address').addEventListener('keypress', e => {
       if (e.key === "Enter") {
-        this.fetchGivenAddress()
+        this.checkAddress()
       }
     })
   }
@@ -35,12 +37,23 @@ class SearchBar extends Component {
     return (
       <div>        
         <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
-        <button onClick={this.fetchGivenAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
+        <button onClick={this.checkAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
       </div>
     );
   }
 
-  fetchGivenAddress(e) {
+  checkAddress(e) {
+    let address = document.querySelector('.search-address').value
+    address = this.validateAddress(address)
+    if (address) {
+      this.fetchGivenAddress(address)
+    }
+    else {
+      alert('Invalid address, please enter a valid address.')
+    }
+  }
+
+  fetchGivenAddress(address) {
     if (this.localProps.loading) {
       // DISABLE INPUT
     }
@@ -48,10 +61,7 @@ class SearchBar extends Component {
       // Start the loading overlay
       this.localProps.loading = true
       this.props.getData({loading: 'START'})      
-      
-      // Get formated input field value
-      let address = this.formatAddress(document.querySelector('.search-address').value)
-      
+
       // Keep track of which calls have finished
       let finishedAPIs = {
         onSale: false,
@@ -571,12 +581,44 @@ class SearchBar extends Component {
     if (str.split(',').length < 2) {
       return false
     }
-    else {      
+    else {
       let addressArray = [
         str.substring(0, str.indexOf(',')),
         str.slice(str.indexOf(',')+1).trim(),
       ]
       return addressArray
+    }
+  }
+
+  validateAddress(address) {
+    let addressLines = []
+    let line1 = ''
+    let line2 = ''
+
+    address = parser.parseLocation(address)
+    
+    console.log(address)
+    if (address.number && address.street && address.type && address.city && address.state) {      
+      line1 += address.number + ' '
+      if (address.prefix) {
+        line1 += address.prefix + ' '
+      }
+      line1 += address.street + ' '
+      line1 += address.type + ' '        
+
+      
+      line2 += address.city + ' '      
+      line2 += address.state + ' '
+      if (address.zip) {
+        line2 += address.zip        
+      }
+      
+      addressLines[0] = line1.trim()
+      addressLines[1] = line2.trim()
+      return addressLines
+    }
+    else {
+      return false
     }
   }
 
