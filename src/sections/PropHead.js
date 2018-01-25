@@ -21,6 +21,16 @@ class PropHead extends Component {
     this.getData = this.getData.bind(this)
   }
 
+  componentDidMount() {
+    document.querySelector('.prophead-logo').addEventListener('click', e => {
+      window.location.assign(process.env.PUBLIC_URL+'/home')
+    })
+  }
+
+  componentWillUnmount() {
+    document.querySelector('.prophead-logo').removeEventListener('click')
+  }
+
   render() {    
     // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {
@@ -39,7 +49,7 @@ class PropHead extends Component {
     return (
       <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">
         <div className="prophead-masthead-wrapper">
-          <Link replace="true" to={process.env.PUBLIC_URL+'/home'}><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></Link>
+          <a><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></a>
           <section className="prophead-search-container">
             <SearchHere getData={this.getData} />
             <SearchBar getData={this.getData} />

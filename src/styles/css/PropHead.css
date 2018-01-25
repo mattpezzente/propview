@@ -35,7 +35,8 @@
       max-width: 1.5rem; }
 
 .prophead-logo {
-  max-width: 15rem; }
+  max-width: 15rem;
+  cursor: pointer; }
 
 .prophead-info-container {
   position: absolute;

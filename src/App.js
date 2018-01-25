@@ -37,6 +37,15 @@ class App extends Component {
           <Route exact path={process.env.PUBLIC_URL+'/property'} render={() => {
             return <Property propData={this.state.propData} />
           }}/>
+          <Route render={() => {
+            if (this.redirect) {
+              this.clearRedirect()
+              return <Redirect to={process.env.PUBLIC_URL+'/property'} />            
+            }
+            else {
+              return <Landing getData={this.getData} />
+            }
+          }}/>
         </Switch>
         <Loading loading={this.state.loading} />
         <Footer />
