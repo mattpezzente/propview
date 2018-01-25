@@ -31,6 +31,7 @@ class PropOverview extends Component {
             width="100%"
             height="100%"
             frameBorder="0"
+            title="Google Maps"
             src={'https://www.google.com/maps/embed/v1/place?key=AIzaSyBR2rwBhZoIXY4Pm53DVcF07KSHq5AOIy4&zoom=15&q='+this.localProps.address1 + ',' + this.localProps.address2} allowFullScreen>
           </iframe>
           <p>{this.localProps.homeDesc}</p>

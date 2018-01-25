@@ -1,5 +1,4 @@
 import React, { Component } from 'react';
-import { Link } from 'react-router-dom';
 import imgBackground from '../images/propview-property-unavailable.png';
 import '../styles/css/PropHead.css';
 import SearchBar from '../components/SearchBar';

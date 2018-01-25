@@ -239,14 +239,16 @@ class SearchHere extends Component {
   }
 
   // Method to package and send property data to components
-  sendDO(propData) {
+  sendDTO(propData) {
     // Create Data Transfer Object
     let propDO = new PropertyDTO()
     // Re-store propData in smaller variable name
     let p = propData
     //Method to pass the DTO to the other components
     let sendData = propertyDTO => {
-      this.localProps.loading = false      
+      console.log(p)
+      console.log(propertyDTO)
+      this.localProps.loading = false
       this.props.getData(propertyDTO)
     }
 
@@ -255,39 +257,33 @@ class SearchHere extends Component {
     */
     
     //Address - Line1 - Validation
-    if (p.address) {
-      if (p.address.line1) {
-        propDO.address1 = p.address.line1
-      }
-      else if (p.address.street && p.address.street._text) {
-        propDO.address1 = p.address.street._text
-      }      
+    if (p.address && p.address.line1) {
+      propDO.address1 = p.address.line1
+    }
+    else if (p.address && p.address.street && p.address.street._text) {
+      propDO.address1 = p.address.street._text
     }
     else {
       propDO.address1 = 'UNKNOWN'
     }
 
     //Address - Line2 - Validation
-    if (p.address) {
-      if (p.address.line2) {
-        propDO.address2 = p.address.line2
-      }
-      else if (p.address.state && p.address.state._text && p.address.city && p.address.city._text && p.address.zipcode && p.address.zipcode._text) {
-        propDO.address2 = p.address.city._text + ' ' + p.address.state._text + ', ' + p.address.zipcode._text
-      }
+    if (p.address && p.address.line2) {
+      propDO.address2 = p.address.line2
+    }
+    else if (p.address && p.address.state && p.address.state._text && p.address.city && p.address.city._text && p.address.zipcode && p.address.zipcode._text) {
+      propDO.address2 = p.address.city._text + ' ' + p.address.state._text + ', ' + p.address.zipcode._text
     }
     else {
       propDO.address2 = 'UNKNOWN'
     }
 
     // Squarefeet Validation
-    if (p.building && p.building.size) {
-      if (p.building.size.livingsize) {
-        propDO.sqft = p.building.size.livingsize
-      }
-      else if (p.building.size.universalsize) {
-        propDO.sqft = p.building.size.universalsize
-      }
+    if (p.building && p.building.size && p.building.size.livingsize) {
+      propDO.sqft = p.building.size.livingsize
+    }
+    else if (p.building && p.building.size && p.building.size.universalsize) {
+      propDO.sqft = p.building.size.universalsize
     }
     else {
       propDO.sqft = 'N/A'
@@ -375,25 +371,26 @@ class SearchHere extends Component {
     */
 
     // Year Built
-    if (p.summary) {
-      if (p.summary.yearbuilteffective) {
-        propDO.yearBuilt = p.summary.yearbuilteffective 
-      }
-      else if (p.summary.yearbuilt) {
-          propDO.yearBuilt = p.summary.yearbuilt
-      }
+    if (p.summary && p.summary.yearbuilteffective) {
+      propDO.yearBuilt = p.summary.yearbuilteffective 
     }
+    else if (p.summary && p.summary.yearbuilt) {
+      propDO.yearBuilt = p.summary.yearbuilt
+    }  
     else {
       propDO.yearBuilt = 'N/A'
     }
 
     // Pool
-    if (p.lot && p.lot.poolind) {
+    if (p.lot && p.lot.poolind && p.lot.poolind) {
       if (p.lot.poolind === 'Y') {
         propDO.pool = 'Yes'
       }
       else if (p.lot.poolind === 'N') {
         propDO.pool = 'No'
+      }
+      else {
+        propDO.pool = 'N/A'
       }
     }
     else {
@@ -401,13 +398,14 @@ class SearchHere extends Component {
     }
 
     // Building Type
-    if (p.building && p.building.summary) {
-      if (p.building.summary.bldgType) {
+    if (p.building && p.building.summary && p.building.summary.bldgType) {      
         propDO.bldgType = p.building.summary.bldgType
-      }
-      else if (p.building.summary.imprType) {
+    }
+    else if (p.building && p.building.summary && p.building.summary.imprType) {
         propDO.bldgType = p.building.summary.imprType
-      }
+    }
+    else if (p.summary && p.summary.propclass) {
+      propDO.bldgType = p.summary.propclass
     }
     else if (p.useCode && p.useCode._text) {
       propDO.bldgType = p.useCode._text
@@ -423,20 +421,18 @@ class SearchHere extends Component {
     if (p.lotSizeSqFt && p.lotSizeSqFt._text) {
       propDO.lotSize = p.lotSizeSqFt._text
     }
-    else if (p.lot) {
-      if (p.lot.lotSize1) {
-        propDO.lotSize = Math.floor(p.lot.lotSize1 * 43560)
-      }
-      else if (p.lot.lotSize2) {
-        propDO.lotSize = p.lot.lotSize2
-      }
-      else if (p.lot.lotsize1) {
-        propDO.lotSize = Math.floor(p.lot.lotsize1 * 43560)
-      }
-      else if (p.lot.lotsize2) {
-        propDO.lotSize = p.lot.lotsize2 + ' sqft'
-      }      
+    else if (p.lot && p.lot.lotSize1) {
+      propDO.lotSize = Math.floor(p.lot.lotSize1 * 43560)
     }
+    else if (p.lot && p.lot.lotSize2) {
+      propDO.lotSize = p.lot.lotSize2
+    }
+    else if (p.lot && p.lot.lotsize1) {
+      propDO.lotSize = Math.floor(p.lot.lotsize1 * 43560)
+    }
+    else if (p.lot && p.lot.lotsize2) {
+      propDO.lotSize = p.lot.lotsize2 + ' sqft'
+    }    
     else {
       propDO.lotSize = 'N/A'
     }
@@ -473,25 +469,29 @@ class SearchHere extends Component {
       propDO.walls = 'N/A'
     }
 
-    // Full Baths
-    if (p.building && p.building.rooms) {
-      if (p.building.rooms.bathsfull) {
-        propDO.bathsFull = p.building.rooms.bathsfull
-      }
-      else if (p.building.rooms.bathscalc) {
-        propDO.bathsFull = p.building.rooms.bathscalc
-      }
+    // Half Baths    
+    if (p.building && p.building.rooms && p.building.rooms.bathstotal && p.bathrooms && p.bathrooms._text) {
+      propDO.bathsHalf = Math.abs(this.calcBaths(0.5, 1, parseFloat(p.bathrooms._text), p.building.rooms.bathstotal)[0])
     }
-    else {
-      propDO.bathsFull = 'N/A'
-    }
-
-    // Half Baths
-    if (p.building && p.building.rooms && p.building.rooms.bathshalf) {
+    else if (p.building && p.building.rooms && p.building.rooms.bathshalf) {
       propDO.bathsHalf = p.building.rooms.bathshalf
     }
     else {
       propDO.bathsHalf = 'N/A'
+    }
+
+    // Full Baths    
+    if (p.building && p.building.rooms && p.building.rooms.bathstotal && p.bathrooms && p.bathrooms._text) {
+      propDO.bathsFull = Math.abs(this.calcBaths(0.5, 1, parseFloat(p.bathrooms._text), p.building.rooms.bathstotal)[1])
+    }
+    else if (p.building && p.building.rooms && p.building.rooms.bathsfull) {
+      propDO.bathsFull = p.building.rooms.bathsfull
+    }
+    else if (propDO.bathsHalf && p.building.rooms.bathscalc) {
+      propDO.bathsFull = parseFloat(p.building.rooms.bathscalc) - parseFloat(propDO.bathsHalf)
+    }
+    else {
+      propDO.bathsFull = 'N/A'
     }
 
     // Baths Total
@@ -599,7 +599,7 @@ class SearchHere extends Component {
     }
 
     // Sales History
-    if (p.salehistory) {
+    if (p.salehistory) {        
       propDO.saleHistory = p.salehistory
     }
     else {
@@ -633,7 +633,7 @@ class SearchHere extends Component {
     propDO.bldgSize = this.toCommaNumber(propDO.bldgSize) + ' sqft'
     propDO.groundFloorSize = this.toCommaNumber(propDO.groundFloorSize) + ' sqft'
     propDO.livingSize = this.toCommaNumber(propDO.livingSize) + ' sqft'    
-    propDO.countrySecSubd = this.toTitleCase(propDO.countrySecSubd) + ' sqft'
+    propDO.countrySecSubd = this.toTitleCase(propDO.countrySecSubd)
     propDO.subdName = this.toTitleCase(propDO.subdName)
     propDO.avm = currencyFormatter.format(propDO.avm, {code: 'USD'})
 
