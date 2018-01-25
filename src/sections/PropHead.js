@@ -9,18 +9,20 @@ class PropHead extends Component {
   constructor(props) {
     super(props);
     this.localProps = {
-      address1: 'UNKNOWN',
-      address2: 'UNKNOWN',
+      address1: '',
+      address2: 'No Address',
       backImg: imgBackground,
       beds: 'N/A',
       baths: 'N/A',
       sqft: 'N/A',
     }
 
+
     this.getData = this.getData.bind(this)
   }
 
-  render() {
+  componentWillUpdate(nextProps, nextState) {
+    // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {      
       this.localProps = {
         address1: this.props.propData.address1,
@@ -34,6 +36,9 @@ class PropHead extends Component {
         this.localProps.backImg = imgBackground
       }
     }
+  }
+
+  render() {
     return (
       <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">
         <div className="prophead-masthead-wrapper">
@@ -71,6 +76,7 @@ class PropHead extends Component {
     );
   }
 
+  // Method to allow data to be passed through components
   getData(data) {
     this.props.getData(data)
   }

@@ -10,12 +10,11 @@ class PropOverview extends Component {
     this.schoolHTML = ''
   }
 
-  render() {
+  componentWillUpdate() {
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
         schools: this.props.propData.schools,
       }
-
       this.schoolHTML = this.localProps.schools.map((key, i) => {
         if (i >= 4) {
           return null
@@ -33,6 +32,9 @@ class PropOverview extends Component {
         }
       })
     }
+  }
+
+  render() {
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper center-content">

@@ -1,11 +1,16 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchBar.css'
-import PropertyDO from '../PropertyDO';
+import PropertyDTO from '../PropertyDTO';
 import defaultImg from '../images/propview-property-1.png';
 const parser = require('parse-address');
 const convert = require('xml-js');
 const currencyFormatter = require('currency-formatter');
+
+/*
+* Search component to find the user given ADDRESS, and return
+* the property that matches the users query.
+*/
 
 class SearchBar extends Component {
   constructor(props) {
@@ -14,13 +19,12 @@ class SearchBar extends Component {
       loading: false
     }
 
-    this.checkAddress = this.checkAddress.bind(this)
-    this.sendDO = this.sendDO.bind(this)
+    this.checkAddress = this.checkAddress.bind(this)    
     this.fetchGivenAddress = this.fetchGivenAddress.bind(this)
-    this.formatAddress = this.formatAddress.bind(this)
   }
 
   componentDidMount() {
+    // Add event listener to input field to activate on enter key
     document.querySelector('.search-address').addEventListener('keypress', e => {
       if (e.key === "Enter") {
         this.checkAddress()
@@ -41,9 +45,11 @@ class SearchBar extends Component {
     );
   }
 
+  // Method to check the address validity, and begin API calls if successful
   checkAddress(e) {
-    let address = document.querySelector('.search-address').value
-    address = this.validateAddress(address)
+    // Get the address, and return validation results
+    let address = this.validateAddress(document.querySelector('.search-address').value)
+    // Proceed if address is valid
     if (address) {
       this.fetchGivenAddress(address)
     }
@@ -52,6 +58,7 @@ class SearchBar extends Component {
     }
   }
 
+  // Method to begin fetching the data from APIs
   fetchGivenAddress(address) {
     if (this.localProps.loading) {
       // DISABLE INPUT
@@ -76,21 +83,21 @@ class SearchBar extends Component {
         onAVM: {},
         zillSearch: {},
         zillProperty: {}
-      }
-      let propData = {}
+      }      
       // Variable to store method for passing the gathered data
       let sendData = () => {
+        let propData = {}
+        // Check if all API calls have finished, exit if they aren't
         for (let status in finishedAPIs) {
           if (finishedAPIs[status] === false) {
             return
           }
         }
-
         // Merge API data in order
         propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)          
 
-        // Return the data with the PropertyDO format
-        this.sendDO(propData)  
+        // Return the data with the PropertyDTO format
+        this.sendDTO(propData)  
       }
 
       // CONFIGURATIONS
@@ -149,6 +156,7 @@ class SearchBar extends Component {
         propLongLat.push(dataOnSalesHistory.data.property[0].location.longitude)
         apiObjects.onSale =  dataOnSalesHistory.data.property[0]
 
+        // OnBoard School Data
         axios(Object.assign(confOnSchool, {params: {latitude: propLongLat[0], longitude: propLongLat[1], radius: 15,}}))
         .then(dataOnSchools => {
           finishedAPIs.onSchools = true
@@ -180,13 +188,15 @@ class SearchBar extends Component {
         sendData()
       })
 
-      // Zillow Property Calls
+      // Zillow Property Search
       axios(confZillowDeepSearch)
       .then(dataZillSearch => {
         finishedAPIs.zillSearch = true
         dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
         apiObjects.zillSearch = dataZillSearch
         dataZillSearch = dataZillSearch.zpid._text
+
+        // Zillow Property Details
         axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
         .then(dataZillProperty => {
           finishedAPIs.zillProperty = true
@@ -207,12 +217,16 @@ class SearchBar extends Component {
     }
   }
 
-  sendDO(propData) {
-    let propDO = new PropertyDO()
+  // Method to package and send property data to components
+  sendDTO(propData) {
+    // Create Data Transfer Object
+    let propDO = new PropertyDTO()
+    // Re-store propData in smaller variable name    
     let p = propData
-    let sendData = propertyDO => {
+    //Method to pass the DTO to the other components
+    let sendData = propertyDTO => {
       this.localProps.loading = false      
-      this.props.getData(propertyDO)
+      this.props.getData(propertyDTO)
     }
 
     /*
@@ -245,18 +259,13 @@ class SearchBar extends Component {
       propDO.address2 = 'UNKNOWN'
     }
 
-    // Plus Seperated Address
-    if (propDO.address1 && propDO.address2) {
-      propDO.addressPlus = (propDO.address1 + ' ' + propDO.address2).trim()
-    }
-
     // Squarefeet Validation
     if (p.building && p.building.size) {
       if (p.building.size.livingsize) {
-        propDO.sqft = this.toCommaNumber(p.building.size.livingsize)
+        propDO.sqft = p.building.size.livingsize
       }
       else if (p.building.size.universalsize) {
-        propDO.sqft = this.toCommaNumber(p.building.size.universalsize)
+        propDO.sqft = p.building.size.universalsize
       }
     }
     else {
@@ -390,13 +399,22 @@ class SearchBar extends Component {
     }
 
     // Lot Size
-    if (p.lot) {
+    if (p.lotSizeSqFt && p.lotSizeSqFt._text) {
+      propDO.lotSize = p.lotSizeSqFt._text
+    }
+    else if (p.lot) {
       if (p.lot.lotSize1) {
-        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotSize1 * 43560)) + ' sqft'
+        propDO.lotSize = Math.floor(p.lot.lotSize1 * 43560)
       }
       else if (p.lot.lotSize2) {
-        propDO.lotSize = this.toCommaNumber(p.lot.lotSize2) + ' sqft'
+        propDO.lotSize = p.lot.lotSize2
       }
+      else if (p.lot.lotsize1) {
+        propDO.lotSize = Math.floor(p.lot.lotsize1 * 43560)
+      }
+      else if (p.lot.lotsize2) {
+        propDO.lotSize = p.lot.lotsize2 + ' sqft'
+      }      
     }
     else {
       propDO.lotSize = 'N/A'
@@ -434,25 +452,31 @@ class SearchBar extends Component {
       propDO.walls = 'N/A'
     }
 
-    // Full Baths
-    if (p.building && p.building.rooms) {
-      if (p.building.rooms.bathsfull) {
-        propDO.bathsFull = p.building.rooms.bathsfull
-      }
-      else if (p.building.rooms.bathscalc) {
-        propDO.bathsFull = p.building.rooms.bathscalc
-      }
+    // Half Baths    
+    if (p.building && p.building.rooms && p.building.rooms.bathstotal && p.bathrooms && p.bathrooms._text) {
+      propDO.bathsHalf = this.calcBaths(0.5, 1, parseFloat(p.bathrooms._text), p.building.rooms.bathstotal)[0]
     }
-    else {
-      propDO.bathsFull = 'N/A'
-    }
-
-    // Half Baths
-    if (p.building && p.building.rooms && p.building.rooms.bathshalf) {
+    else if (p.building && p.building.rooms && p.building.rooms.bathshalf) {
       propDO.bathsHalf = p.building.rooms.bathshalf
     }
     else {
       propDO.bathsHalf = 'N/A'
+    }
+
+    // Full Baths    
+    if (p.building && p.building.rooms && p.building.rooms.bathstotal && p.bathrooms && p.bathrooms._text) {
+      propDO.bathsFull = this.calcBaths(0.5, 1, parseFloat(p.bathrooms._text), p.building.rooms.bathstotal)[1]
+    }
+    else if (p.building && p.building.rooms) {
+      if (p.building.rooms.bathsfull) {
+        propDO.bathsFull = p.building.rooms.bathsfull
+      }
+      else if (propDO.bathsHalf && p.building.rooms.bathscalc) {
+        propDO.bathsFull = parseFloat(p.building.rooms.bathscalc) - parseFloat(propDO.bathsHalf)
+      }
+    }
+    else {
+      propDO.bathsFull = 'N/A'
     }
 
     // Baths Total
@@ -485,7 +509,7 @@ class SearchBar extends Component {
 
     // Building Size
     if (p.building && p.building.size && p.building.size.bldgsize) {
-      propDO.bldgSize = this.toCommaNumber(p.building.size.bldgsize) + ' sqft'
+      propDO.bldgSize = p.building.size.bldgsize
     }
     else {
       propDO.bldgSize = 'N/A'
@@ -493,7 +517,7 @@ class SearchBar extends Component {
 
     // Ground Floor Size
     if (p.building && p.building.size && p.building.size.groundfloorsize) {
-      propDO.groundFloorSize = this.toCommaNumber(p.building.size.groundfloorsize) + ' sqft'
+      propDO.groundFloorSize = p.building.size.groundfloorsize
     }
     else {
       propDO.groundFloorSize = 'N/A'
@@ -501,7 +525,7 @@ class SearchBar extends Component {
 
     // Living Floor Size
     if (p.building && p.building.size && p.building.size.livingsize) {
-      propDO.livingSize = this.toCommaNumber(p.building.size.livingsize) + ' sqft'
+      propDO.livingSize = p.building.size.livingsize
     }
     else {
       propDO.livingSize = 'N/A'
@@ -545,7 +569,7 @@ class SearchBar extends Component {
 
     // AVM Value
     if (p.avm && p.avm.amount && p.avm.amount.value) {
-      propDO.avm = currencyFormatter.format(p.avm.amount.value, {code: 'USD'})
+      propDO.avm = p.avm.amount.value
     }
     else {
       propDO.avm = '$0.00'
@@ -578,22 +602,31 @@ class SearchBar extends Component {
       propDO.schools = []
     }
 
+    /*
+    ** Formatting the Data for Dispatch
+    */ 
+
+    propDO.address1 = this.toTitleCase(propDO.address1)
+    propDO.address2 = this.toTitleCase(propDO.address2)
+    propDO.sqft = this.toCommaNumber(propDO.sqft)
+    propDO.bldgType = this.toTitleCase(propDO.bldgType)
+    propDO.lotSize = this.toCommaNumber(propDO.lotSize) + ' sqft'
+    propDO.cooling = this.toTitleCase(propDO.cooling.replace('.', ' / '))
+    propDO.roof = this.toTitleCase(propDO.roof)
+    propDO.heating = this.toTitleCase(propDO.heating.replace('.', ' / '))
+    propDO.walls = this.toTitleCase(propDO.walls)
+    propDO.bldgSize = this.toCommaNumber(propDO.bldgSize) + ' sqft'
+    propDO.groundFloorSize = this.toCommaNumber(propDO.groundFloorSize) + ' sqft'
+    propDO.livingSize = this.toCommaNumber(propDO.livingSize) + ' sqft'    
+    propDO.countrySecSubd = this.toTitleCase(propDO.countrySecSubd)
+    propDO.subdName = this.toTitleCase(propDO.subdName)
+    propDO.avm = currencyFormatter.format(propDO.avm, {code: 'USD'})
+
     sendData(propDO)
   }
 
-  formatAddress(str) {
-    if (str.split(',').length < 2) {
-      return false
-    }
-    else {
-      let addressArray = [
-        str.substring(0, str.indexOf(',')),
-        str.slice(str.indexOf(',')+1).trim(),
-      ]
-      return addressArray
-    }
-  }
-
+  // Method to validate a given address, returning "false" if 
+  // a format cannot be found
   validateAddress(address) {
     let addressLines = []
     let line1 = ''
@@ -625,6 +658,7 @@ class SearchBar extends Component {
     }
   }
 
+  // Randomly return a key for use in API calls
   getAPIKey() {
     let apiKeys = [
       '62268cadaa62a2d8f23e5a4b77cf95ac',
@@ -636,14 +670,28 @@ class SearchBar extends Component {
     return apiKeys[Math.floor(Math.random() * 4)]
   }
 
+  // Capitalizes first letter of each word in a sentence
   toTitleCase(str) {
+    // Check if there is no value
+    if (str === 'N/A') {
+      return 'N/A'
+    }
     return str.replace(/\w\S*/g, function(txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
 
+  // Add commas to number
   toCommaNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Calculates the number of half-baths and full-baths
+  calcBaths(val1, val2, amt, total) {
+    let numbers = [0,0]
+    numbers[0] = (amt - total*val2)/(val1-val2)
+    numbers[1] = total - numbers[0]
+    return numbers
   }
 }
 

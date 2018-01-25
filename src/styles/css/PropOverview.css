@@ -14,7 +14,7 @@
 .propover-map {
   display: block;
   float: right;
-  background: url("../../images/propview-map-placeholder.png") no-repeat center/cover;
+  background: url("../../images/propview-loader.gif") no-repeat center/contain;
   margin-left: 1.5rem;
   height: 350px;
   width: 40%;

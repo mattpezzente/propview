@@ -20,7 +20,8 @@ class PropValue extends Component {
     )
   }
 
-  render() {      
+  componentWillUpdate() {
+    // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) { 
       this.localProps = {
         avm: this.props.propData.avm,
@@ -41,6 +42,9 @@ class PropValue extends Component {
         })
       }
     }
+  }
+
+  render() {
     return (
       <section className="prop-container">
         <section className="prop-wrapper center-content margin-bottom">

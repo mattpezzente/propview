@@ -11,6 +11,7 @@ import '../styles/css/Property.css';
 class Property extends Component {
   constructor(props) {
     super(props);
+    // Set Page Title
     document.title = 'PropView - Property'
     this.localProps = {
       propData: {},
@@ -22,16 +23,21 @@ class Property extends Component {
       propData: {},
     }
 
+
     this.getData = this.getData.bind(this)
   }
 
-  render() {    
+  componentWillUpdate() {
+    // Check if the data is coming through props, or state
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps.propData = this.props.propData
     }
     if (Object.keys(this.state.propData).length !== 0) {
       this.localProps.propData = this.state.propData
     }
+  }
+
+  render() {
     return (
       <section>
         <PropHead propData={this.localProps.propData} getData={this.getData} />
@@ -44,6 +50,8 @@ class Property extends Component {
     );
   }
 
+  // Method to allow data to be passed through components, and
+  // determine/set loading states
   getData(data) {
     if (data.loading === 'START') {
       this.setState({loading: true})

@@ -6,18 +6,23 @@ class PropOverview extends Component {
     super(props)
     this.localProps = {
       homeDesc: 'OVERVIEW UNAVAILABLE...',
-      addressPlus: 'Cinderellas+Castle'
+      address1: 'Cinderellas',
+      address2: 'Castle',
+    }
+  }
+
+  componentWillUpdate() {
+    // Check if there is data in the props
+    if (Object.keys(this.props.propData).length !== 0) {
+      this.localProps = {
+        homeDesc: this.props.propData.overview,
+        address1: this.props.propData.address1,
+        address2: this.props.propData.address2
+      }
     }
   }
 
   render() {
-    if (Object.keys(this.props.propData).length !== 0) {
-      this.localProps = {
-        homeDesc: this.props.propData.overview,
-        addressPlus: this.props.propData.addressPlus
-      }
-      console.log(this.props.propData)
-    }
     return (
       <section className="prop-container">
         <div className="prop-wrapper">
@@ -29,7 +34,7 @@ class PropOverview extends Component {
             width="100%"
             height="100%"
             frameBorder="0"
-            src={'https://www.google.com/maps/embed/v1/place?key=AIzaSyBR2rwBhZoIXY4Pm53DVcF07KSHq5AOIy4&zoom=15&q='+this.localProps.addressPlus} allowFullScreen>
+            src={'https://www.google.com/maps/embed/v1/place?key=AIzaSyBR2rwBhZoIXY4Pm53DVcF07KSHq5AOIy4&zoom=15&q='+this.localProps.address1 + ',' + this.localProps.address2} allowFullScreen>
           </iframe>
           <p>{this.localProps.homeDesc}</p>        
         </div>

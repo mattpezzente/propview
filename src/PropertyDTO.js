@@ -1,13 +1,14 @@
-class PropertyDO {
-  constructor() {    
+class PropertyDTO {
+  constructor() {
+    // Extra Data
+    this.lat = ''
+    this.long = ''
+
     // Poperty Head Section Data
     this.address1 = ''
     this.address2 = ''
-    this.addressPlus = ''
     this.bathsTotal = 0
     this.sqft = 0
-    this.lat = ''
-    this.long = ''
     this.backImg = ''
 
     // Poperty Overview Section Data
@@ -43,8 +44,7 @@ class PropertyDO {
 
     // Property Schools Section Data
     this.schools = []
-
   }
 }
 
-export default PropertyDO;
+export default PropertyDTO;

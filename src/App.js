@@ -44,6 +44,8 @@ class App extends Component {
     );
   }
 
+  // Method to allow data to be passed through components, and
+  // determine/set loading states
   getData(data) {
     if (data.loading === 'START') {
       this.setState({loading: true})

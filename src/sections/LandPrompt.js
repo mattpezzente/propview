@@ -23,6 +23,7 @@ class LandPrompt extends Component {
     );
   }
 
+  // Method to allow data to be passed through components
   getData(data) {
     this.props.getData(data)
   }

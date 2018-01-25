@@ -33,13 +33,11 @@ class PropDetail extends Component {
       countrySecSubd: 'N/A',
       subdName: 'N/A',
       taxCodeArea: 'N/A',
-    }
-
-    this.toTitleCase = this.toTitleCase.bind(this)
-    this.toCommaNumber = this.toCommaNumber.bind(this) 
+    } 
   }
-  
-  render() {
+
+  componentWillUpdate() {
+    // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {  
       this.localProps = {
         yearBuilt: this.props.propData.yearBuilt,
@@ -61,7 +59,10 @@ class PropDetail extends Component {
         subdName: this.props.propData.subdName,
         taxCodeArea: this.props.propData.taxCodeArea,
       }
-    }   
+    }  
+  }
+  
+  render() {  
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper">
@@ -155,26 +156,6 @@ class PropDetail extends Component {
         </div>
       </section>
     );
-  }
-
-  toTitleCase(str) {
-    if (str !== undefined) {
-      return str.replace(/\w\S*/g, function(txt) {
-        return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
-      });
-    }
-    else {
-      return 'N/A'
-    }
-  }
-
-  toCommaNumber(num) {
-    if (num !== undefined) {
-      return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",")
-    }
-    else {
-      return 'N/A'
-    }
   }
 }
 

@@ -1,10 +1,15 @@
 import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchHere.css';
-import PropertyDO from '../PropertyDO';
+import PropertyDTO from '../PropertyDTO';
 import defaultImg from '../images/propview-property-1.png';
 const convert = require('xml-js');
 const currencyFormatter = require('currency-formatter');
+
+/*
+* Search component to get the user's CURRENT location, and return
+* a property that is closest to the user.
+*/
 
 class SearchHere extends Component {
   constructor(props) {
@@ -28,9 +33,10 @@ class SearchHere extends Component {
     );
   }
 
+  // Get the current GPS Coordinates, start API calls if successful
   getLocationData(e) {
     e.preventDefault()
-
+    // Check if the data is loading
     if (this.localProps.loading) {
       // DISABLE INPUT
     }
@@ -57,6 +63,7 @@ class SearchHere extends Component {
     }
   }
 
+  // Method to begin fetching the data from APIs
   fetchAPIData(latlong) {
     // Keep track of which calls have finished
     let finishedAPIs = {
@@ -76,9 +83,10 @@ class SearchHere extends Component {
       zillSearch: {},
       zillProperty: {}
     }
-    let propData = {}
     // Variable to store method for passing the gathered data
     let sendData = () => {
+      let propData = {}
+      // Check if all API calls have finished, exit if they aren't
       for (let status in finishedAPIs) {
         if (finishedAPIs[status] === false) {
           return
@@ -87,7 +95,7 @@ class SearchHere extends Component {
       // Merge API data in order
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
       
-      // Return the data with the PropertyDO format
+      // Return the data with the PropertyDTO format
       this.sendDO(propData)  
     }
 
@@ -153,6 +161,7 @@ class SearchHere extends Component {
       propAddress.push(dataOnProperty.data.property[0].address.line1)
       propAddress.push(dataOnProperty.data.property[0].address.line2)      
       
+      // Zillow Property Details
       axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: propAddress[0], citystatezip: propAddress[1]}}))
       .then(dataZillSearch => {
         finishedAPIs.zillSearch = true
@@ -160,6 +169,7 @@ class SearchHere extends Component {
         apiObjects.zillSearch = dataZillSearch
         dataZillSearch = dataZillSearch.zpid._text        
         
+        // Zillow Property Search
         axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
         .then(dataZillProperty => {
           finishedAPIs.zillProperty = true
@@ -170,53 +180,48 @@ class SearchHere extends Component {
         })
         .catch(err => {
           finishedAPIs.zillProperty = true
-
           sendData()
         })
       })
       .catch(err => {
         finishedAPIs.zillSearch = true
         finishedAPIs.zillProperty = true
-
         sendData()      
       })
 
+      // OnBoard School Data
       axios(confOnSchool)
       .then(dataOnSchools => {
         finishedAPIs.onSchools = true
         apiObjects.onSchools = dataOnSchools.data
-
         sendData()        
       })            
       .catch(err => {
         finishedAPIs.onSchools = true
-
         sendData()
       })
 
+      // OnBoard Property Sales History
       axios(Object.assign(confOnSale, {params: {address1: propAddress[0], address2: propAddress[1]}}))
       .then(dataOnSalesHistory => {
         finishedAPIs.onSale = true
         apiObjects.onSale = dataOnSalesHistory.data.property[0]
-        
         sendData()        
       })
       .catch(err => {
         finishedAPIs.onSale = true
-
         sendData()
       })
 
+      // OnBoard Property Value Call
       axios(Object.assign(confOnAVM, {params: {address1: propAddress[0], address2: propAddress[1]}}))
       .then(dataOnAVM => {
         finishedAPIs.onAVM = true
         apiObjects.onAVM = dataOnAVM.data.property[0]
-
         sendData()
       })
       .catch(err => {
         finishedAPIs.onAVM = true
-
         sendData()
       })      
     })
@@ -229,17 +234,20 @@ class SearchHere extends Component {
         zillSearch: true,
         zillProperty: true
       }
-
       sendData()
-    })    
+    })
   }
 
+  // Method to package and send property data to components
   sendDO(propData) {
-    let propDO = new PropertyDO()
+    // Create Data Transfer Object
+    let propDO = new PropertyDTO()
+    // Re-store propData in smaller variable name
     let p = propData
-    let sendData = propertyDO => {
-      this.localProps.loading = false
-      this.props.getData(propertyDO)      
+    //Method to pass the DTO to the other components
+    let sendData = propertyDTO => {
+      this.localProps.loading = false      
+      this.props.getData(propertyDTO)
     }
 
     /*
@@ -270,15 +278,15 @@ class SearchHere extends Component {
     }
     else {
       propDO.address2 = 'UNKNOWN'
-    }    
+    }
 
     // Squarefeet Validation
     if (p.building && p.building.size) {
       if (p.building.size.livingsize) {
-        propDO.sqft = this.toCommaNumber(p.building.size.livingsize)
+        propDO.sqft = p.building.size.livingsize
       }
       else if (p.building.size.universalsize) {
-        propDO.sqft = this.toCommaNumber(p.building.size.universalsize)
+        propDO.sqft = p.building.size.universalsize
       }
     }
     else {
@@ -308,7 +316,17 @@ class SearchHere extends Component {
     }
 
     // Image Validation
-    if (propDO.address1.length > 0 && propDO.address2.length > 0) {
+    if (p.images && p.images.image) {
+      if (p.images.image.url[0] && p.images.image.url[0]._text) {
+        propDO.backImg = p.images.image.url[0]._text
+        sendData(propDO)
+      }
+      else if (p.images.image.url && p.images.image.url._text) {
+        propDO.backImg = p.images.image.url._text
+        sendData(propDO)
+      }
+    }
+    else if (propDO.address1.length > 0 && propDO.address2.length > 0) {
       let confGoogleAddress = {
         method: 'get',
         url: 'https://maps.googleapis.com/maps/api/streetview/metadata',
@@ -325,47 +343,19 @@ class SearchHere extends Component {
           propDO.backImg = `https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=${(propDO.address1.replace(', ', '-').replace('. ', '-').replace(' ', '-') + '-' + propDO.address2.replace(', ', '-').replace('. ', '-').replace(' ', '-')).replace(' ', '-').replace(' ', '-').replace(' ', '-')}&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I`
           sendData(propDO)
         }
-        else {                    
-          if (p.images && p.images.image) {
-            if (p.images.image.url[0] && p.images.image.url[0]._text) {
-              propDO.backImg = p.images.image.url[0]._text
-              sendData(propDO)
-            }
-            else if (p.images.image.url && p.images.image.url._text) {
-              propDO.backImg = p.images.image.url._text
-              sendData(propDO)
-            }
-          }          
+        else {
+          propDO.backImg = defaultImg
+          sendData(propDO)
         }      
       })
       .catch(err => {
-        if (p.images && p.images.image) {
-          if (p.images.image.url[0] && p.images.image.url[0]._text) {
-            propDO.backImg = p.images.image.url[0]._text
-            sendData(propDO)
-          }
-          else if (p.images.image.url && p.images.image.url._text) {
-            propDO.backImg = p.images.image.url._text
-            sendData(propDO)
-          }          
-        }        
+        propDO.backImg = defaultImg
+        sendData(propDO) 
       })
     }
     else {
-      if (p.images && p.images.image) {
-        if (p.images.image.url[0] && p.images.image.url[0]._text) {
-          propDO.backImg = p.images.image.url[0]._text
-          sendData(propDO)
-        }
-        else if (p.images.image.url && p.images.image.url._text) {
-          propDO.backImg = p.images.image.url._text
-          sendData(propDO)
-        }
-      }      
-      else {        
-        propDO.backImg = defaultImg
-        sendData(propDO)
-      }      
+      propDO.backImg = defaultImg
+      sendData(propDO)
     }
 
     /*
@@ -430,13 +420,22 @@ class SearchHere extends Component {
     }
 
     // Lot Size
-    if (p.lot) {
+    if (p.lotSizeSqFt && p.lotSizeSqFt._text) {
+      propDO.lotSize = p.lotSizeSqFt._text
+    }
+    else if (p.lot) {
       if (p.lot.lotSize1) {
-        propDO.lotSize = this.toCommaNumber(Math.floor(p.lot.lotSize1 * 43560)) + ' sqft'
+        propDO.lotSize = Math.floor(p.lot.lotSize1 * 43560)
       }
       else if (p.lot.lotSize2) {
-        propDO.lotSize = this.toCommaNumber(p.lot.lotSize2) + ' sqft'
+        propDO.lotSize = p.lot.lotSize2
       }
+      else if (p.lot.lotsize1) {
+        propDO.lotSize = Math.floor(p.lot.lotsize1 * 43560)
+      }
+      else if (p.lot.lotsize2) {
+        propDO.lotSize = p.lot.lotsize2 + ' sqft'
+      }      
     }
     else {
       propDO.lotSize = 'N/A'
@@ -525,7 +524,7 @@ class SearchHere extends Component {
 
     // Building Size
     if (p.building && p.building.size && p.building.size.bldgsize) {
-      propDO.bldgSize = this.toCommaNumber(p.building.size.bldgsize) + ' sqft'
+      propDO.bldgSize = p.building.size.bldgsize
     }
     else {
       propDO.bldgSize = 'N/A'
@@ -533,7 +532,7 @@ class SearchHere extends Component {
 
     // Ground Floor Size
     if (p.building && p.building.size && p.building.size.groundfloorsize) {
-      propDO.groundFloorSize = this.toCommaNumber(p.building.size.groundfloorsize) + ' sqft'
+      propDO.groundFloorSize = p.building.size.groundfloorsize
     }
     else {
       propDO.groundFloorSize = 'N/A'
@@ -541,7 +540,7 @@ class SearchHere extends Component {
 
     // Living Floor Size
     if (p.building && p.building.size && p.building.size.livingsize) {
-      propDO.livingSize = this.toCommaNumber(p.building.size.livingsize) + ' sqft'
+      propDO.livingSize = p.building.size.livingsize
     }
     else {
       propDO.livingSize = 'N/A'
@@ -585,7 +584,7 @@ class SearchHere extends Component {
 
     // AVM Value
     if (p.avm && p.avm.amount && p.avm.amount.value) {
-      propDO.avm = currencyFormatter.format(p.avm.amount.value, {code: 'USD'})
+      propDO.avm = p.avm.amount.value
     }
     else {
       propDO.avm = '$0.00'
@@ -618,22 +617,30 @@ class SearchHere extends Component {
       propDO.schools = []
     }
 
+    /*
+    ** Formatting the Data for Dispatch
+    */ 
+
+    propDO.address1 = this.toTitleCase(propDO.address1)
+    propDO.address2 = this.toTitleCase(propDO.address2)
+    propDO.sqft = this.toCommaNumber(propDO.sqft)
+    propDO.bldgType = this.toTitleCase(propDO.bldgType)
+    propDO.lotSize = this.toCommaNumber(propDO.lotSize) + ' sqft'
+    propDO.cooling = this.toTitleCase(propDO.cooling.replace('.', ' / '))
+    propDO.roof = this.toTitleCase(propDO.roof)
+    propDO.heating = this.toTitleCase(propDO.heating.replace('.', ' / '))
+    propDO.walls = this.toTitleCase(propDO.walls)
+    propDO.bldgSize = this.toCommaNumber(propDO.bldgSize) + ' sqft'
+    propDO.groundFloorSize = this.toCommaNumber(propDO.groundFloorSize) + ' sqft'
+    propDO.livingSize = this.toCommaNumber(propDO.livingSize) + ' sqft'    
+    propDO.countrySecSubd = this.toTitleCase(propDO.countrySecSubd) + ' sqft'
+    propDO.subdName = this.toTitleCase(propDO.subdName)
+    propDO.avm = currencyFormatter.format(propDO.avm, {code: 'USD'})
+
     sendData(propDO)
   }
 
-  formatAddress(str) {
-    if (str.split(',').length < 2) {
-      return false
-    }
-    else {    
-      let addressArray = [
-        str.substring(0, str.indexOf(',')),
-        str.slice(str.indexOf(',')+1).trim(),
-      ]
-      return addressArray
-    }
-  }
-
+  // Randomly return a key for use in API calls
   getAPIKey() {
     let apiKeys = [
       '62268cadaa62a2d8f23e5a4b77cf95ac',
@@ -645,14 +652,28 @@ class SearchHere extends Component {
     return apiKeys[Math.floor(Math.random() * 4)]
   }
 
+  // Capitalizes first letter of each word in a sentence
   toTitleCase(str) {
+    // Check if there is no value
+    if (str === 'N/A') {
+      return 'N/A'
+    }
     return str.replace(/\w\S*/g, function(txt) {
       return txt.charAt(0).toUpperCase() + txt.substr(1).toLowerCase();
     });
   }
 
+  // Add commas to number
   toCommaNumber(num) {
     return num.toString().replace(/\B(?=(\d{3})+(?!\d))/g, ",");
+  }
+
+  // Calculates the number of half-baths and full-baths
+  calcBaths(val1, val2, amt, total) {
+    let numbers = [0,0]
+    numbers[0] = (amt - total*val2)/(val1-val2)
+    numbers[1] = total - numbers[0]
+    return numbers
   }
 }
 
