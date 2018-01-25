@@ -96,7 +96,7 @@ class SearchHere extends Component {
       propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
       
       // Return the data with the PropertyDTO format
-      this.sendDO(propData)  
+      this.sendDTO(propData)
     }
 
     // CONFIGURATIONS
@@ -488,7 +488,12 @@ class SearchHere extends Component {
       propDO.bathsFull = p.building.rooms.bathsfull
     }
     else if (propDO.bathsHalf && p.building && p.building.rooms && p.building.rooms.bathscalc) {
-      propDO.bathsFull = parseFloat(p.building.rooms.bathscalc) - parseFloat(propDO.bathsHalf)
+      if (propDO.bathsHalf > 0) {
+        propDO.bathsFull = parseFloat(p.building.rooms.bathscalc) - 0.5 * parseFloat(propDO.bathsHalf)
+      }
+      else {
+        propDO.bathsFull = p.building.rooms.bathscalc
+      }      
     }
     else {
       propDO.bathsFull = 'N/A'
