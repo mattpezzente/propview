@@ -662,7 +662,7 @@ class SearchBar extends Component {
   getAPIKey() {
     let apiKeys = [
       '62268cadaa62a2d8f23e5a4b77cf95ac',
-      'db01c855c976f897bbcb620bcd47cae7',
+      '8c3664f9a18c7e927f538e536deb9625',
       '6c16690ff86029f66c75e65d0dbe363f',
       'f09e60a344e1f8c2d61d31b33ac5ec7a',
       '14ee3d7f86bc0071c72d724c720452a3'

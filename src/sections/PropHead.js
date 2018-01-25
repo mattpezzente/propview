@@ -1,6 +1,6 @@
 import React, { Component } from 'react';
 import { Link } from 'react-router-dom';
-import imgBackground from '../images/propview-property-1.png';
+import imgBackground from '../images/propview-property-unavailable.png';
 import '../styles/css/PropHead.css';
 import SearchBar from '../components/SearchBar';
 import SearchHere from '../components/SearchHere';
@@ -22,12 +22,14 @@ class PropHead extends Component {
   }
 
   componentDidMount() {
+    // Make logo link to homepage directly
     document.querySelector('.prophead-logo').addEventListener('click', e => {
       window.location.assign(process.env.PUBLIC_URL+'/home')
     })
   }
 
   componentWillUnmount() {
+    // Remove logo click event
     document.querySelector('.prophead-logo').removeEventListener('click')
   }
 
