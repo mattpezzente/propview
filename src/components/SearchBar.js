@@ -94,7 +94,7 @@ class SearchBar extends Component {
           }
         }
         // Merge API data in order
-        propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)          
+        propData = Object.assign({}, apiObjects.onProperty, apiObjects.onSchools, apiObjects.onAVM, apiObjects.onSale, apiObjects.zillSearch, apiObjects.zillProperty)
 
         // Return the data with the PropertyDTO format
         this.sendDTO(propData)  
@@ -212,7 +212,7 @@ class SearchBar extends Component {
       .catch(err => {
         finishedAPIs.zillSearch = true
         finishedAPIs.zillProperty = true
-        sendData()    
+        sendData()
       })
     }
   }
@@ -221,11 +221,11 @@ class SearchBar extends Component {
   sendDTO(propData) {
     // Create Data Transfer Object
     let propDO = new PropertyDTO()
-    // Re-store propData in smaller variable name    
+    // Re-store propData in smaller variable name
     let p = propData
     //Method to pass the DTO to the other components
     let sendData = propertyDTO => {
-      this.localProps.loading = false      
+      this.localProps.loading = false
       this.props.getData(propertyDTO)
     }
 
@@ -368,7 +368,7 @@ class SearchBar extends Component {
 
     // Pool
     if (p.lot && p.lot.poolind) {
-      if (p.lot.poolind === 'Y') {            
+      if (p.lot.poolind === 'Y') {
         propDO.pool = 'Yes'
       }
       else if (p.lot.poolind === 'N') {
@@ -483,7 +483,7 @@ class SearchBar extends Component {
     if (p.building && p.building.rooms && p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
         propDO.bathsTotal = p.building.rooms.bathsfull + 0.5 * p.building.rooms.bathshalf
     }
-    else if (p.building && p.building.rooms && p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
+    else if (p.building && p.building.rooms && p.building.rooms.bathscalc && p.building.rooms.bathshalf) {
       propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
     }    
     else if (p.bathrooms && p.bathrooms._text) {
@@ -632,21 +632,21 @@ class SearchBar extends Component {
     let line1 = ''
     let line2 = ''
 
-    address = parser.parseLocation(address)    
+    address = parser.parseLocation(address)
 
-    if (address.number && address.street && address.type && address.city && address.state) {      
+    if (address.number && address.street && address.type && address.city && address.state) {
       line1 += address.number + ' '
       if (address.prefix) {
         line1 += address.prefix + ' '
       }
       line1 += address.street + ' '
-      line1 += address.type + ' '        
+      line1 += address.type + ' '
 
       
-      line2 += address.city + ' '      
+      line2 += address.city + ' '
       line2 += address.state + ' '
       if (address.zip) {
-        line2 += address.zip        
+        line2 += address.zip
       }
       
       addressLines[0] = line1.trim()

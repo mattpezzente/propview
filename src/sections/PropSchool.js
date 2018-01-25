@@ -10,7 +10,8 @@ class PropOverview extends Component {
     this.schoolHTML = ''
   }
 
-  componentWillUpdate() {
+  render() {
+    // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
         schools: this.props.propData.schools,
@@ -20,7 +21,7 @@ class PropOverview extends Component {
           return null
         }
         else {
-          let schoolGoogleURL = 'https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=' + key.School.geocodinglatitude + ',' + key.School.geocodinglongitude +'&&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I'          
+          let schoolGoogleURL = 'https://maps.googleapis.com/maps/api/streetview?size=1920x1080&location=' + key.School.geocodinglatitude + ',' + key.School.geocodinglongitude +'&&pitch=5&key=AIzaSyAfYCml8BfM1V7OSizBd1pnJ7AZZTdZ58I'
           return ([
             <li key={i}>
               <img src={schoolGoogleURL} alt="school institution" />
@@ -32,9 +33,6 @@ class PropOverview extends Component {
         }
       })
     }
-  }
-
-  render() {
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper center-content">

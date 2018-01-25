@@ -11,7 +11,7 @@ class PropOverview extends Component {
     }
   }
 
-  componentWillUpdate() {
+  render() {
     // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
@@ -20,9 +20,6 @@ class PropOverview extends Component {
         address2: this.props.propData.address2
       }
     }
-  }
-
-  render() {
     return (
       <section className="prop-container">
         <div className="prop-wrapper">
@@ -36,7 +33,7 @@ class PropOverview extends Component {
             frameBorder="0"
             src={'https://www.google.com/maps/embed/v1/place?key=AIzaSyBR2rwBhZoIXY4Pm53DVcF07KSHq5AOIy4&zoom=15&q='+this.localProps.address1 + ',' + this.localProps.address2} allowFullScreen>
           </iframe>
-          <p>{this.localProps.homeDesc}</p>        
+          <p>{this.localProps.homeDesc}</p>
         </div>
       </section>
     );

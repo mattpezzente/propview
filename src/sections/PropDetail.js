@@ -36,7 +36,7 @@ class PropDetail extends Component {
     } 
   }
 
-  componentWillUpdate() {
+  render() {
     // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {  
       this.localProps = {
@@ -59,10 +59,7 @@ class PropDetail extends Component {
         subdName: this.props.propData.subdName,
         taxCodeArea: this.props.propData.taxCodeArea,
       }
-    }  
-  }
-  
-  render() {  
+    }
     return (
       <section className="prop-container off-white">
         <div className="prop-wrapper">

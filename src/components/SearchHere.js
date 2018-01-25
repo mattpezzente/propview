@@ -44,7 +44,7 @@ class SearchHere extends Component {
       // Disable User Input
       this.localProps.loading = true
       // Start the loading overlay
-      this.props.getData({loading: 'START'})    
+      this.props.getData({loading: 'START'})
 
       // Get the user's GPS Coordinates
       if (navigator.geolocation) {
@@ -159,7 +159,7 @@ class SearchHere extends Component {
       apiObjects.onProperty = dataOnProperty.data.property[0]
       
       propAddress.push(dataOnProperty.data.property[0].address.line1)
-      propAddress.push(dataOnProperty.data.property[0].address.line2)      
+      propAddress.push(dataOnProperty.data.property[0].address.line2)
       
       // Zillow Property Details
       axios(Object.assign(confZillowSearch, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', address: propAddress[0], citystatezip: propAddress[1]}}))
@@ -167,7 +167,7 @@ class SearchHere extends Component {
         finishedAPIs.zillSearch = true
         dataZillSearch = convert.xml2js(dataZillSearch.data, {compact: true, spaces: 2})["SearchResults:searchresults"].response.results.result
         apiObjects.zillSearch = dataZillSearch
-        dataZillSearch = dataZillSearch.zpid._text        
+        dataZillSearch = dataZillSearch.zpid._text
         
         // Zillow Property Search
         axios(Object.assign(confZillowProperty, {params: {'zws-id': 'X1-ZWz18t8vbiroy3_3s95g', zpid: dataZillSearch}}))
@@ -176,7 +176,7 @@ class SearchHere extends Component {
           dataZillProperty = convert.xml2js(dataZillProperty.data, {compact: true, spaces: 2})['UpdatedPropertyDetails:updatedPropertyDetails'].response
           apiObjects.zillProperty = dataZillProperty
 
-          sendData()          
+          sendData()
         })
         .catch(err => {
           finishedAPIs.zillProperty = true
@@ -376,7 +376,7 @@ class SearchHere extends Component {
 
     // Year Built
     if (p.summary) {
-      if (p.summary.yearbuilteffective) {      
+      if (p.summary.yearbuilteffective) {
         propDO.yearBuilt = p.summary.yearbuilteffective 
       }
       else if (p.summary.yearbuilt) {
@@ -389,7 +389,7 @@ class SearchHere extends Component {
 
     // Pool
     if (p.lot && p.lot.poolind) {
-      if (p.lot.poolind === 'Y') {            
+      if (p.lot.poolind === 'Y') {
         propDO.pool = 'Yes'
       }
       else if (p.lot.poolind === 'N') {
@@ -498,7 +498,7 @@ class SearchHere extends Component {
     if (p.building && p.building.rooms && p.building.rooms.bathsfull && p.building.rooms.bathshalf) {
         propDO.bathsTotal = p.building.rooms.bathsfull + 0.5 * p.building.rooms.bathshalf
     }
-    else if (p.building && p.building.rooms && p.building.rooms.bathscalc && p.building.rooms.bathshalf) {        
+    else if (p.building && p.building.rooms && p.building.rooms.bathscalc && p.building.rooms.bathshalf) {
       propDO.bathsTotal = p.building.rooms.bathscalc - 0.5 * p.building.rooms.bathshalf
     }    
     else if (p.bathrooms && p.bathrooms._text) {
@@ -599,7 +599,7 @@ class SearchHere extends Component {
     }
 
     // Sales History
-    if (p.salehistory) {        
+    if (p.salehistory) {
       propDO.saleHistory = p.salehistory
     }
     else {
