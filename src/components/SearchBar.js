@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchBar.css'
 import PropertyDTO from '../PropertyDTO';
-import defaultImg from '../images/propview-property-1.png';
+import defaultImg from '../images/propview-property-unavailable.png';
 const parser = require('parse-address');
 const convert = require('xml-js');
 const currencyFormatter = require('currency-formatter');

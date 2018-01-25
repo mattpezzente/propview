@@ -2,7 +2,7 @@ import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchHere.css';
 import PropertyDTO from '../PropertyDTO';
-import defaultImg from '../images/propview-property-1.png';
+import defaultImg from '../images/propview-property-unavailable.png';
 const convert = require('xml-js');
 const currencyFormatter = require('currency-formatter');
 
@@ -487,7 +487,7 @@ class SearchHere extends Component {
     else if (p.building && p.building.rooms && p.building.rooms.bathsfull) {
       propDO.bathsFull = p.building.rooms.bathsfull
     }
-    else if (propDO.bathsHalf && p.building.rooms.bathscalc) {
+    else if (propDO.bathsHalf && p.building && p.building.rooms && p.building.rooms.bathscalc) {
       propDO.bathsFull = parseFloat(p.building.rooms.bathscalc) - parseFloat(propDO.bathsHalf)
     }
     else {
