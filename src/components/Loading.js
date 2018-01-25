@@ -3,6 +3,10 @@ import imgLogo from '../images/propview-logo.png';
 import gifLoader from '../images/propview-loader.gif';
 import '../styles/css/Loading.css';
 
+/*
+* Persistent component, that shows a loading overlay whenever data is being loaded.
+*/
+
 class Loading extends Component {
 
   render() {

@@ -35,7 +35,7 @@ class Landing extends Component {
     );
   }
 
-  // Method to allow data to be passed through components, and  
+  // Method to allow data to be passed through components 
   getData(data) {
     this.props.getData(data)
   }
