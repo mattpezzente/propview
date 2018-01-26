@@ -7,6 +7,7 @@ import SearchHere from '../components/SearchHere';
 class PropHead extends Component {
   constructor(props) {
     super(props);
+    // Local props object for fallbacks, and storage of incoming props
     this.localProps = {
       address1: '',
       address2: 'No Address',
@@ -43,6 +44,7 @@ class PropHead extends Component {
         baths: this.props.propData.bathsTotal,
         sqft: this.props.propData.sqft
       }
+      // If there is no background Image url, set the background image
       if (this.localProps.backImg.length < 3) {
         this.localProps.backImg = imgBackground
       }

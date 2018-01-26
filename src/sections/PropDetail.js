@@ -1,4 +1,6 @@
 import React, { Component } from 'react';
+import '../styles/css/PropDetail.css';
+// Icons for the feature section
 import icoYearBuilt from '../images/icons/features/propview-built-icon.png';
 import icoType from '../images/icons/features/propview-type-icon.png';
 import icoCooling from '../images/icons/features/propview-cooling-icon.png';
@@ -7,12 +9,12 @@ import icoPool from '../images/icons/features/propview-pool-icon.png';
 import icoLot from '../images/icons/features/propview-lot-icon.png';
 import icoRoof from '../images/icons/features/propview-roof-icon.png';
 import icoWall from '../images/icons/features/propview-walls-icon.png';
-import '../styles/css/PropDetail.css';
+
 
 class PropDetail extends Component {
   constructor(props) {
     super(props);
-
+    // Local props object for fallbacks, and storage of incoming props
     this.localProps = {
       yearBuilt: 'N/A',
       pool: 'N/A',

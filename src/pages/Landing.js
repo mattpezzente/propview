@@ -2,6 +2,10 @@ import React, { Component } from 'react';
 import LandPrompt from '../sections/LandPrompt';
 import '../styles/css/Landing.css';
 
+/*
+* Initial page for users to start their first query for properties.
+*/
+
 class Landing extends Component {
   constructor(props) {
     super(props);

@@ -1,6 +1,8 @@
+// Mixin to add diagonal gradients
 @mixin diagonal-gradient($color1, $color2)  
   background: linear-gradient(20deg, $color1 0%, $color2 25%), linear-gradient(160deg, $color1 0%, $color2 20%)
-  
+
+// Container for the header image of the Properties page
 .prophead-masthead-container
   position: relative
   width: 100%
@@ -14,6 +16,7 @@
     height: 38rem    
     padding: 1.5rem
 
+// Custom styling and positioning for the search features
 .prophead-search-container  
   display: flex
   align-items: center
@@ -50,6 +53,7 @@
   cursor: pointer
 
 
+// Container for the masthead data
 .prophead-info-container
   position: absolute
   left: 0
@@ -87,4 +91,17 @@
       font-size: 1.125rem
       color: #eee
       margin: 0 0.5rem
+
+// Icons for use in the heading image
+.icon-bedrooms
+  max-width: 40px   
+  content: url('../../images/icons/propview-bed-icon.png')
+
+.icon-baths
+  max-width: 25px   
+  content: url('../../images/icons/propview-bathroom-icon.png')
+
+.icon-sqrft
+  max-width: 25px   
+  content: url('../../images/icons/propview-squarefeet-icon.png')
 

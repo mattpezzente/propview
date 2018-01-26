@@ -1,9 +1,10 @@
 import React, { Component } from 'react';
 import { Route, Switch, Redirect } from 'react-router-dom';
 import Loading from './components/Loading';
+// Reset css
 import './styles/css/reset.css';
 import './styles/css/App.css';
-
+// Imports for Page components
 import Footer from './sections/Footer';
 import Landing from './pages/Landing';
 import Property from './pages/Property';
@@ -11,7 +12,9 @@ import Property from './pages/Property';
 class App extends Component {
   constructor(props) {
     super(props);
+    // Determines whether or not to load a different route
     this.redirect = false
+    // State that stores the propData to pass to the Property page component
     this.state = {
       propData: {},
       loading: false,
@@ -68,6 +71,7 @@ class App extends Component {
     }
   }
 
+  // Method needed for redirection (Due to "this" context)
   clearRedirect() {
     this.redirect = false
   }

@@ -4,6 +4,7 @@ import '../styles/css/PropOverview.css';
 class PropOverview extends Component {
   constructor(props) {
     super(props)
+    // Local props object for fallbacks, and storage of incoming props
     this.localProps = {
       homeDesc: 'OVERVIEW UNAVAILABLE...',
       address1: 'Cinderellas',

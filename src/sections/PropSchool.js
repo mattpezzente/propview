@@ -4,6 +4,7 @@ import '../styles/css/PropSchool.css';
 class PropOverview extends Component {
   constructor(props) {
     super(props)
+    // Local props object for fallbacks, and storage of incoming props
     this.localProps = {
       schools: '',
     }

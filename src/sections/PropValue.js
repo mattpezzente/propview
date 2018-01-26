@@ -6,6 +6,7 @@ const currencyFormatter = require('currency-formatter');
 class PropValue extends Component {
   constructor(props) {
     super(props)
+    // Local props object for fallbacks, and storage of incoming props
     this.localProps = {
       avm: '$0.00',
       avmDate: 'N/A',

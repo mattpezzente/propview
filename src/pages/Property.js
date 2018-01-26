@@ -7,6 +7,9 @@ import PropValue from '../sections/PropValue';
 import PropSchool from '../sections/PropSchool';
 import '../styles/css/Property.css';
 
+/*
+* Properties page to display the property data being called from the APIs
+*/
 
 class Property extends Component {
   constructor(props) {

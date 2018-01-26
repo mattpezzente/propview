@@ -264,6 +264,9 @@ class SearchBar extends Component {
     else if (p.building && p.building.size && p.building.size.universalsize) {
       propDO.sqft = p.building.size.universalsize
     }
+    else if (p.finishedSqFt && p.finishedSqFt._text) {
+      propDO.sqft = p.finishedSqFt._text
+    }
     else {
       propDO.sqft = 'N/A'
     }
