@@ -29,12 +29,11 @@ The application itself, is a property viewing utility, that is designed to take 
 
 ## Images
 
+![alt text](https://github.com/salogost/propview/blob/master/assets/action_1.png?raw=true "Landing page prompt, with search actions")
 
-![alt text](https://github.com/salogost/propview/assets/action_1.png "Landing page prompt, with search actions")
+![alt text](https://github.com/salogost/propview/blob/master/assets/action_2.png?raw=true "Loading indicator for when search is in progress")
 
-![alt text](https://github.com/salogost/propview/assets/action_2.png "Loading indicator for when search is in progress")
-
-![alt text](https://github.com/salogost/propview/assets/action_3.png "Full page detail of returned property data")
+![alt text](https://github.com/salogost/propview/blob/master/assets/action_3.png?raw=true "Full page detail of returned property data")
 
 ## Installation
 
