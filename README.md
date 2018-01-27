@@ -29,9 +29,15 @@ The application itself, is a property viewing utility, that is designed to take 
 
 ## Images
 
+#### Landing page of the site that provides a randomized background image on every load. This page gives the search actions for the users to find property data for inputed addresses, or their current location.
+
 ![alt text](https://github.com/salogost/propview/blob/master/assets/action_1.png?raw=true "Landing page prompt, with search actions")
 
+#### Loading indiciator for when a search is in progress.
+
 ![alt text](https://github.com/salogost/propview/blob/master/assets/action_2.png?raw=true "Loading indicator for when search is in progress")
+
+#### Fully loaded page of property details.
 
 ![alt text](https://github.com/salogost/propview/blob/master/assets/action_3.png?raw=true "Full page detail of returned property data")
 
