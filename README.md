@@ -23,7 +23,18 @@ The application itself, is a property viewing utility, that is designed to take 
 * axios (HTTP client for API calls)
 * currency-formatter 
 * xml-js (XML to JS Object converter)
+* parse-address
 * gh-pages
+
+
+## Images
+
+
+![alt text](https://github.com/salogost/propview/assets/action_1.png "Landing page prompt, with search actions")
+
+![alt text](https://github.com/salogost/propview/assets/action_2.png "Loading indicator for when search is in progress")
+
+![alt text](https://github.com/salogost/propview/assets/action_3.png "Full page detail of returned property data")
 
 ## Installation
 
