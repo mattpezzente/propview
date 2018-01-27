@@ -9,7 +9,9 @@ The application itself, is a property viewing utility, that is designed to take 
 
 #### Video
 
-[![PropView Demo YouTube Demo Video](http://img.youtube.com/vi/kom42x59kS4/0.jpg)](http://www.youtube.com/watch?v=kom42x59kS4)
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=kom42x59kS4
+" target="_blank"><img src="http://img.youtube.com/vi/kom42x59kS4/0.jpg" 
+alt="PropView Demo YouTube Demo Video" width="240" height="180" border="10" /></a>
 
 
 #### Interactive
