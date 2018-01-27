@@ -1,9 +1,13 @@
-# Portfolio V - React Property Viewer
+# PropView
 
 ## Overview
-Property Viewer is an application that runs completely on the client-side, being powered by React JS. It was made as a demonstration of my ability to implement React JS to create a small, yet dynamic, application, using purely client-side code (JS, SASS, etc.).
+PropView is an application that runs completely on the client-side, being powered by React JS. It was made as a demonstration of my ability to implement React JS to create a small, yet dynamic, application, using purely client-side code (JS, SASS, etc.).
 
 The application itself, is a property viewing utility, that is designed to take in a property address, and return results and listing information based on the address given. It also implements a GPS feature, that gets the user's current location, and displays information of the address he/she is currently at.
+
+The project was done it about 3 weeks time, with the first week being design/proof of concept. Weeks 2 and 3 were dedicated towards development, with work consisting of parsing through property data, creating load indiciators, getting results through GPS, and more.
+
+Overall, I enjoyed the project a lot. I learned a lot about working with third-party APIs, as well as working with Real-Estate data. Fallbacks for incomplete data was definitely a challenge I had, but found a lot of useful tips and tricks to make sure the application kept providing content.
 
 ## Demos
 
