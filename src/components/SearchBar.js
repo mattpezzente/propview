@@ -635,8 +635,8 @@ class SearchBar extends Component {
     let line2 = ''
 
     address = parser.parseLocation(address)
-
-    if (address.number && address.street && address.type && address.city && address.state) {
+    
+    if (address !== null && address.number && address.street && address.type && address.city && address.state) {
       line1 += address.number + ' '
       if (address.prefix) {
         line1 += address.prefix + ' '
