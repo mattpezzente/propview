@@ -225,8 +225,6 @@ class SearchBar extends Component {
     let p = propData
     //Method to pass the DTO to the other components
     let sendData = propertyDTO => {
-      console.log(p)
-      console.log(propertyDTO)
       this.localProps.loading = false
       this.props.getData(propertyDTO)
     }
