@@ -20,7 +20,7 @@ alt="PropView Demo YouTube Demo Video" width="240" height="180" border="10" /></
 
 #### Interactive
 
-[PropView Demo](https://salogost.github.io/propview/ "PropView Demo")
+[PropView Demo](https://mattpezzente.github.io/propview/ "PropView Demo")
 
 
 
