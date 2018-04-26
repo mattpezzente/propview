@@ -649,10 +649,8 @@ class SearchHere extends Component {
   // Randomly return a key for use in API calls
   getAPIKey() {
     let apiKeys = [
-      '62268cadaa62a2d8f23e5a4b77cf95ac',
-      'f09e60a344e1f8c2d61d31b33ac5ec7a',
-      '14ee3d7f86bc0071c72d724c720452a3',
-      '310f8dd2c3614e3a56e034f378a8263c'
+      '310f8dd2c3614e3a56e034f378a8263c',
+      'e163766548682aeef98a164fc3c62e38'
     ]
     return apiKeys[Math.floor(Math.random() * (apiKeys.length-1))]
   }
