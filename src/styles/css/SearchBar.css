@@ -1,20 +1,39 @@
-.search-address {
-  background: rgba(0, 0, 0, 0.8);
+.search-bar-container {
+  display: flex;
+  justify-content: flex-start;
+  background: rgba(0, 0, 0, 0.75);
   margin: 0.5rem 0;
-  padding: 1rem 0.5rem;
   border: 2px solid #eee;
-  border-radius: 3px;
-  color: #eee; }
+  border-radius: 3px; }
+
+.search-address {
+  background: transparent;
+  flex-grow: 1;
+  border: none;
+  padding: 0.75rem 0.5rem;
+  color: #eee;
+  font-size: 1.25rem; }
 
 .search-address-button {
-  position: absolute;
-  background: none;
+  background: #E86919;
+  width: 100px;
   border: none;
-  margin-top: 0.875rem;
-  margin-left: -4rem;
+  border-left: 2px solid #eee;
+  transition: 0.2s;
   cursor: pointer; }
   .search-address-button img {
-    max-width: 2.875rem;
-    transition: 0.2s; }
-    .search-address-button img:hover {
-      opacity: 0.7; }
+    max-width: 40%; }
+  .search-address-button:hover {
+    background: #cb5c18; }
+
+@media only screen and (max-width: 1400px) {
+  .search-address-button {
+    width: 80px; }
+  .search-address {
+    font-size: 1rem; } }
+
+@media only screen and (max-width: 992px) {
+  .search-address-button {
+    width: 60px; }
+  .search-address {
+    font-size: 0.875rem; } }

@@ -38,9 +38,9 @@ class SearchBar extends Component {
 
   render() {
     return (
-      <div>        
+      <div className="search-bar-container">        
         <input className="search-address" type="text" data-address placeholder="14807 Faversham Cir # 1, Orlando, FL 32826"/>
-        <button onClick={this.checkAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon.png')}/></button>
+        <button onClick={this.checkAddress} className="search-address-button"><img alt="search button for entered address" src={require('../images/propview-search-icon-white.png')}/></button>
       </div>
     );
   }

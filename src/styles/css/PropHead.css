@@ -6,7 +6,7 @@
   background-size: cover;
   background-repeat: no-repeat; }
   .prophead-masthead-container .prophead-masthead-wrapper {
-    background: linear-gradient(20deg, black 0%, transparent 25%), linear-gradient(160deg, black 0%, transparent 20%);
+    background: linear-gradient(20deg, black 0%, rgba(0, 0, 0, 0) 25%), linear-gradient(160deg, black 0%, rgba(0, 0, 0, 0) 20%);
     height: 38rem;
     padding: 1.5rem; }
 
@@ -18,21 +18,16 @@
   flex-wrap: nowrap;
   float: right; }
   .prophead-search-container .search-user-location-button {
+    margin-right: 0.5rem;
     padding: 0.575rem;
     border: 0.125rem solid #eee; }
     .prophead-search-container .search-user-location-button img {
       max-width: 1.8rem; }
   .prophead-search-container .search-address {
+    width: 300px;
     margin-left: 0.5rem;
     padding: 0.875rem 0.5rem;
-    padding-right: 3rem;
-    min-width: 19rem;
     font-size: 0.875rem; }
-  .prophead-search-container .search-address-button {
-    margin-top: 1.25rem;
-    margin-left: -3rem; }
-    .prophead-search-container .search-address-button img {
-      max-width: 1.5rem; }
 
 .prophead-logo {
   max-width: 15rem;
