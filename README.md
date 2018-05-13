@@ -89,3 +89,12 @@ Lastly run:
 ```
 npm run
 ```
+
+## Contributing
+Contributing to this project follows a master->dev->feature development workflow.
+
+New features should be created by branching from dev, and merging back once the feature is complete.
+
+
+
+
