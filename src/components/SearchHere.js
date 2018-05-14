@@ -41,25 +41,25 @@ class SearchHere extends Component {
     // Check if the data is loading
     if (this.localProps.loading) {
       // DISABLE INPUT
-    } else {
-      // Disable User Input
-      this.localProps.loading = true;
-      // Start the loading overlay
-      this.props.getData({ loading: 'START' });
-
-      // Get the user's GPS Coordinates
-      if (navigator.geolocation) {
-        const latlong = [];
-        navigator.geolocation.getCurrentPosition((position) => {
-          latlong.push(position.coords.latitude);
-          latlong.push(position.coords.longitude);
-          this.fetchAPIData(latlong);
-        }, () => {}, { enableHighAccuracy: true });
-        return latlong;
-      }
-      this.props.getData({ loading: 'STOP' });
       return false;
     }
+    // Disable User Input
+    this.localProps.loading = true;
+    // Start the loading overlay
+    this.props.getData({ loading: 'START' });
+
+    // Get the user's GPS Coordinates
+    if (navigator.geolocation) {
+      const latlong = [];
+      navigator.geolocation.getCurrentPosition((position) => {
+        latlong.push(position.coords.latitude);
+        latlong.push(position.coords.longitude);
+        this.fetchAPIData(latlong);
+      }, () => {}, { enableHighAccuracy: true });
+      return latlong;
+    }
+    this.props.getData({ loading: 'STOP' });
+    return false;
   }
 
   // Method to begin fetching the data from APIs
