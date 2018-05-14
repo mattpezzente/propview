@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import Loading from '../components/Loading';
 import PropHead from '../sections/PropHead';
 import PropOverview from '../sections/PropOverview';
@@ -15,28 +15,28 @@ class Property extends Component {
   constructor(props) {
     super(props);
     // Set Page Title
-    document.title = 'PropView - Property'
+    document.title = 'PropView - Property';
     this.localProps = {
       propData: {},
-    }
-    props = {
+    };
+    this.props = {
       propData: {},
-    }
+    };
     this.state = {
       propData: {},
-    }
+    };
 
 
-    this.getData = this.getData.bind(this)
+    this.getData = this.getData.bind(this);
   }
 
   componentWillUpdate() {
     // Check if the data is coming through props, or state
     if (Object.keys(this.props.propData).length !== 0) {
-      this.localProps.propData = this.props.propData
+      this.localProps.propData = this.props.propData;
     }
     if (Object.keys(this.state.propData).length !== 0) {
-      this.localProps.propData = this.state.propData
+      this.localProps.propData = this.state.propData;
     }
   }
 
@@ -57,13 +57,11 @@ class Property extends Component {
   // determine/set loading states
   getData(data) {
     if (data.loading === 'START') {
-      this.setState({loading: true})
-    }
-    else if (data.loading === 'STOP') {
-      this.setState({loading: false})
-    }
-    else {
-      this.setState({propData: data, loading: false})
+      this.setState({ loading: true });
+    } else if (data.loading === 'STOP') {
+      this.setState({ loading: false });
+    } else {
+      this.setState({ propData: data, loading: false });
     }
   }
 }

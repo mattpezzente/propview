@@ -1,4 +1,4 @@
-import React, { Component } from 'react';
+import { Component } from 'react';
 import '../styles/css/PropDetail.css';
 // Icons for the feature section
 import icoYearBuilt from '../images/icons/features/propview-built-icon.png';
@@ -35,12 +35,12 @@ class PropDetail extends Component {
       countrySecSubd: 'N/A',
       subdName: 'N/A',
       taxCodeArea: 'N/A',
-    } 
+    };
   }
 
   render() {
     // Check if there is data in the props
-    if (Object.keys(this.props.propData).length !== 0) {  
+    if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
         yearBuilt: this.props.propData.yearBuilt,
         pool: this.props.propData.pool,
@@ -60,7 +60,7 @@ class PropDetail extends Component {
         countrySecSubd: this.props.propData.countrySecSubd,
         subdName: this.props.propData.subdName,
         taxCodeArea: this.props.propData.taxCodeArea,
-      }
+      };
     }
     return (
       <section className="prop-container off-white">
@@ -148,7 +148,7 @@ class PropDetail extends Component {
                   <p>County: <span>{this.localProps.countrySecSubd}</span></p>
                   <p>Sub Division: <span>{this.localProps.subdName}</span></p>
                   <p>Tax Code Area: <span>{this.localProps.taxCodeArea}</span></p>
-                </li>              
+                </li>
               </ul>
             </section>
           </div>
