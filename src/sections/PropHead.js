@@ -4,6 +4,8 @@ import '../styles/css/PropHead.css';
 import SearchBar from '../components/SearchBar';
 import SearchHere from '../components/SearchHere';
 
+const propviewLogo = require('../images/propview-logo.png');
+
 class PropHead extends Component {
   constructor(props) {
     super(props);
@@ -15,25 +17,25 @@ class PropHead extends Component {
       beds: 'N/A',
       baths: 'N/A',
       sqft: 'N/A',
-    }
+    };
 
 
-    this.getData = this.getData.bind(this)
+    this.getData = this.getData.bind(this);
   }
 
   componentDidMount() {
     // Make logo link to homepage directly
-    document.querySelector('.prophead-logo').addEventListener('click', e => {
-      window.location.assign(process.env.PUBLIC_URL+'/home')
-    })
+    document.querySelector('.prophead-logo').addEventListener('click', () => {
+      window.location.assign(process.env.PUBLIC_URL + '/home');
+    });
   }
 
   componentWillUnmount() {
     // Remove logo click event
-    document.querySelector('.prophead-logo').removeEventListener('click')
+    document.querySelector('.prophead-logo').removeEventListener('click');
   }
 
-  render() {    
+  render() {
     // Check if there is data in the props
     if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
@@ -43,16 +45,16 @@ class PropHead extends Component {
         beds: this.props.propData.beds,
         baths: this.props.propData.bathsTotal,
         sqft: this.props.propData.sqft
-      }
+      };
       // If there is no background Image url, set the background image
       if (this.localProps.backImg.length < 3) {
-        this.localProps.backImg = imgBackground
+        this.localProps.backImg = imgBackground;
       }
     }
     return (
-      <section style={{backgroundImage: 'url('+this.localProps.backImg+')'}} className="prophead-masthead-container">
+      <section style={{ backgroundImage: 'url(' + this.localProps.backImg + ')' }} className="prophead-masthead-container">
         <div className="prophead-masthead-wrapper">
-          <a><img className="prophead-logo" src={require('../images/propview-logo.png')} alt="PropView Logo"/></a>
+          <a><img className="prophead-logo" src={propviewLogo} alt="PropView Logo"/></a>
           <section className="prophead-search-container">
             <SearchHere getData={this.getData} />
             <SearchBar getData={this.getData} />
@@ -76,7 +78,7 @@ class PropHead extends Component {
                 <span className="prophead-info-dot-spacing">•</span>
               </li>
               <li>
-                <span className="icon-sqrft"></span>     
+                <span className="icon-sqrft"></span>
                 <p>{this.localProps.sqft} Squarefeet</p>
               </li>
             </ul>
@@ -88,7 +90,7 @@ class PropHead extends Component {
 
   // Method to allow data to be passed through components
   getData(data) {
-    this.props.getData(data)
+    this.props.getData(data);
   }
 }
 

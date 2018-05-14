@@ -13,41 +13,35 @@ class App extends Component {
   constructor(props) {
     super(props);
     // Determines whether or not to load a different route
-    this.redirect = false
+    this.redirect = false;
     // State that stores the propData to pass to the Property page component
     this.state = {
       propData: {},
       loading: false,
-    }
-    
-    this.getData = this.getData.bind(this)
-    this.clearRedirect = this.clearRedirect.bind(this)
+    };
+
+    this.getData = this.getData.bind(this);
+    this.clearRedirect = this.clearRedirect.bind(this);
   }
 
-  render() {    
+  render() {
     return (
       <div>
-        <Switch>          
-          <Route exact path={process.env.PUBLIC_URL+'/home'} render={() => {
+        <Switch>
+          <Route exact path={ `${process.env.PUBLIC_URL}/home` } render={() => {
             if (this.redirect) {
-              this.clearRedirect()
-              return <Redirect to={process.env.PUBLIC_URL+'/property'} />            
+              this.clearRedirect();
+              return <Redirect to={`${process.env.PUBLIC_URL}/property`} />;
             }
-            else {
-              return <Landing getData={this.getData} />
-            }
+            return <Landing getData={this.getData} />;
           }}/>
-          <Route exact path={process.env.PUBLIC_URL+'/property'} render={() => {
-            return <Property propData={this.state.propData} />
-          }}/>
+          <Route exact path={`${process.env.PUBLIC_URL}/property`} render={() => <Property propData={this.state.propData} />}/>
           <Route render={() => {
             if (this.redirect) {
-              this.clearRedirect()
-              return <Redirect to={process.env.PUBLIC_URL+'/property'} />            
+              this.clearRedirect();
+              return <Redirect to={`${process.env.PUBLIC_URL}/property`} />;
             }
-            else {
-              return <Landing getData={this.getData} />
-            }
+            return <Landing getData={this.getData} />;
           }}/>
         </Switch>
         <Loading loading={this.state.loading} />
@@ -60,20 +54,18 @@ class App extends Component {
   // determine/set loading states
   getData(data) {
     if (data.loading === 'START') {
-      this.setState({loading: true})
-    }
-    else if (data.loading === 'STOP') {
-      this.setState({loading: false})
-    }
-    else {
-      this.redirect = true      
-      this.setState({propData: data, loading: false})
+      this.setState({ loading: true });
+    } else if (data.loading === 'STOP') {
+      this.setState({ loading: false });
+    } else {
+      this.redirect = true;
+      this.setState({ propData: data, loading: false });
     }
   }
 
   // Method needed for redirection (Due to "this" context)
   clearRedirect() {
-    this.redirect = false
+    this.redirect = false;
   }
 }
 

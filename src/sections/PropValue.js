@@ -1,46 +1,45 @@
 import React, { Component } from 'react';
 import icoPropertyValue from '../images/propvalue/propview-value-icon.png';
 import '../styles/css/PropValue.css';
+
 const currencyFormatter = require('currency-formatter');
 
 class PropValue extends Component {
   constructor(props) {
-    super(props)
+    super(props);
     // Local props object for fallbacks, and storage of incoming props
     this.localProps = {
       avm: '$0.00',
       avmDate: 'N/A',
       saleHistory: [],
-    }
+    };
     this.historyHTML = (
       <tr>
         <td></td>
         <td></td>
         <td></td>
       </tr>
-    )
+    );
   }
 
   render() {
     // Check if there is data in the props
-    if (Object.keys(this.props.propData).length !== 0) { 
+    if (Object.keys(this.props.propData).length !== 0) {
       this.localProps = {
         avm: this.props.propData.avm,
         avmDate: this.props.propData.avmDate,
         saleHistory: this.props.propData.saleHistory,
-      }
+      };
 
       // Sales History HTML Components
-      if (this.localProps.saleHistory) {        
-        this.historyHTML = this.localProps.saleHistory.map((key, i) => {
-          return (
-            <tr key={i}> 
-              <td>{key.amount.salerecdate}</td>
-              <td>{currencyFormatter.format(key.amount.saleamt, {code: 'USD'})}</td>
-              <td>{key.amount.saletranstype}</td>
-            </tr>
-          )
-        })
+      if (this.localProps.saleHistory) {
+        this.historyHTML = this.localProps.saleHistory.map((key, i) => (
+          <tr key={i}>
+            <td>{key.amount.salerecdate}</td>
+            <td>{currencyFormatter.format(key.amount.saleamt, { code: 'USD' })}</td>
+            <td>{key.amount.saletranstype}</td>
+          </tr>
+        ));
       }
     }
     return (

@@ -89,3 +89,32 @@ Lastly run:
 ```
 npm run
 ```
+
+## Contributing
+Contributing to this project follows a master->dev->feature development workflow, and any major feature changes should be approved by the repo owner (Matt Pezzente).
+
+### Adding a New Feature
+
+Create new features by branching from dev. Once a feature is completed, open a pull request back to dev for review and last minute revisements.
+
+### Updating Master
+
+Any changes to master need to be approved by the repo owner, and should be tagged as a new release when appropriate.
+
+### Testing & Continuous Integration
+
+Tests are done using mocha-eslint, and follows the Airbnb Style Guide for code testing. Also, [CircleCI](https://circleci.com/gh/mattpezzente/propview) is used for CI testing for Git pushes and deployments.
+
+To run a single test, run the following:
+```
+npm test
+```
+
+### Deployment
+
+Deployments should only be made through the master branch, and on release versions. To run a deployment, enter the following command:
+```
+npm run deploy
+```
+
+The "npm run deploy" command begins a chain of commands, that begins with a code test (see testing section above). If the tests clear, begins generating basic JavaScript files inside the build folder. Finally, the build folder is published using [GitHub Pages](https://pages.github.com/), and a new production build of the application will become available [here](https://mattpezzente.github.io/propview/ "PropView Demo")
