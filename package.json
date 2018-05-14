@@ -24,7 +24,7 @@
   },
   "scripts": {
     "start": "react-scripts start",
-    "build": "react-scripts build",
+    "build": "mocha && react-scripts build",
     "test": "mocha",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar src/styles/sass -o src/styles/css",
