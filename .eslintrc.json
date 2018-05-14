@@ -11,7 +11,9 @@
     "spaced-comment": 0,
     "prefer-template": 0,
     "max-len": 0,
-    "no-mixed-operators": 0
+    "no-mixed-operators": 0,
+    "no-alert": 0,
+    "no-console": 0
   },
   "parserOptions": {
     "ecmaVersion": 6,
