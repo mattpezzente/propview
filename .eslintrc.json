@@ -4,7 +4,8 @@
     "react"
   ],
   "rules": {
-    "react/jsx-uses-vars": 2,
+    "react/jsx-uses-react": "error",
+    "react/jsx-uses-vars": "error",
     "class-methods-use-this": 0,
     "comma-dangle": 0,
     "no-underscore-dangle": 0,

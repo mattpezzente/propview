@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import LandPrompt from '../sections/LandPrompt';
 import '../styles/css/Landing.css';
 

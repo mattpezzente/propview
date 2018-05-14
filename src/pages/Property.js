@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import Loading from '../components/Loading';
 import PropHead from '../sections/PropHead';
 import PropOverview from '../sections/PropOverview';

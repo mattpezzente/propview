@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import imgLogo from '../images/propview-logo.png';
 import gifLoader from '../images/propview-loader.gif';
 import '../styles/css/Loading.css';

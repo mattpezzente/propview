@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import icoPropertyValue from '../images/propvalue/propview-value-icon.png';
 import '../styles/css/PropValue.css';
 

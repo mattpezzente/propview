@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import imgBackground from '../images/propview-property-unavailable.png';
 import '../styles/css/PropHead.css';
 import SearchBar from '../components/SearchBar';

@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import axios from 'axios';
 import '../styles/css/SearchBar.css';
 import PropertyDTO from '../PropertyDTO';

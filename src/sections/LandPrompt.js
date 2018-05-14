@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import '../styles/css/LandPrompt.css';
 import SearchBar from '../components/SearchBar';
 import SearchHere from '../components/SearchHere';

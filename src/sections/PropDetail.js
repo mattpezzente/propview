@@ -1,4 +1,4 @@
-import { Component } from 'react';
+import React, { Component } from 'react';
 import '../styles/css/PropDetail.css';
 // Icons for the feature section
 import icoYearBuilt from '../images/icons/features/propview-built-icon.png';
