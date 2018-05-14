@@ -25,7 +25,7 @@
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
-    "test": "eslint yourfile.js",
+    "test": "mocha",
     "eject": "react-scripts eject",
     "build-css": "node-sass-chokidar src/styles/sass -o src/styles/css",
     "watch-css": "npm run build-css && node-sass-chokidar src/styles/sass -o src/styles/css --watch --recursive",
