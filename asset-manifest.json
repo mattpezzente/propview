@@ -1,8 +1,8 @@
 {
-  "main.css": "static/css/main.536b439f.css",
-  "main.css.map": "static/css/main.536b439f.css.map",
-  "main.js": "static/js/main.9c32c3b0.js",
-  "main.js.map": "static/js/main.9c32c3b0.js.map",
+  "main.css": "static/css/main.c921836e.css",
+  "main.css.map": "static/css/main.c921836e.css.map",
+  "main.js": "static/js/main.0e325c95.js",
+  "main.js.map": "static/js/main.0e325c95.js.map",
   "static/media/propview-built-icon.png": "static/media/propview-built-icon.de872c6a.png",
   "static/media/propview-cooling-icon.png": "static/media/propview-cooling-icon.af1e6b0a.png",
   "static/media/propview-landing-1.jpeg": "static/media/propview-landing-1.2aecfc2d.jpeg",
@@ -18,7 +18,7 @@
   "static/media/propview-lot-icon.png": "static/media/propview-lot-icon.7c054fa9.png",
   "static/media/propview-property-unavailable.png": "static/media/propview-property-unavailable.38da6b5a.png",
   "static/media/propview-roof-icon.png": "static/media/propview-roof-icon.550ee68f.png",
-  "static/media/propview-search-icon.png": "static/media/propview-search-icon.497e4d93.png",
+  "static/media/propview-search-icon-white.png": "static/media/propview-search-icon-white.58f582a6.png",
   "static/media/propview-type-icon.png": "static/media/propview-type-icon.1baa9997.png",
   "static/media/propview-value-icon.png": "static/media/propview-value-icon.7ef39796.png"
 }
