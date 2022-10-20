@@ -140,11 +140,11 @@ class SearchBar extends Component {
           address: address[0], 
           citystatezip: address[1],
         },
-        url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetDeepSearchResults.htm',
+        url: 'https://bw02bws0ef23ewfbss-1.herokuapp.com/http://www.zillow.com/webservice/GetDeepSearchResults.htm',
       }
       let confZillowProperty = {
         method: 'get',
-        url: 'https://cors-anywhere.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
+        url: 'https://bw02bws0ef23ewfbss-2.herokuapp.com/http://www.zillow.com/webservice/GetUpdatedPropertyDetails.htm',
       }
       
       // OnBoard Property Sales History & School Data
